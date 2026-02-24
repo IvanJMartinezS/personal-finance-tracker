@@ -1,14 +1,25 @@
-// import { useAuth } from "@/hooks/useAuth"; // comenta o elimina
+import { useAuth } from "@/hooks/useAuth"; 
+import { Navigate, Outlet } from "react-router";
+import Layout from "@/components/Layout";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout() {
+    const { user, loading } = useAuth();
+  
+    if (loading) {
+      return (
+        <div className="flex min-h-screen items-center justify-center">
+          <p className="text-muted-foreground">Cargando...</p>
+        </div>
+      );
+    }
+  
+    if (!user) {
+      return <Navigate to="/auth" replace />;
+    }
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <div className="flex-1">
-        {children}
-      </div>
-      <div className="border-t border-sidebar-border p-4">
-        <p className="text-xs text-muted-foreground">Sesión de prueba</p>
-      </div>
-    </div>
+    <Layout>
+      <Outlet />
+    </Layout>
   );
 }
