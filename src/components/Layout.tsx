@@ -10,10 +10,10 @@ import { Button } from "@/components/ui/button";
 
 const navItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Gastos", url: "/gastos", icon: TrendingDown },
-  { title: "Ingresos", url: "/ingresos", icon: TrendingUp },
-  { title: "Categorías", url: "/categorias", icon: Tags },
-  { title: "Configuración", url: "/configuracion", icon: Settings },
+  { title: "Gastos", url: "/expenses", icon: TrendingDown },
+  { title: "Ingresos", url: "/income", icon: TrendingUp },
+  { title: "Categorías", url: "/categories", icon: Tags },
+  { title: "Configuración", url: "/settings", icon: Settings },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
     setDarkMode(!darkMode);
     document.documentElement.classList.toggle("dark");
   };
-
+  
   useState(() => { document.documentElement.classList.add("dark"); });
 
   const currentTitle = navItems.find(

@@ -4,11 +4,12 @@ import Dashboard from "@/pages/Dashboard";
 import ExpensesPage from "@/pages/ExpensesPage";
 import IncomePage from "@/pages/IncomePage";
 import AuthPage from "@/pages/AuthPage";
+import type { LocationState } from "@/types/router";
 //import NotFound from "@/pages/NotFoundPage";
 
 export const AppRoutes = () => {
   const location = useLocation();
-  const state = location.state as { backgroundLocation?: Location };
+  const state = location.state as LocationState;
   const backgroundLocation = state?.backgroundLocation || location;
   
   return (
