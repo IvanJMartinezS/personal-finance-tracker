@@ -1,4 +1,4 @@
-export default function IncomePage() {
+export const IncomeList = () => {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold">Income</h1>

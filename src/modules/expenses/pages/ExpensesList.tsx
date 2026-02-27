@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 
-export default function ExpensesPage() {
+export const ExpensesList = () => {
     const location = useLocation();
   return (
     <div className="p-6">
@@ -13,7 +13,7 @@ export default function ExpensesPage() {
         state={{ backgroundLocation: location }}
         className="inline-block mt-4 px-4 py-2 bg-primary text-primary-foreground rounded"
       >
-        Crear gasto (modal)
+        Crear gastosss
       </Link>
     </div>
     </div>

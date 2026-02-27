@@ -1,37 +1,34 @@
-import { Routes, Route, useLocation } from "react-router-dom";
-import AppLayout from "@/components/AppLayout";
-import Dashboard from "@/pages/Dashboard";
-import ExpensesPage from "@/pages/ExpensesPage";
-import IncomePage from "@/pages/IncomePage";
-import AuthPage from "@/pages/AuthPage";
-import type { LocationState } from "@/types/router";
-//import NotFound from "@/pages/NotFoundPage";
+import { useLocation, Routes, Route } from 'react-router-dom';
+import AuthPage from '@/modules/auth/pages/AuthPage';
+import ProtectedLayout from '@/shared/auth/ProtectedLayout';
+import { ExpensesRoutes } from '@/modules/expenses/routes/ExpensesRoutes';
+import { IncomeRoutes } from '@/modules/incomes/routes/IncomeRoutes';
+import { DashboardRoutes } from '@/modules/dashboard/routes/DashboardRoutes';
+import { NotFoundPage } from '@/modules/notFound/pages/NotFoundPage';
+import { CategoriesRoutes } from '@/modules/categories/routes/CategoriesRoutes';
+import { SettingsRoutes } from '@/modules/settings/routes/SettingsRoutes';
+import { Modals } from '@/routes/Modals';
 
-export const AppRoutes = () => {
+export function AppRoutes() {
   const location = useLocation();
-  const state = location.state as LocationState;
-  const backgroundLocation = state?.backgroundLocation || location;
-  
+  const state = location.state as { backgroundLocation?: Location };
+  const backgroundLocation = state?.backgroundLocation;
+
   return (
-     <Routes location={backgroundLocation}>
-      <Route path="/auth" element={<AuthPage />} />
-      
-      <Route element={<AppLayout />}>
-        <Route path="/">
-          <Route index element={<Dashboard />} />
+    <div>
+      <Routes location={backgroundLocation}>
+        <Route path="auth" element={<AuthPage />} />
+        <Route element={<ProtectedLayout />}>
+          <Route index path='home' element={<DashboardRoutes />} />
+          <Route path="expenses" element={<ExpensesRoutes />} />
+          <Route path="income" element={<IncomeRoutes />} />
+          <Route path="categories" element={<CategoriesRoutes />} />
+            <Route path="settings" element={<SettingsRoutes />} />
         </Route>
-        
-        <Route path="/expenses">
-          <Route index element={<ExpensesPage />} />
-        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
 
-        <Route path="/income">
-          <Route index element={<IncomePage />} />
-        </Route>
-
-        {/* <Route path="*" element={<NotFound />} /> */}
-        <Route path="*" element={<AuthPage />} />
-      </Route>
-    </Routes>
+      <Modals />      
+    </div>
   );
 }

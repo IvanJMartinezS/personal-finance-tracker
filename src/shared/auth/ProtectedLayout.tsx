@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '@/hooks/useAuth';
-import Layout from './Layout';
+import { useAuth } from '@/shared/auth/useAuth';
+import Layout from '@/shared/components/layout/Layout';
 
 export default function ProtectedLayout() {
   const { user, loading } = useAuth();

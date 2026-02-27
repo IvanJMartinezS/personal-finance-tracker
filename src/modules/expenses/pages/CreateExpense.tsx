@@ -1,8 +1,8 @@
 // src/components/CreateExpensesModal.tsx
 import { useNavigate } from 'react-router-dom';
-import { Modal } from './Modal';
+import { Modal } from '@/components/Modal';
 
-export function CreateExpenseModal() {
+export function CreateExpense() {
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -14,8 +14,7 @@ export function CreateExpenseModal() {
   return (
     <Modal>
       <form onSubmit={handleSubmit} className="space-y-4 border-4 border-green-500">
-        <h2 className="text-xl font-bold">Nuevo gasto (MODAL)</h2>
-        ...
+        <h2 className="text-xl font-bold">Nuevo gasto</h2>
       </form>
     </Modal>
   );
