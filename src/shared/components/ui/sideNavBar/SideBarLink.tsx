@@ -1,4 +1,4 @@
-import { NavLink } from "@/components/NavLink";
+import { NavLink } from "@/shared/components/ui/NavLink";
 
 
 export const SideNavLink = ({ item, setSidebarOpen }: any) => {

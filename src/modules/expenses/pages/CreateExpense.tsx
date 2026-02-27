@@ -1,6 +1,6 @@
 // src/components/CreateExpensesModal.tsx
 import { useNavigate } from 'react-router-dom';
-import { Modal } from '@/components/Modal';
+import { Modal } from '@/shared/components/ui/Modal';
 
 export function CreateExpense() {
   const navigate = useNavigate();

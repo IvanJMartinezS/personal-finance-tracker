@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/shared/auth/useAuth";
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { Toaster } from "@/shared/components/ui/toaster";
+import { Toaster as Sonner } from "@/shared/components/ui/sonner";
+import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { BrowserRouter } from "react-router-dom";
 import { AppRoutes } from "@/routes/Routes";
 
