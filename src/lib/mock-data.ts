@@ -21,6 +21,7 @@ export type Transaction = {
   notes?: string;
   created_at?: string;
   updated_at?: string;
+  source?: string;
   categories: {
     name: string;
     type: 'expense' | 'income';
@@ -164,39 +165,68 @@ export const mockExpenses: Transaction[] = [
 ];
 
 // Ingresos de ejemplo (similar estructura)
+// src/lib/mock-data.ts (fragmento de incomes actualizado)
+
 export const mockIncomes: Transaction[] = [
   {
-    id: 'inc1',
-    date: '2026-02-01',
-    category_id: 'cat8',
-    item: 'Salario mensual',
-    amount: 5500000,
-    currency: 'COP',
+    id: "51847a7e-05b7-41d2-9906-89abd6da47b2",
+    user_id: "e84cf720-eef8-48e6-89bd-0608abede560",
+    date: "2026-02-28",
+    category_id: "cat8",
+    item: "Sueldo",
+    source: "Sueldo",
+    amount: 100,
+    currency: "USD",
+    exchange_rate: 3700,
+    amount_in_base: 370000,
+    notes: "Sueldo Enero",
+    created_at: "2026-02-28T00:24:09.322864+00:00",
+    updated_at: "2026-02-28T00:24:09.322864+00:00",
+    categories: {
+      name: "Sueldo",
+      type: "income",
+      color: "#10b981"
+    }
+  },
+  {
+    id: "a257595a-68a6-4b3d-812c-0d91e2f430e5",
+    user_id: "e84cf720-eef8-48e6-89bd-0608abede560",
+    date: "2026-02-28",
+    category_id: "cat8",
+    item: "Sueldo",
+    amount: 4000,
+    currency: "VES",
+    exchange_rate: 7,
+    amount_in_base: 28000,
+    notes: "Sueldo Febrero",
+    source: "Sueldo",
+    created_at: "2026-02-28T00:24:42.518957+00:00",
+    updated_at: "2026-02-28T00:24:42.518957+00:00",
+    categories: {
+      name: "Sueldo",
+      type: "income",
+      color: "#10b981"
+    }
+  },
+  {
+    id: "e6d76b6c-3c06-4e4d-92bb-630a4790d35d",
+    user_id: "e84cf720-eef8-48e6-89bd-0608abede560",
+    date: "2026-02-28",
+    category_id: "cat8",
+    item: "Sueldo",
+    source: "Sueldo",
+    amount: 100000,
+    currency: "COP",
     exchange_rate: 1,
-    amount_in_base: 5500000,
-    categories: { name: 'Salario', type: 'income', color: '#22c55e' }
-  },
-  {
-    id: 'inc2',
-    date: '2026-02-10',
-    category_id: 'cat9',
-    item: 'Proyecto web cliente',
-    amount: 800,
-    currency: 'USD',
-    exchange_rate: 4200,
-    amount_in_base: 3360000,
-    categories: { name: 'Freelance', type: 'income', color: '#3b82f6' }
-  },
-  {
-    id: 'inc3',
-    date: '2026-02-15',
-    category_id: 'cat10',
-    item: 'Dividendos ETF',
-    amount: 150,
-    currency: 'USD',
-    exchange_rate: 4200,
-    amount_in_base: 630000,
-    categories: { name: 'Inversiones', type: 'income', color: '#a855f7' }
+    amount_in_base: 100000,
+    notes: "Sueldo Marzo",
+    created_at: "2026-02-28T00:25:14.624189+00:00",
+    updated_at: "2026-02-28T00:25:14.624189+00:00",
+    categories: {
+      name: "Sueldo",
+      type: "income",
+      color: "#10b981"
+    }
   }
 ];
 
