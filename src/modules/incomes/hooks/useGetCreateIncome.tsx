@@ -1,24 +1,24 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ExpensesService } from "@/modules/expenses/service/index";
 import { useAuth } from "@/shared/auth/useAuth";
 import { toast } from "sonner";
-import type { CreateExpenseInput } from "../utils/types";
+import type { CreateIncomeInput } from "../utils/types";
+import { IncomesService } from "../service";
 
-export const useCreateExpense = () => {
+export const useCreateIncome = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const service = new ExpensesService();
+  const service = new IncomesService();
 
-  const create = async (expenseData: Omit<CreateExpenseInput, 'user_id'>) => {
+  const create = async (incomeData: Omit<CreateIncomeInput, 'user_id'>) => {
       if (!user) throw new Error("Usuario no autenticado");
-      return await service.createExpense({ ...expenseData, user_id: user.id });
+      return await service.createIncome({ ...incomeData, user_id: user.id });
     };
 
   return useMutation({
     mutationFn: create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Gasto registrado");
+      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      toast.success("Ingreso registrado");
     },
     onError: (error: any) => {
       if (error.code === '22P02') {

@@ -9,7 +9,9 @@ import { Label } from "@/shared/components/ui/label";
 import { Badge } from "@/shared/components/ui/badge";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { mockCategories } from "@/lib/mock-data";
+import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import { useCreateCategory } from "@/hooks/useCategories";
+import { useDeleteCategory } from "@/hooks/useCategories";
 
 const PRESET_COLORS = [
   "#10b981", "#f59e0b", "#6366f1", "#ec4899", "#14b8a6",
@@ -23,16 +25,22 @@ export const Categories = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
 
-  const { data: categories, isLoading } = { data: mockCategories, isLoading: false };
+  const { data: categories , isLoading: categoriesLoading } = useGetCategories();
+  const createCategory = useCreateCategory();
+  const deleteCategory = useDeleteCategory();
+
 
   const expenseCats = categories?.filter(c => c.type === "expense") ?? [];
   const incomeCats = categories?.filter(c => c.type === "income") ?? [];
 
   const handleSave = () => {
-    console.log("Saving category:", { name, type, color: selectedColor });
+    if (!name || !type) return;
+    createCategory.mutate({ name, type, color: selectedColor }, {
+      onSuccess: () => { setDialogOpen(false); setName(""); setType(""); setSelectedColor(PRESET_COLORS[0]); },
+    });
   };
 
-  if (isLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
+  if (categoriesLoading) return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -105,7 +113,7 @@ export const Categories = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => console.log("Deleting category:", cat.id)}>Eliminar</AlertDialogAction>
+                          <AlertDialogAction onClick={() => deleteCategory.mutate(cat.id)}>Eliminar</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

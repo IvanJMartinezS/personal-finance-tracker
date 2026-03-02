@@ -10,8 +10,11 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
 import { CURRENCIES, formatCOP, formatCurrency } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { mockCategories, mockIncomes } from "@/lib/mock-data";
 import { Filter } from "@/shared/components/ui/Filter";
+import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import { useGetIncomes } from "../hooks/useGetIncomes";
+import { useCreateIncome } from "../hooks/useGetCreateIncome";
+import { useDeleteIncome } from "../hooks/useDeleteIncome";
 
 
 export const IncomeList = () => {
@@ -26,10 +29,12 @@ export const IncomeList = () => {
   const [formCurrency, setFormCurrency] = useState("COP");
   const [formRate, setFormRate] = useState("");
   const [formNotes, setFormNotes] = useState("");
-    const { data: categories, isLoading } = { data: mockCategories, isLoading: false };
+  const { data: categories, isLoading } = useGetCategories();
 
   const incomeCategories = categories?.filter(c => c.type === "income") ?? [];
-  const { data: incomes, isLoading: incomesLoading } = { data: mockIncomes, isLoading: false };
+  const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
+  const createIncome = useCreateIncome();
+  const deleteIncome = useDeleteIncome();
 
   const filtered = (incomes ?? []).filter(i => {
     const matchSearch = i.source?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
@@ -46,14 +51,21 @@ export const IncomeList = () => {
   };
 
   const handleSave = () => {
-    console.log("create income", {
+    const amount = parseFloat(formAmount);
+    const rate = formCurrency === "COP" ? 1 : parseFloat(formRate);
+    if (!formCategory || !formSource || isNaN(amount) || (formCurrency !== "COP" && isNaN(rate))) return;
+
+    createIncome.mutate({
       date: formDate,
       category_id: formCategory,
       source: formSource,
-      amount: formAmount,
+      amount,
       currency: formCurrency,
-      exchange_rate: formRate,
-      notes: formNotes
+      exchange_rate: rate,
+      amount_in_base: amount * rate,
+      notes: formNotes || null,
+    }, {
+      onSuccess: () => { setDialogOpen(false); resetForm(); },
     });
   };
 
@@ -86,16 +98,22 @@ export const IncomeList = () => {
                   <Label>Categoría</Label>
                   <Select value={formCategory} onValueChange={setFormCategory}>
                     <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
-                    <SelectContent>
-                      {incomeCategories.map(c => (
-                        <SelectItem key={c.id} value={c.id}>
-                          <span className="flex items-center gap-2">
-                            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
-                            {c.name}
-                          </span>
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
+                      <SelectContent>
+                        {incomeCategories.length > 0 ? (
+                          incomeCategories.map(c => (
+                            <SelectItem key={c.id} value={c.id}>
+                              <span className="flex items-center gap-2">
+                                <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
+                                {c.name}
+                              </span>
+                            </SelectItem>
+                          ))
+                        ) : (
+                          <SelectItem value="no-categories" disabled>
+                            No hay categorías de ingresos
+                          </SelectItem>
+                        )}
+                      </SelectContent>
                   </Select>
                 </div>
               </div>
@@ -189,7 +207,7 @@ export const IncomeList = () => {
                         </AlertDialogHeader>
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => console.log("Eliminar ingreso:", income.id)}>Eliminar</AlertDialogAction>
+                          <AlertDialogAction onClick={() => deleteIncome.mutate(income.id)}>Eliminar</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

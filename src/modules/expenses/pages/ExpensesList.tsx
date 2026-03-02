@@ -8,11 +8,12 @@ import { Filter } from "@/shared/components/ui/Filter";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
-import { CURRENCIES, formatCOP, formatCurrency, mockExpenses, mockCategories} from "@/lib/mock-data";
+import { CURRENCIES, formatCOP, formatCurrency} from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
 import { useCreateExpense } from "@/modules/expenses/hooks/useGetCreateExpense";
+import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 
 export const ExpensesList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -29,16 +30,17 @@ export const ExpensesList = () => {
   const [formRate, setFormRate] = useState("");
   const [formNotes, setFormNotes] = useState("");
 
-  const { data: categories, isLoading: categoriesLoading } = { data: mockCategories, isLoading: false };
-  const { data: expenses, isLoading } = { data: mockExpenses, isLoading: false };
-  const { data, total, isLoading: expensesLoading } = useGetExpenses();
-  console.log("ExpensesList data: ", data, total, expensesLoading);
+  const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense");
+  const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
+
   const createExpense = useCreateExpense();
   const deletedExpenses = useDeleteExpense();
 
-  const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
+  // const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
 
   const filtered = (expenses ?? []).filter(e => {
+    console.log(e)
+    console.log(filterCategory)
     const matchSearch = e.item.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCat = filterCategory === "all" || e.category_id === filterCategory;
     const matchCur = filterCurrency === "all" || e.currency === filterCurrency;
@@ -70,13 +72,13 @@ export const ExpensesList = () => {
       currency: formCurrency,
       exchange_rate: rate,
       amount_in_base: amount * rate,
-      notes: formNotes || undefined,
+      notes: formNotes || null,
     }, {
       onSuccess: () => { setDialogOpen(false); resetForm(); },
     });
   };
 
-  if (isLoading || categoriesLoading) {
+  if (expensesLoading || categoriesLoading) {
     return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
   }
 
@@ -106,7 +108,7 @@ export const ExpensesList = () => {
                   <Filter
                     value={formCategory}
                     onValueChange={setFormCategory}
-                    items={expenseCategories}
+                    items={categories || []}
                     placeholder="Seleccionar"
                     getKey={(c: any) => c.id}
                     getValue={(c: any) => c.id}
@@ -167,7 +169,7 @@ export const ExpensesList = () => {
         <Filter
           value={filterCategory}
           onValueChange={setFilterCategory}
-          items={expenseCategories}
+          items={categories}
           placeholder="Categoría"
           className="w-[160px]"
           getKey={(c: any) => c.id}
@@ -189,11 +191,11 @@ export const ExpensesList = () => {
       {/* List */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
-          {expenses.length === 0 ? (
+          {filtered.length === 0 ? (
             <p className="p-8 text-center text-sm text-muted-foreground">No hay gastos registrados</p>
           ) : (
             <div className="divide-y divide-border">
-              {expenses.map(expense => {
+              {filtered.map(expense => {
                 const cat = expense.categories as any;
                 return (
                   <div key={expense.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors sm:px-6">

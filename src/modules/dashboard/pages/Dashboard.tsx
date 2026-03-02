@@ -1,13 +1,15 @@
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { formatCOP, formatCurrency, mockExpenses, mockIncomes } from "@/lib/mock-data";
+import { formatCOP, formatCurrency } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
+import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
+import { useGetIncomes } from "@/modules/incomes/hooks/useGetIncomes";
 
 export const Dashboard = () => {
-  const { data: expenses, isLoading } = { data: mockExpenses, isLoading: false };
-  const { data: incomes, isLoading: incomesLoading } = { data: mockIncomes, isLoading: false };
+  const { data: expenses, isLoading: expensesLoading } = useGetExpenses(); 
+  const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
 
   const totalExpenses = useMemo(() => (expenses ?? []).reduce((s, e) => s + Number(e.amount_in_base), 0), [expenses]);
   const totalIncome = useMemo(() => (incomes ?? []).reduce((s, i) => s + Number(i.amount_in_base), 0), [incomes]);
@@ -33,7 +35,7 @@ export const Dashboard = () => {
     return all.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   }, [expenses, incomes]);
 
-  if (isLoading || incomesLoading) {
+  if (expensesLoading || incomesLoading) {
     return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-3">{[1,2,3].map(i => <Skeleton key={i} className="h-28" />)}</div><Skeleton className="h-80" /></div>;
   }
 

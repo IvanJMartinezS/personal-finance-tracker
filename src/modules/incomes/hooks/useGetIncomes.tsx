@@ -1,20 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
-import { ExpensesService } from "@/modules/expenses/service/index";
 import { useAuth } from "@/shared/auth/useAuth";
+import { IncomesService } from "../service";
 
 
-export const useGetExpenses = (limit?: number, currentPage: number = 1) => {
+export const useGetIncomes = (limit?: number, currentPage: number = 1) => {
   const { user } = useAuth();
-  const service = new ExpensesService();
-  
+  const service = new IncomesService();
+
   const list = async () => {
-    const result = await service.getExpenses( user?.id, limit, currentPage);
+    const result = await service.getIncomes( user?.id, limit, currentPage);
     return result;
   };
 
   const { data, isLoading } = useQuery({
     queryFn: list,
-    queryKey:["expenses", user?.id, limit, currentPage],
+    queryKey:["incomes", user?.id, limit, currentPage],
     enabled: !!user,
   });
 

@@ -1,18 +1,19 @@
+// hooks/expenses/useUpdateExpense.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { ExpensesService } from "@/modules/expenses/service/index";
 import { toast } from "sonner";
+import { IncomesService } from "../service";
 
-export const useUpdateExpense = () => {
+export const useUpdateIncomes = () => {
   const queryClient = useQueryClient();
-  const service = new ExpensesService();
+  const service = new IncomesService();
 
   return useMutation({
     mutationFn: async ({ id, ...updates }: { id: string; [key: string]: any }) => {
-      return await service.updateExpense(id, updates);
+      return await service.updateIncome(id, updates);
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["expenses"] });
-      toast.success("Gasto actualizado");
+      queryClient.invalidateQueries({ queryKey: ["incomes"] });
+      toast.success("Ingreso actualizado");
     },
     onError: (error: Error) => {
       toast.error(error.message);

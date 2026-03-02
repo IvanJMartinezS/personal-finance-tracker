@@ -1,20 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { ExpensesService } from "@/modules/expenses/service/index";
+import { CategoriesService } from "../service";
 import { useAuth } from "@/shared/auth/useAuth";
 
-
-export const useGetExpenses = (limit?: number, currentPage: number = 1) => {
+export const useGetCategories = (type?: 'expense' | 'income', limit?: number, currentPage: number = 1) => {
   const { user } = useAuth();
-  const service = new ExpensesService();
-  
+  const service = new CategoriesService();
+  // const currentPage = 1;
+  // const limit = 10;
+
   const list = async () => {
-    const result = await service.getExpenses( user?.id, limit, currentPage);
+    const result = await service.getCategories( type,user?.id, limit, currentPage);
     return result;
   };
 
   const { data, isLoading } = useQuery({
     queryFn: list,
-    queryKey:["expenses", user?.id, limit, currentPage],
+    queryKey:["categories", user?.id, limit, currentPage],
     enabled: !!user,
   });
 
@@ -24,5 +25,5 @@ export const useGetExpenses = (limit?: number, currentPage: number = 1) => {
     limit: data?.limit || limit,
     page: data?.page || currentPage,
     isLoading,
-  }
-};
+  };
+}
