@@ -10,6 +10,9 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
 import { CURRENCIES, formatCOP, formatCurrency, mockExpenses, mockCategories} from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
+import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
+import { useCreateExpense } from "@/modules/expenses/hooks/useGetCreateExpense";
 
 export const ExpensesList = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,6 +31,10 @@ export const ExpensesList = () => {
 
   const { data: categories, isLoading: categoriesLoading } = { data: mockCategories, isLoading: false };
   const { data: expenses, isLoading } = { data: mockExpenses, isLoading: false };
+  const { data, total, isLoading: expensesLoading } = useGetExpenses();
+  console.log("ExpensesList data: ", data, total, expensesLoading);
+  const createExpense = useCreateExpense();
+  const deletedExpenses = useDeleteExpense();
 
   const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
 
@@ -51,7 +58,22 @@ export const ExpensesList = () => {
   };
 
   const handleSave = () => {
-   console.log("create expense");
+    const amount = parseFloat(formAmount);
+    const rate = formCurrency === "COP" ? 1 : parseFloat(formRate);
+    if (!formCategory || !formItem || isNaN(amount) || (formCurrency !== "COP" && isNaN(rate))) return;
+
+    createExpense.mutate({
+      date: formDate,
+      category_id: formCategory,
+      item: formItem,
+      amount,
+      currency: formCurrency,
+      exchange_rate: rate,
+      amount_in_base: amount * rate,
+      notes: formNotes || undefined,
+    }, {
+      onSuccess: () => { setDialogOpen(false); resetForm(); },
+    });
   };
 
   if (isLoading || categoriesLoading) {
@@ -204,7 +226,7 @@ export const ExpensesList = () => {
                           </AlertDialogHeader>
                           <AlertDialogFooter>
                             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => console.log("Eliminar gasto", expense.id)}>Eliminar</AlertDialogAction>
+                            <AlertDialogAction onClick={() => deletedExpenses.mutate(expense.id)}>Eliminar</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>
