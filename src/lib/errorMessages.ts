@@ -4,7 +4,7 @@ interface SupabaseError {
   status?: number;
 }
 
-export const errorMessages: Record<string, string> = {
+export const errorMessages: Record<string, string> = {  
   invalid_credentials: 'Credenciales inválidas. Revisa tu email y contraseña.',
   email_not_confirmed: 'Debes confirmar tu correo electrónico antes de iniciar sesión.',
   user_not_found: 'No existe un usuario con ese correo.',
@@ -12,6 +12,7 @@ export const errorMessages: Record<string, string> = {
   '23505': 'Ya existe un registro con ese valor único.', 
   '42501': 'No tienes permisos para realizar esta operación.',
   over_rate_limit: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
+ "Invalid API key": 'Clave API inválida. Verifica tu configuración.',
 };
 
 /**
