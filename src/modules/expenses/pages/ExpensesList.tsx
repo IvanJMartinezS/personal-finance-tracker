@@ -36,7 +36,7 @@ export const ExpensesList = () => {
   const createExpense = useCreateExpense();
   const deletedExpenses = useDeleteExpense();
 
-  // const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
+  //const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
 
   const filtered = (expenses ?? []).filter(e => {
     console.log(e)

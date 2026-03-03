@@ -79,7 +79,7 @@ export const Dashboard = () => {
                 <Tooltip formatter={(value: number) => formatCOP(value)} />
               </PieChart>
             </ResponsiveContainer>
-            <div className="mt-2 grid grid-cols-2 gap-1.5">
+            <div className="mt-2 grid grid-cols-1 gap-1.5">
               {categoryExpenseData.map(cat => (
                 <div key={cat.name} className="flex items-center gap-1.5 text-xs">
                   <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
@@ -87,7 +87,7 @@ export const Dashboard = () => {
                   <span className="ml-auto money-font text-foreground">{formatCOP(cat.value)}</span>
                 </div>
               ))}
-            </div>
+            </div> 
           </CardContent>
         </Card>
       )}

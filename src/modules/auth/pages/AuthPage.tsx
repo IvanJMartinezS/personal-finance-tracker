@@ -7,6 +7,7 @@ import { Label } from "@/shared/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Wallet } from "lucide-react";
 import { toast } from "sonner";
+import { getErrorMessage } from "@/lib/errorMessages";
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -38,7 +39,8 @@ export default function AuthPage() {
         toast.success("Revisa tu email para confirmar tu cuenta");
       }
     } catch (error: any) {
-      toast.error(error.message);
+      const message = getErrorMessage(error);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
