@@ -20,6 +20,7 @@ export function AppRoutes() {
         <Route path="auth" element={<AuthPage />} />
         <Route element={<ProtectedLayout />}>
           <Route index element={<DashboardRoutes />} />
+          <Route index path='home' element={<DashboardRoutes />} />
           <Route path="expenses" element={<ExpensesRoutes />} />
           <Route path="income" element={<IncomeRoutes />} />
           <Route path="categories" element={<CategoriesRoutes />} />
