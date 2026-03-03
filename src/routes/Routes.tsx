@@ -19,7 +19,7 @@ export function AppRoutes() {
       <Routes location={backgroundLocation}>
         <Route path="auth" element={<AuthPage />} />
         <Route element={<ProtectedLayout />}>
-          <Route index path='home' element={<DashboardRoutes />} />
+          <Route index element={<DashboardRoutes />} />
           <Route path="expenses" element={<ExpensesRoutes />} />
           <Route path="income" element={<IncomeRoutes />} />
           <Route path="categories" element={<CategoriesRoutes />} />
