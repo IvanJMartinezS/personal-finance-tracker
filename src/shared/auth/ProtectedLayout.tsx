@@ -5,7 +5,7 @@ import { Loader } from '@/shared/components/ui/loader';
 
 export default function ProtectedLayout() {
   const { user, loading } = useAuth();
-  if (!loading) return <Loader label="Cargando..." />;
+  if (loading) return <Loader label="Cargando..." />;
   if (!user) return <Navigate to="/auth" replace />;
   return <Layout><Outlet /></Layout>;
 }
