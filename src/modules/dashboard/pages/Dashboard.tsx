@@ -6,6 +6,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useGetIncomes } from "@/modules/incomes/hooks/useGetIncomes";
+import { useTranslation } from "react-i18next";
 
 export const Dashboard = () => {
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses(); 
@@ -14,6 +15,8 @@ export const Dashboard = () => {
   const totalExpenses = useMemo(() => (expenses ?? []).reduce((s, e) => s + Number(e.amount_in_base), 0), [expenses]);
   const totalIncome = useMemo(() => (incomes ?? []).reduce((s, i) => s + Number(i.amount_in_base), 0), [incomes]);
   const balance = totalIncome - totalExpenses;
+  const { t } = useTranslation(); 
+  const i18nString = (key: string) => t('dashboard.' + key);
 
   const categoryExpenseData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; color: string }>();
@@ -44,7 +47,7 @@ export const Dashboard = () => {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="stat-card">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Ingresos</p>
+            <p className="text-sm text-muted-foreground">{i18nString('totalIncome')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10"><TrendingUp className="h-4 w-4 text-success" /></div>
           </div>
           <p className="mt-2 text-2xl font-bold money-font text-success">{formatCOP(totalIncome)}</p>
