@@ -8,7 +8,7 @@ import { Filter } from "@/shared/components/ui/Filter";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
-import { CURRENCIES, formatCOP, formatCurrency} from "@/lib/mock-data";
+import { CURRENCIES, formatCOP, formatCurrency, MONTHS} from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
@@ -23,8 +23,8 @@ export const ExpensesList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterCurrency, setFilterCurrency] = useState("all");
+  const [filterMonth, setFilterMonth] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
-
 
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
   const [formCategory, setFormCategory] = useState("");
@@ -44,7 +44,14 @@ export const ExpensesList = () => {
     const matchSearch = e.item.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCat = filterCategory === "all" || e.category_id === filterCategory;
     const matchCur = filterCurrency === "all" || e.currency === filterCurrency;
-    return matchSearch && matchCat && matchCur;
+     let matchMonth = filterMonth === "all";
+    if (!matchMonth) {
+      const expenseDate = new Date(e.date + 'T12:00:00'); 
+      const monthName = expenseDate.toLocaleDateString('es-CO', { month: 'long' }); 
+      matchMonth = monthName.toLowerCase() === filterMonth.toLowerCase();
+    }
+
+    return matchSearch && matchCat && matchCur && matchMonth;
   });
 
   const totalFiltered = filtered.reduce((s, e) => s + Number(e.amount_in_base), 0);
@@ -81,7 +88,7 @@ export const ExpensesList = () => {
   if (expensesLoading || categoriesLoading) {
     return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
   }
-
+  
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -176,7 +183,7 @@ export const ExpensesList = () => {
           getKey={(c: any) => c.id}
           getValue={(c: any) => c.id}
           renderLabel={(c: any) => <>{c.name}</>}
-          allLabel={i18nString('allLabel')}
+          allLabel={i18nString('filterCategory')}
         />
         <Filter
           value={filterCurrency}
@@ -187,7 +194,18 @@ export const ExpensesList = () => {
           getKey={(c: any) => c.code}
           getValue={(c: any) => c.code}
           renderLabel={(c: any) => <>{c.code}</>}
-          allLabel={i18nString('allLabel')}
+          allLabel={i18nString('filterCurrency')}
+        />
+        <Filter
+          value={filterMonth}
+          onValueChange={setFilterMonth}
+          items={MONTHS}
+          placeholder={i18nString("month")}
+          className="w-[120px]"
+          getKey={(m: any) => m.item}    
+          getValue={(m: any) => m.item}   
+          renderLabel={(m: any) => <>{m.item}</>}
+          allLabel={i18nString('filterMonth')}
         />
       </div>
 

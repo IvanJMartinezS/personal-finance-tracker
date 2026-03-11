@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
-import { CURRENCIES, formatCOP, formatCurrency } from "@/lib/mock-data";
+import { CURRENCIES, formatCOP, formatCurrency,MONTHS } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Filter } from "@/shared/components/ui/Filter";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
@@ -23,6 +23,8 @@ export const IncomeList = () => {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
+  const [filterMonth, setFilterMonth] = useState("all");
+  const [filterCurrency, setFilterCurrency] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
@@ -42,7 +44,15 @@ export const IncomeList = () => {
   const filtered = (incomes ?? []).filter(i => {
     const matchSearch = i.source?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
     const matchCat = filterCategory === "all" || i.category_id === filterCategory;
-    return matchSearch && matchCat;
+    const matchCur = filterCurrency === "all" || i.currency === filterCurrency;
+      let matchMonth = filterMonth === "all";
+    if (!matchMonth) {
+      const expenseDate = new Date(i.date + 'T12:00:00'); 
+      const monthName = expenseDate.toLocaleDateString('es-CO', { month: 'long' }); 
+      matchMonth = monthName.toLowerCase() === filterMonth.toLowerCase();
+    }
+
+    return matchSearch && matchCat && matchCur && matchMonth;
   });
 
   const totalFiltered = filtered.reduce((s, i) => s + Number(i.amount_in_base), 0);
@@ -171,7 +181,29 @@ export const IncomeList = () => {
           getKey={(c: any) => c.id}
           getValue={(c: any) => c.id}
           renderLabel={(c: any) => <>{c.name}</>}
-          allLabel={i18nString('allLabel')}
+          allLabel={i18nString('filterCategory')}
+        />
+        <Filter
+          value={filterCurrency}
+          onValueChange={setFilterCurrency}
+          items={CURRENCIES}
+          placeholder="Moneda"
+          className="w-[120px]"
+          getKey={(c: any) => c.code}
+          getValue={(c: any) => c.code}
+          renderLabel={(c: any) => <>{c.code}</>}
+          allLabel={i18nString('filterCurrency')}
+        />
+        <Filter
+          value={filterMonth}
+          onValueChange={setFilterMonth}
+          items={MONTHS}
+          placeholder={i18nString("month")}
+          className="w-[120px]"
+          getKey={(m: any) => m.item}    
+          getValue={(m: any) => m.item}   
+          renderLabel={(m: any) => <>{m.item}</>}
+          allLabel={i18nString('filterMonth')}
         />
       </div>
 

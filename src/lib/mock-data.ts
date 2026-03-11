@@ -35,6 +35,21 @@ export const CURRENCIES = [
   { code: 'VES', symbol: 'Bs.', name: 'Bolívar venezolano' },
 ] as const;
 
+export const MONTHS = [
+  { item: 'Enero'},
+  { item: 'Febrero'},
+  { item: 'Marzo'},
+  { item: 'Abril'},
+  { item: 'Mayo'},
+  { item: 'Junio'},
+  { item: 'Julio'},
+  { item: 'Agosto'},
+  { item: 'Septiembre'},
+  { item: 'Octubre'},
+  { item: 'Noviembre'},
+  { item: 'Diciembre'},
+] as const;
+
 // Categorías de ejemplo (coinciden con las usadas en los gastos)
 export const mockCategories: Category[] = [
   { id: 'cat1', name: 'Viveres', type: 'expense', color: '#10b981' },
