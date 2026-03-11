@@ -67,6 +67,9 @@ export const ES = {
     deleteExpenseDescription: '¿Estás seguro de que quieres eliminar este gasto? Esta acción no se puede deshacer.',
     cancel: 'Cancelar',
     delete: 'Eliminar',
+    filterMonth: 'Mes',
+    filterCategory: 'Categoria',
+    filterCurrency: 'Moneda',
   },
 
   incomes:{
@@ -93,6 +96,8 @@ export const ES = {
     deleteIncomeDescription: '¿Estás seguro de que quieres eliminar este ingreso? Esta acción no se puede deshacer.',
     cancel: 'Cancelar',
     delete: 'Eliminar',
+    filterMonth: 'Mes',
+    filterCategory: 'Categoria',
   },
 
   categories:{
@@ -110,6 +115,7 @@ export const ES = {
     nameCategory: 'Nombre',
     incomes: 'Categorias de Ingresos',
     expenses: 'Categorias de gastos',
+    filterCategory: 'Categoria',
   },
 
   settings: {

@@ -24,7 +24,7 @@ export function AppRoutes() {
           <Route path="expenses" element={<ExpensesRoutes />} />
           <Route path="income" element={<IncomeRoutes />} />
           <Route path="categories" element={<CategoriesRoutes />} />
-            <Route path="settings" element={<SettingsRoutes />} />
+          <Route path="settings" element={<SettingsRoutes />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

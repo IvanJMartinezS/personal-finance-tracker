@@ -67,6 +67,9 @@ export const EN = {
     deleteExpenseDescription: 'Are you sure you want to delete this expense? This action cannot be undone.',
     cancel: 'Cancel',
     delete: 'Delete',
+    filterMonth: 'Months',
+    filterCategory: 'Category',
+    filterCurrency: 'Currency',
   },
 
   incomes:{
@@ -93,6 +96,9 @@ export const EN = {
     deleteIncomeDescription: 'Are you sure you want to delete this income? This action cannot be undone.',
     cancel: 'Cancel',
     delete: 'Delete',
+    filterMonth: 'Months',
+    filterCategory: 'Category',
+    filterCurrency: 'Currency',
   },
 
   categories:{
