@@ -1,6 +1,3 @@
-import { Dashboard } from "@/modules/dashboard/pages/Dashboard";
-import { IncomeList } from "@/modules/incomes/pages/IncomeList";
-
 export const ES = {
   loading:{
     default: 'Cargando...',
