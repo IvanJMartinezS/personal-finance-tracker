@@ -143,3 +143,8 @@
     @apply font-mono font-semibold tabular-nums;
   }
 }
+
+/* Icon calendar in mode dark */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
