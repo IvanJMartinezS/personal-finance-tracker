@@ -14,14 +14,18 @@ import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
 import { useCreateExpense } from "@/modules/expenses/hooks/useGetCreateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import { useTranslation } from "react-i18next";
 
 export const ExpensesList = () => {
+  const { t } = useTranslation();
+  const i18nString = (key: string) => t('expenses.' + key);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [filterCurrency, setFilterCurrency] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
 
-  // Form state
+
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
   const [formCategory, setFormCategory] = useState("");
   const [formItem, setFormItem] = useState("");
@@ -30,17 +34,13 @@ export const ExpensesList = () => {
   const [formRate, setFormRate] = useState("");
   const [formNotes, setFormNotes] = useState("");
 
-  const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense");
+  const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense"); 
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
 
   const createExpense = useCreateExpense();
   const deletedExpenses = useDeleteExpense();
 
-  //const expenseCategories = categories?.filter(c => c.type === "expense") ?? [];
-
   const filtered = (expenses ?? []).filter(e => {
-    console.log(e)
-    console.log(filterCategory)
     const matchSearch = e.item.toLowerCase().includes(searchQuery.toLowerCase());
     const matchCat = filterCategory === "all" || e.category_id === filterCategory;
     const matchCur = filterCurrency === "all" || e.currency === filterCurrency;
@@ -86,30 +86,31 @@ export const ExpensesList = () => {
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Gastos</h1>
+          <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} registros · Total: <span className="money-font text-destructive">{formatCOP(totalFiltered)}</span>
+            {filtered.length} {i18nString('resumen')}<span className="money-font text-destructive">{formatCOP(totalFiltered)}</span>
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
-            <Button className="gap-2"><Plus className="h-4 w-4" /> Nuevo gasto</Button>
+            <Button className="gap-2"><Plus className="h-4 w-4" /> {i18nString('newExpense')}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
-            <DialogHeader><DialogTitle>Registrar gasto</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{i18nString('registerExpense')}</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-2">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Fecha</Label>
+                  <Label>{i18nString('date')}</Label>
                   <Input type="date" value={formDate} onChange={e => setFormDate(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Categoría</Label>
+                  <Label>{i18nString('category')}</Label>
                   <Filter
                     value={formCategory}
                     onValueChange={setFormCategory}
                     items={categories || []}
-                    placeholder="Seleccionar"
+                    firstValue={categories?.length > 0 ? categories[0].name : 'all'}
+                    placeholder={i18nString('selectCategory')}
                     getKey={(c: any) => c.id}
                     getValue={(c: any) => c.id}
                     renderLabel={(c: any) => (
@@ -122,16 +123,16 @@ export const ExpensesList = () => {
                 </div>
               </div>
               <div className="space-y-1.5">
-                <Label>Ítem</Label>
-                <Input value={formItem} onChange={e => setFormItem(e.target.value)} placeholder="Ej: Supermercado Éxito" />
+                <Label>{i18nString('item')}</Label>
+                <Input value={formItem} onChange={e => setFormItem(e.target.value)} placeholder={i18nString('exampleItem')} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Monto</Label>
+                  <Label>{i18nString('amount')}</Label>
                   <Input type="number" value={formAmount} onChange={e => setFormAmount(e.target.value)} placeholder="0" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Moneda</Label>
+                  <Label>{i18nString('currency')}</Label>
                   <Filter
                     value={formCurrency}
                     onValueChange={setFormCurrency}
@@ -144,16 +145,16 @@ export const ExpensesList = () => {
               </div>
               {formCurrency !== "COP" && (
                 <div className="space-y-1.5">
-                  <Label>Tasa de cambio a COP</Label>
+                  <Label>{i18nString('exchangeRate')}</Label>
                   <Input type="number" value={formRate} onChange={e => setFormRate(e.target.value)} placeholder="Ej: 4200" />
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label>Notas (opcional)</Label>
-                <Textarea value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder="Notas adicionales..." rows={2} />
+                <Label>{i18nString('notes')}</Label>
+                <Textarea value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder={i18nString('descriptionNote')} rows={2} />
               </div>
               <Button className="w-full mt-2" onClick={handleSave}>
-                Guardar gasto
+                {i18nString('save')}
               </Button>
             </div>
           </DialogContent>
@@ -164,7 +165,7 @@ export const ExpensesList = () => {
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Buscar gastos..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <Input className="pl-9" placeholder={i18nString('searchExpenses')} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
         <Filter
           value={filterCategory}
@@ -175,6 +176,7 @@ export const ExpensesList = () => {
           getKey={(c: any) => c.id}
           getValue={(c: any) => c.id}
           renderLabel={(c: any) => <>{c.name}</>}
+          allLabel={i18nString('allLabel')}
         />
         <Filter
           value={filterCurrency}
@@ -185,6 +187,7 @@ export const ExpensesList = () => {
           getKey={(c: any) => c.code}
           getValue={(c: any) => c.code}
           renderLabel={(c: any) => <>{c.code}</>}
+          allLabel={i18nString('allLabel')}
         />
       </div>
 
@@ -192,7 +195,7 @@ export const ExpensesList = () => {
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <p className="p-8 text-center text-sm text-muted-foreground">No hay gastos registrados</p>
+            <p className="p-8 text-center text-sm text-muted-foreground">{i18nString('noRecords')}</p>
           ) : (
             <div className="divide-y divide-border">
               {filtered.map(expense => {
@@ -223,12 +226,12 @@ export const ExpensesList = () => {
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                           <AlertDialogHeader>
-                            <AlertDialogTitle>¿Eliminar gasto?</AlertDialogTitle>
-                            <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+                            <AlertDialogTitle>{i18nString('deleteExpense')}</AlertDialogTitle>
+                            <AlertDialogDescription>{i18nString('deleteExpenseDescription')}</AlertDialogDescription>
                           </AlertDialogHeader>
                           <AlertDialogFooter>
-                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deletedExpenses.mutate(expense.id)}>Eliminar</AlertDialogAction>
+                            <AlertDialogCancel>{i18nString('cancel')}</AlertDialogCancel>
+                            <AlertDialogAction onClick={() => deletedExpenses.mutate(expense.id)}>{i18nString('delete')}</AlertDialogAction>
                           </AlertDialogFooter>
                         </AlertDialogContent>
                       </AlertDialog>

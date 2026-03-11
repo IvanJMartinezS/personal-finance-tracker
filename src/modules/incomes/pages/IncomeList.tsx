@@ -15,9 +15,12 @@ import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useGetIncomes } from "../hooks/useGetIncomes";
 import { useCreateIncome } from "../hooks/useGetCreateIncome";
 import { useDeleteIncome } from "../hooks/useDeleteIncome";
-
+import { useTranslation } from "react-i18next";
 
 export const IncomeList = () => {
+  const { t } = useTranslation();
+  const i18nString = (key: string) => t('incomes.' + key);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -77,27 +80,27 @@ export const IncomeList = () => {
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Ingresos</h1>
+          <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} registros · Total: <span className="money-font text-success">{formatCOP(totalFiltered)}</span>
+            {filtered.length} {i18nString("resumen")}<span className="money-font text-success">{formatCOP(totalFiltered)}</span>
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={o => { setDialogOpen(o); if (!o) resetForm(); }}>
           <DialogTrigger asChild>
-            <Button className="gap-2"><Plus className="h-4 w-4" /> Nuevo ingreso</Button>
+            <Button className="gap-2"><Plus className="h-4 w-4" /> {i18nString("newIncome")}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-lg">
-            <DialogHeader><DialogTitle>Registrar ingreso</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{i18nString("registerIncome")}</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-2">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Fecha</Label>
+                  <Label>{i18nString("date")}</Label>
                   <Input type="date" value={formDate} onChange={e => setFormDate(e.target.value)} />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Categoría</Label>
+                  <Label>{i18nString("category")}</Label>
                   <Select value={formCategory} onValueChange={setFormCategory}>
-                    <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                    <SelectTrigger><SelectValue placeholder={i18nString('selectCategory')} /></SelectTrigger>
                       <SelectContent>
                         {incomeCategories.length > 0 ? (
                           incomeCategories.map(c => (
@@ -110,7 +113,7 @@ export const IncomeList = () => {
                           ))
                         ) : (
                           <SelectItem value="no-categories" disabled>
-                            No hay categorías de ingresos
+                            {i18nString("noRecords")}
                           </SelectItem>
                         )}
                       </SelectContent>
@@ -119,7 +122,7 @@ export const IncomeList = () => {
               </div>
               <div className="space-y-1.5">
                 <Label>Fuente</Label>
-                <Input value={formSource} onChange={e => setFormSource(e.target.value)} placeholder="Ej: Salario mensual" />
+                <Input value={formSource} onChange={e => setFormSource(e.target.value)} placeholder={i18nString('exampleItem')} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
@@ -127,7 +130,7 @@ export const IncomeList = () => {
                   <Input type="number" value={formAmount} onChange={e => setFormAmount(e.target.value)} placeholder="0" />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Moneda</Label>
+                  <Label>{i18nString("currency")}</Label>
                   <Select value={formCurrency} onValueChange={setFormCurrency}>
                     <SelectTrigger><SelectValue /></SelectTrigger>
                     <SelectContent>
@@ -138,16 +141,16 @@ export const IncomeList = () => {
               </div>
               {formCurrency !== "COP" && (
                 <div className="space-y-1.5">
-                  <Label>Tasa de cambio a COP</Label>
+                  <Label>{i18nString("exchangeRate")}</Label>
                   <Input type="number" value={formRate} onChange={e => setFormRate(e.target.value)} placeholder="Ej: 4200" />
                 </div>
               )}
               <div className="space-y-1.5">
-                <Label>Notas (opcional)</Label>
-                <Textarea value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder="Notas adicionales..." rows={2} />
+                <Label>{i18nString("notes")}</Label>
+                <Textarea value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder={i18nString("descriptionNote")} rows={2} />
               </div>
               <Button className="w-full mt-2" onClick={handleSave}>
-                Guardar ingreso
+                {i18nString("save")}
               </Button>
             </div>
           </DialogContent>
@@ -157,24 +160,25 @@ export const IncomeList = () => {
       <div className="flex flex-wrap gap-2">
         <div className="relative flex-1 min-w-[200px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder="Buscar ingresos..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+          <Input className="pl-9" placeholder={i18nString("searchIncomes")} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
         </div>
         <Filter
           value={filterCategory}
           onValueChange={setFilterCategory}
           items={incomeCategories}
-          placeholder="Categoría"
+          placeholder={i18nString("category")}
           className="w-[160px]"
           getKey={(c: any) => c.id}
           getValue={(c: any) => c.id}
           renderLabel={(c: any) => <>{c.name}</>}
+          allLabel={i18nString('allLabel')}
         />
       </div>
 
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {filtered.length === 0 ? (
-            <p className="p-8 text-center text-sm text-muted-foreground">No hay ingresos registrados</p>
+            <p className="p-8 text-center text-sm text-muted-foreground">{i18nString("noRecords")}</p>
           ) : (
             <div className="divide-y divide-border">
               {filtered.map(income => {
@@ -202,12 +206,12 @@ export const IncomeList = () => {
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
-                          <AlertDialogTitle>¿Eliminar ingreso?</AlertDialogTitle>
-                          <AlertDialogDescription>Esta acción no se puede deshacer.</AlertDialogDescription>
+                          <AlertDialogTitle>{i18nString("deleteIncome")}</AlertDialogTitle>
+                          <AlertDialogDescription>{i18nString("deleteIncomeDescription")}</AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => deleteIncome.mutate(income.id)}>Eliminar</AlertDialogAction>
+                          <AlertDialogCancel>{i18nString("cancel")}</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => deleteIncome.mutate(income.id)}>{i18nString("delete")}</AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>

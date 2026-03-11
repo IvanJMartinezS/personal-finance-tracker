@@ -4,11 +4,13 @@ import { LogOut, Wallet, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { SideNavLink } from "./SideBarLink";
 import { NavLinks } from "./NavLink";
+import { useTranslation } from "react-i18next";
 
 export const SideNavBar = ({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boolean; setSidebarOpen: (open: boolean) => void }) => {
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const i18nString = (key: string) => t('sideNavBar.' + key);
 
   const handleSignOut = async () => {
     await signOut();
@@ -28,8 +30,8 @@ export const SideNavBar = ({ sidebarOpen, setSidebarOpen }: { sidebarOpen: boole
             <Wallet className="h-5 w-5 text-primary-foreground" />
           </div>
           <div>
-            <h1 className="text-sm font-bold text-foreground">FinTrack</h1>
-            <p className="text-[10px] text-muted-foreground">Finanzas personales</p>
+            <h1 className="text-sm font-bold text-foreground">{i18nString("title")}</h1>
+            <p className="text-[10px] text-muted-foreground">{i18nString("description")}</p>
           </div>
           <Button variant="ghost" size="icon" className="ml-auto lg:hidden" onClick={() => setSidebarOpen(false)}>
             <X className="h-5 w-5" />

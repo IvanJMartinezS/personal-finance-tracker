@@ -12,6 +12,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useCreateCategory } from "@/hooks/useCategories";
 import { useDeleteCategory } from "@/hooks/useCategories";
+import { useTranslation } from "react-i18next";
 
 const PRESET_COLORS = [
   "#10b981", "#f59e0b", "#6366f1", "#ec4899", "#14b8a6",
@@ -20,6 +21,9 @@ const PRESET_COLORS = [
 ];
 
 export const Categories = () => {
+  const { t } = useTranslation();
+  const i18nString = (key: string) => t('categories.' + key);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
   const [name, setName] = useState("");
@@ -46,32 +50,32 @@ export const Categories = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Categorías</h1>
-          <p className="text-sm text-muted-foreground">{(categories?.length ?? 0)} categorías configuradas</p>
+          <h1 className="text-2xl font-bold">{i18nString('categories')}</h1>
+          <p className="text-sm text-muted-foreground">{(categories?.length ?? 0)} {i18nString('configCategories')}</p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-2"><Plus className="h-4 w-4" /> Nueva categoría</Button>
+            <Button className="gap-2"><Plus className="h-4 w-4" /> {i18nString('newCategory')}</Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md">
-            <DialogHeader><DialogTitle>Nueva categoría</DialogTitle></DialogHeader>
+            <DialogHeader><DialogTitle>{i18nString('newCategory')}</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-2">
               <div className="space-y-1.5">
-                <Label>Nombre</Label>
-                <Input value={name} onChange={e => setName(e.target.value)} placeholder="Ej: Alimentación" />
+                <Label>{i18nString('nameCategory')}</Label>
+                <Input value={name} onChange={e => setName(e.target.value)} placeholder={i18nString('exampleItem')} />
               </div>
               <div className="space-y-1.5">
-                <Label>Tipo</Label>
+                <Label>{i18nString('type')}</Label>
                 <Select value={type} onValueChange={setType}>
-                  <SelectTrigger><SelectValue placeholder="Seleccionar" /></SelectTrigger>
+                  <SelectTrigger><SelectValue placeholder={i18nString('selectCategory')} /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="expense">Gasto</SelectItem>
-                    <SelectItem value="income">Ingreso</SelectItem>
+                    <SelectItem value="expense">{i18nString('expense')}</SelectItem>
+                    <SelectItem value="income">{i18nString('income')}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-1.5">
-                <Label>Color</Label>
+                <Label>{i18nString('color')}</Label>
                 <div className="flex flex-wrap gap-2">
                   {PRESET_COLORS.map(c => (
                     <button key={c} onClick={() => setSelectedColor(c)} className={`h-8 w-8 rounded-full transition-all ${selectedColor === c ? "ring-2 ring-ring ring-offset-2 ring-offset-background scale-110" : "hover:scale-105"}`} style={{ backgroundColor: c }} />
@@ -79,14 +83,14 @@ export const Categories = () => {
                 </div>
               </div>
               <Button className="w-full mt-2" onClick={handleSave}>
-                Guardar categoría
+                {i18nString('saveCategory')}
               </Button>
             </div>
           </DialogContent>
         </Dialog>
       </div>
 
-      {[{ title: "Gastos", cats: expenseCats }, { title: "Ingresos", cats: incomeCats }].map(({ title, cats }) => (
+      {[{ title: i18nString('expenses'), cats: expenseCats }, { title: i18nString('incomes'), cats: incomeCats }].map(({ title, cats }) => (
         <Card key={title} className="border-border/50">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium flex items-center gap-2">

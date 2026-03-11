@@ -11,6 +11,7 @@ type FilterProps<T> = {
   getKey: (item: T) => string;
   getValue: (item: T) => string;
   renderLabel: (item: T) => React.ReactNode;
+  firstValue?: string;
 };
 
 export const Filter = <T,>({
@@ -19,10 +20,11 @@ export const Filter = <T,>({
   items,
   placeholder,
   className,
-  allLabel = "Todas",
+  allLabel,
   getKey,
   getValue,
   renderLabel,
+  firstValue,
 }: FilterProps<T>) => {
   return (
     <Select value={value} onValueChange={onValueChange}>
@@ -30,7 +32,7 @@ export const Filter = <T,>({
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
       <SelectContent>
-        <SelectItem value="all">{allLabel}</SelectItem>
+        <SelectItem value={firstValue || "all"}>{allLabel}</SelectItem>
         {items.map(item => (
           <SelectItem key={getKey(item)} value={getValue(item)}>
             {renderLabel(item)}
