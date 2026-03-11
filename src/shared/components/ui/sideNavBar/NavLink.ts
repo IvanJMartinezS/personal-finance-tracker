@@ -9,9 +9,9 @@ interface NavLin {
 }
 
 export const NavLinks: NavLin[] = [
-  { title: "Dashboard", url: "/home", icon: LayoutDashboard },
-  { title: "Gastos", url: "/expenses", icon: TrendingDown },
-  { title: "Ingresos", url: "/income", icon: TrendingUp },
-  { title: "Categorías", url: "/categories", icon: Tags },
-  { title: "Configuración", url: "/settings", icon: Settings },
+  { title: "dashboard", url: "/home", icon: LayoutDashboard },
+  { title: "expenses", url: "/expenses", icon: TrendingDown },
+  { title: "incomes", url: "/income", icon: TrendingUp },
+  { title: "categories", url: "/categories", icon: Tags },
+  { title: "settings", url: "/settings", icon: Settings },
 ]

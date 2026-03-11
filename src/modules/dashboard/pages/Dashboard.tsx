@@ -6,6 +6,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useGetIncomes } from "@/modules/incomes/hooks/useGetIncomes";
+import { useTranslation } from "react-i18next";
 
 export const Dashboard = () => {
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses(); 
@@ -14,6 +15,8 @@ export const Dashboard = () => {
   const totalExpenses = useMemo(() => (expenses ?? []).reduce((s, e) => s + Number(e.amount_in_base), 0), [expenses]);
   const totalIncome = useMemo(() => (incomes ?? []).reduce((s, i) => s + Number(i.amount_in_base), 0), [incomes]);
   const balance = totalIncome - totalExpenses;
+  const { t } = useTranslation(); 
+  const i18nString = (key: string) => t('dashboard.' + key);
 
   const categoryExpenseData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; color: string }>();
@@ -44,21 +47,21 @@ export const Dashboard = () => {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <div className="stat-card">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Ingresos</p>
+            <p className="text-sm text-muted-foreground">{i18nString('totalIncome')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10"><TrendingUp className="h-4 w-4 text-success" /></div>
           </div>
           <p className="mt-2 text-2xl font-bold money-font text-success">{formatCOP(totalIncome)}</p>
         </div>
         <div className="stat-card">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Gastos</p>
+            <p className="text-sm text-muted-foreground">{i18nString('totalExpenses')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10"><TrendingDown className="h-4 w-4 text-destructive" /></div>
           </div>
           <p className="mt-2 text-2xl font-bold money-font text-destructive">{formatCOP(totalExpenses)}</p>
         </div>
         <div className="stat-card sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-muted-foreground">Balance</p>
+            <p className="text-sm text-muted-foreground">{i18nString('balance')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Wallet className="h-4 w-4 text-primary" /></div>
           </div>
           <p className={`mt-2 text-2xl font-bold money-font ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCOP(balance)}</p>
@@ -68,7 +71,7 @@ export const Dashboard = () => {
       {categoryExpenseData.length > 0 && (
         <Card className="border-border/50">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Gastos por categoría</CardTitle>
+            <CardTitle className="text-sm font-medium">{i18nString('expensesPerCategory')}</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
@@ -94,11 +97,11 @@ export const Dashboard = () => {
 
       <Card className="border-border/50">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-medium">Últimas transacciones</CardTitle>
+          <CardTitle className="text-sm font-medium">{i18nString('recentTransactions')}</CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {recentTransactions.length === 0 ? (
-            <p className="p-8 text-center text-sm text-muted-foreground">No hay transacciones aún. ¡Comienza registrando un gasto o ingreso!</p>
+            <p className="p-8 text-center text-sm text-muted-foreground">{i18nString('noTransactions')}</p>
           ) : (
             <div className="divide-y divide-border">
               {recentTransactions.map(t => {
