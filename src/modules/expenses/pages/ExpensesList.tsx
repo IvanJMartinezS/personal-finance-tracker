@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, TrendingDown, Trash2 } from "lucide-react";
+import { Plus, TrendingDown, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -8,22 +8,21 @@ import { Filter } from "@/shared/components/ui/Filter";
 import { Label } from "@/shared/components/ui/label";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
-import { CURRENCIES, formatCOP, formatCurrency, MONTHS} from "@/lib/mock-data";
+import { CURRENCIES, formatCOP, formatCurrency, MONTHS } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
 import { useCreateExpense } from "@/modules/expenses/hooks/useGetCreateExpense";
-import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useTranslation } from "react-i18next";
+import { useExpenseFilters } from "@/modules/expenses/hooks/useExpenseFilters";
+import { Filters } from "@/shared/components/Filters";
+import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import type { Category, Currency, Month, Expense } from "../utils/types"; 
 
 export const ExpensesList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t('expenses.' + key);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterCategory, setFilterCategory] = useState("all");
-  const [filterCurrency, setFilterCurrency] = useState("all");
-  const [filterMonth, setFilterMonth] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
@@ -34,27 +33,70 @@ export const ExpensesList = () => {
   const [formRate, setFormRate] = useState("");
   const [formNotes, setFormNotes] = useState("");
 
-  const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense"); 
+  const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense");
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
 
   const createExpense = useCreateExpense();
   const deletedExpenses = useDeleteExpense();
 
-  const filtered = (expenses ?? []).filter(e => {
-    const matchSearch = e.item.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchCat = filterCategory === "all" || e.category_id === filterCategory;
-    const matchCur = filterCurrency === "all" || e.currency === filterCurrency;
-     let matchMonth = filterMonth === "all";
-    if (!matchMonth) {
-      const expenseDate = new Date(e.date + 'T12:00:00'); 
-      const monthName = expenseDate.toLocaleDateString('es-CO', { month: 'long' }); 
-      matchMonth = monthName.toLowerCase() === filterMonth.toLowerCase();
-    }
+  const {
+    searchQuery,
+    setSearchQuery,
+    filterCategory,
+    setFilterCategory,
+    filterCurrency,
+    setFilterCurrency,
+    filterMonth,
+    setFilterMonth,
+    filteredExpenses,
+    totalFiltered,
+    clearFilters,
+  } = useExpenseFilters({ expenses: expenses ?? [], categories: categories ?? [] });
 
-    return matchSearch && matchCat && matchCur && matchMonth;
-  });
-
-  const totalFiltered = filtered.reduce((s, e) => s + Number(e.amount_in_base), 0);
+  // Configuración de filtros para el componente Filters
+  const filterConfigs = [
+    {
+      id: 'category',
+      label: 'Categoría',
+      value: filterCategory,
+      onChange: setFilterCategory,
+      options: categories ?? [],
+      placeholder: 'Categoría',
+      getOptionKey: (cat: Category) => cat.id,
+      getOptionValue: (cat: Category) => cat.id,
+      renderOption: (cat: Category) => (
+        <span className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full" style={{ backgroundColor: cat.color }} />
+          {cat.name}
+        </span>
+      ),
+      className: 'w-[160px]',
+    },
+    {
+      id: 'currency',
+      label: 'Moneda',
+      value: filterCurrency,
+      onChange: setFilterCurrency,
+      options: CURRENCIES,
+      placeholder: 'Moneda',
+      getOptionKey: (cur: Currency) => cur.code,
+      getOptionValue: (cur: Currency) => cur.code,
+      renderOption: (cur: Currency) => <>{cur.code}</>,
+      className: 'w-[120px]',
+    },
+    {
+      id: 'month',
+      label: 'Mes',
+      value: filterMonth,
+      onChange: setFilterMonth,
+      options: MONTHS,
+      placeholder: 'Mes',
+      getOptionKey: (m: Month) => m.value,
+      getOptionValue: (m: Month) => m.value,  // ← ahora usamos value (número)
+      renderOption: (m: Month) => <>{m.label}</>,
+      className: 'w-[120px]',
+    },
+  ];
 
   const resetForm = () => {
     setFormDate(new Date().toISOString().split("T")[0]);
@@ -88,14 +130,15 @@ export const ExpensesList = () => {
   if (expensesLoading || categoriesLoading) {
     return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
   }
-  
+
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} {i18nString('resumen')}<span className="money-font text-destructive">{formatCOP(totalFiltered)}</span>
+            {filteredExpenses.length} {i18nString('resumen')}
+            <span className="money-font text-destructive ml-1">{formatCOP(totalFiltered)}</span>
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
@@ -118,9 +161,9 @@ export const ExpensesList = () => {
                     items={categories || []}
                     firstValue={categories?.length > 0 ? categories[0].name : 'all'}
                     placeholder={i18nString('selectCategory')}
-                    getKey={(c: any) => c.id}
-                    getValue={(c: any) => c.id}
-                    renderLabel={(c: any) => (
+                    getKey={(c: Category) => c.id}
+                    getValue={(c: Category) => c.id}
+                    renderLabel={(c: Category) => (
                       <span className="flex items-center gap-2">
                         <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
                         {c.name}
@@ -144,9 +187,9 @@ export const ExpensesList = () => {
                     value={formCurrency}
                     onValueChange={setFormCurrency}
                     items={CURRENCIES}
-                    getKey={(c: any) => c.code}
-                    getValue={(c: any) => c.code}
-                    renderLabel={(c: any) => <>{c.code} - {c.symbol}</>}
+                    getKey={(c: Currency) => c.code}
+                    getValue={(c: Currency) => c.code}
+                    renderLabel={(c: Currency) => <>{c.code} - {c.symbol}</>}
                   />
                 </div>
               </div>
@@ -168,56 +211,26 @@ export const ExpensesList = () => {
         </Dialog>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-2">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder={i18nString('searchExpenses')} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-        </div>
-        <Filter
-          value={filterCategory}
-          onValueChange={setFilterCategory}
-          items={categories}
-          placeholder="Categoría"
-          className="w-[160px]"
-          getKey={(c: any) => c.id}
-          getValue={(c: any) => c.id}
-          renderLabel={(c: any) => <>{c.name}</>}
-          allLabel={i18nString('filterCategory')}
-        />
-        <Filter
-          value={filterCurrency}
-          onValueChange={setFilterCurrency}
-          items={CURRENCIES}
-          placeholder="Moneda"
-          className="w-[120px]"
-          getKey={(c: any) => c.code}
-          getValue={(c: any) => c.code}
-          renderLabel={(c: any) => <>{c.code}</>}
-          allLabel={i18nString('filterCurrency')}
-        />
-        <Filter
-          value={filterMonth}
-          onValueChange={setFilterMonth}
-          items={MONTHS}
-          placeholder={i18nString("month")}
-          className="w-[120px]"
-          getKey={(m: any) => m.item}    
-          getValue={(m: any) => m.item}   
-          renderLabel={(m: any) => <>{m.item}</>}
-          allLabel={i18nString('filterMonth')}
-        />
-      </div>
+      {/* Filtros */}
+      <Filters
+        search={{
+          value: searchQuery,
+          onChange: setSearchQuery,
+          placeholder: i18nString('searchExpenses'),
+        }}
+        filters={filterConfigs}
+        onClearAll={clearFilters}
+      />
 
-      {/* List */}
+      {/* Lista de gastos */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
-          {filtered.length === 0 ? (
+          {filteredExpenses.length === 0 ? (
             <p className="p-8 text-center text-sm text-muted-foreground">{i18nString('noRecords')}</p>
           ) : (
             <div className="divide-y divide-border">
-              {filtered.map(expense => {
-                const cat = expense.categories as any;
+              {filteredExpenses.map((expense: Expense) => {  // ← tipamos expense
+                const cat = expense.categories; // ya es Category | null
                 return (
                   <div key={expense.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors sm:px-6">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: (cat?.color ?? '#888') + '20' }}>
@@ -263,4 +276,4 @@ export const ExpensesList = () => {
       </Card>
     </div>
   );
-}
+};

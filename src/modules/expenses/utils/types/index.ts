@@ -1,3 +1,21 @@
+export interface Category {
+  id: string;        
+  name: string;
+  color: string;
+  type?: string;    
+}
+
+export interface Currency {
+  code: string;
+  symbol: string;
+  name: string;
+}
+
+export interface Month {
+  value: string;   
+  label: string;   
+}
+
 export interface Expense {
   id: string;
   user_id: string;
@@ -11,13 +29,7 @@ export interface Expense {
   notes: string | null;
   created_at: string;
   updated_at: string;
-  categories: Category | null;
-}
-
-interface Category{
-  name: string;
-  type: string;
-  color: string;
+  categories: Category | null; 
 }
 
 export interface CreateExpense {
