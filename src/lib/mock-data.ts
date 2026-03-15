@@ -1,6 +1,3 @@
-// src/lib/mock-data.ts
-// Datos mock que imitan la estructura real de Supabase
-
 export type Category = {
   id: string;
   name: string;
@@ -10,10 +7,10 @@ export type Category = {
 
 export type Transaction = {
   id: string;
-  user_id?: string; // opcional para mock
+  user_id?: string; 
   date: string;
   category_id: string;
-  item: string; // "item" para gastos, "source" para ingresos
+  item: string; 
   amount: number;
   currency: 'COP' | 'USD' | 'VES';
   exchange_rate: number;
@@ -50,7 +47,6 @@ export const MONTHS = [
   { item: 'Diciembre'},
 ] as const;
 
-// Categorías de ejemplo (coinciden con las usadas en los gastos)
 export const mockCategories: Category[] = [
   { id: 'cat1', name: 'Viveres', type: 'expense', color: '#10b981' },
   { id: 'cat2', name: 'Transporte', type: 'expense', color: '#f59e0b' },
@@ -64,7 +60,6 @@ export const mockCategories: Category[] = [
   { id: 'cat10', name: 'Inversiones', type: 'income', color: '#a855f7' },
 ];
 
-// Gastos de ejemplo con estructura anidada
 export const mockExpenses: Transaction[] = [
   {
     id: 'exp1',
@@ -179,9 +174,6 @@ export const mockExpenses: Transaction[] = [
   }
 ];
 
-// Ingresos de ejemplo (similar estructura)
-// src/lib/mock-data.ts (fragmento de incomes actualizado)
-
 export const mockIncomes: Transaction[] = [
   {
     id: "51847a7e-05b7-41d2-9906-89abd6da47b2",
@@ -245,7 +237,6 @@ export const mockIncomes: Transaction[] = [
   }
 ];
 
-// Datos para gráficos (mensual y por categoría)
 export const monthlyData = [
   { month: 'Mar', ingresos: 6200000, gastos: 3800000 },
   { month: 'Abr', ingresos: 5800000, gastos: 4100000 },
@@ -271,7 +262,6 @@ export const categoryExpenseData = [
   { name: 'Hogar', value: 250000, color: '#f97316' },
 ];
 
-// Funciones de formato (ya las tienes)
 export function formatCOP(amount: number): string {
   return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
 }

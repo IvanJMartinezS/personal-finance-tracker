@@ -1,4 +1,3 @@
-// hooks/expenses/useUpdateExpense.ts
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { IncomesService } from "../service";

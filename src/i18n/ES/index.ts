@@ -55,7 +55,6 @@ export const ES = {
     currency: 'Moneda',
     exchangeRate: 'Tasa de cambio a COP',
     notes: 'Notas',
-    //cancel: 'Cancelar',
     save: 'Guardar',
     selectCategory: 'Seleccionar categoría',
     exampleItem: 'Ej: Supermercado Éxito',
@@ -84,7 +83,6 @@ export const ES = {
     currency: 'Moneda',
     exchangeRate: 'Tasa de cambio a COP',
     notes: 'Notas',
-    //cancel: 'Cancelar',
     save: 'Guardar',
     selectCategory: 'Seleccionar categoría',
     exampleItem: 'Ej: Salario',
@@ -128,5 +126,10 @@ export const ES = {
     saveChanges: 'Guardar cambios',
     account: 'Cuenta',
     logIn: 'Cerrar sesion',
+  },
+
+  filters: {
+    all: 'Todas',
+    clearAll: 'Borrar Filtro',
   }
 }

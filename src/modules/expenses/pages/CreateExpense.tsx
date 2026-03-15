@@ -1,4 +1,3 @@
-// src/components/CreateExpensesModal.tsx
 import { useNavigate } from 'react-router-dom';
 import { Modal } from '@/shared/components/ui/Modal';
 

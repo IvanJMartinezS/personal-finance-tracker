@@ -65,7 +65,6 @@ export class CategoriesService {
    */
   async deleteCategory(id: string): Promise<void> {
     const { error } = await supabase.from("categories").delete().eq("id", id);
-    //if (error) throw error;
     if (error) throw new Error(`Error al eliminar categoría: ${error.message}`);
   } 
 }

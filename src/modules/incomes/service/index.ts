@@ -30,7 +30,7 @@ export class IncomesService {
     if (error) throw new Error(`Error al obtener ingresos: ${error.message}`);
 
     return {
-      data: data || [],
+      data: data as Income[] || [],
       total: count || 0,
       limit: limit || 0,
       page,

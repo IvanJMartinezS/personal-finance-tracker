@@ -5,8 +5,6 @@ import { useAuth } from "@/shared/auth/useAuth";
 export const useGetCategories = (type?: 'expense' | 'income', limit?: number, currentPage: number = 1) => {
   const { user } = useAuth();
   const service = new CategoriesService();
-  // const currentPage = 1;
-  // const limit = 10;
 
   const list = async () => {
     const result = await service.getCategories( type,user?.id, limit, currentPage);

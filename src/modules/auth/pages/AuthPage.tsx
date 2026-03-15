@@ -5,7 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { Globe, Wallet } from "lucide-react"; // Se eliminó Moon (no usado)
+import { Globe, Wallet } from "lucide-react"; 
 import { toast } from "sonner";
 import { getErrorMessage } from "@/lib/errorMessages";
 import { useTranslation } from "react-i18next";

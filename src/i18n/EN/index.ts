@@ -55,7 +55,6 @@ export const EN = {
     currency: 'Currency',
     exchangeRate: 'Exchange Rate to COP',
     notes: 'Notes',
-    //cancel: 'Cancelar',
     save: 'Save',
     selectCategory: 'Select Category',
     exampleItem: 'E.g: Supermarket',
@@ -84,7 +83,6 @@ export const EN = {
     currency: 'Currency',
     exchangeRate: 'Exchange Rate to COP',
     notes: 'Notes',
-    //cancel: 'Cancelar',
     save: 'Save',
     selectCategory: 'Select Category',
     exampleItem: 'E.g: Salary',
@@ -128,5 +126,10 @@ export const EN = {
     saveChanges: 'Save changes',
     account: 'Account',
     logIn: 'Log out',
+  },
+
+  filters: {
+    all: 'Todas',
+    clearAll: 'Clear',
   }
 }

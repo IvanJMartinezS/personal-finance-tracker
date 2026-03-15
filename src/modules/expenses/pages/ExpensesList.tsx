@@ -53,7 +53,6 @@ export const ExpensesList = () => {
     clearFilters,
   } = useExpenseFilters({ expenses: expenses ?? [], categories: categories ?? [] });
 
-  // Configuración de filtros para el componente Filters
   const filterConfigs = [
     {
       id: 'category',
@@ -91,9 +90,9 @@ export const ExpensesList = () => {
       onChange: setFilterMonth,
       options: MONTHS,
       placeholder: 'Mes',
-      getOptionKey: (m: Month) => m.value,
-      getOptionValue: (m: Month) => m.value,  // ← ahora usamos value (número)
-      renderOption: (m: Month) => <>{m.label}</>,
+      getOptionKey: (m: Month) => m.item,
+      getOptionValue: (m: Month) => m.item, 
+      renderOption: (m: Month) => <>{m.item}</>,
       className: 'w-[120px]',
     },
   ];
@@ -222,15 +221,14 @@ export const ExpensesList = () => {
         onClearAll={clearFilters}
       />
 
-      {/* Lista de gastos */}
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {filteredExpenses.length === 0 ? (
             <p className="p-8 text-center text-sm text-muted-foreground">{i18nString('noRecords')}</p>
           ) : (
             <div className="divide-y divide-border">
-              {filteredExpenses.map((expense: Expense) => {  // ← tipamos expense
-                const cat = expense.categories; // ya es Category | null
+              {filteredExpenses.map((expense: Expense) => {  
+                const cat = expense.categories; 
                 return (
                   <div key={expense.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors sm:px-6">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg" style={{ backgroundColor: (cat?.color ?? '#888') + '20' }}>

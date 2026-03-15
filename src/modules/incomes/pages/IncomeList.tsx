@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, Search, TrendingUp, Trash2 } from "lucide-react";
+import { Plus, TrendingUp, Trash2 } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Card, CardContent } from "@/shared/components/ui/card";
@@ -10,21 +10,19 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
 import { CURRENCIES, formatCOP, formatCurrency,MONTHS } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { Filter } from "@/shared/components/ui/Filter";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useGetIncomes } from "../hooks/useGetIncomes";
 import { useCreateIncome } from "../hooks/useGetCreateIncome";
 import { useDeleteIncome } from "../hooks/useDeleteIncome";
 import { useTranslation } from "react-i18next";
+import type { Category, Currency, Month } from "../utils/types"; 
+import { useIncomeFilters } from "../hooks/useIncomeFilters";
+import { Filters } from "@/shared/components/Filters";
 
 export const IncomeList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t('incomes.' + key);
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [filterCategory, setFilterCategory] = useState("all");
-  const [filterMonth, setFilterMonth] = useState("all");
-  const [filterCurrency, setFilterCurrency] = useState("all");
   const [dialogOpen, setDialogOpen] = useState(false);
 
   const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
@@ -41,21 +39,19 @@ export const IncomeList = () => {
   const createIncome = useCreateIncome();
   const deleteIncome = useDeleteIncome();
 
-  const filtered = (incomes ?? []).filter(i => {
-    const matchSearch = i.source?.toLowerCase().includes(searchQuery.toLowerCase()) ?? false;
-    const matchCat = filterCategory === "all" || i.category_id === filterCategory;
-    const matchCur = filterCurrency === "all" || i.currency === filterCurrency;
-      let matchMonth = filterMonth === "all";
-    if (!matchMonth) {
-      const expenseDate = new Date(i.date + 'T12:00:00'); 
-      const monthName = expenseDate.toLocaleDateString('es-CO', { month: 'long' }); 
-      matchMonth = monthName.toLowerCase() === filterMonth.toLowerCase();
-    }
-
-    return matchSearch && matchCat && matchCur && matchMonth;
-  });
-
-  const totalFiltered = filtered.reduce((s, i) => s + Number(i.amount_in_base), 0);
+  const {
+    searchQuery,
+    setSearchQuery,
+    filterCategory,
+    setFilterCategory,
+    filterCurrency,
+    setFilterCurrency,
+    filterMonth,
+    setFilterMonth,
+    filteredIncomes,
+    totalFiltered,
+    clearFilters,
+  } = useIncomeFilters({ incomes: incomes ?? [], categories: categories ?? [] });
 
   const resetForm = () => {
     setFormDate(new Date().toISOString().split("T")[0]);
@@ -86,13 +82,57 @@ export const IncomeList = () => {
     return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
   }
 
+  const filterConfigs = [
+      {
+        id: 'category',
+        label: 'Categoría',
+        value: filterCategory,
+        onChange: setFilterCategory,
+        options: categories ?? [],
+        placeholder: 'Categoría',
+        getOptionKey: (cat: Category) => cat.id,
+        getOptionValue: (cat: Category) => cat.id,
+        renderOption: (cat: Category) => (
+          <span className="flex items-center gap-2">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: cat.color }} />
+            {cat.name}
+          </span>
+        ),
+        className: 'w-[160px]',
+      },
+      {
+        id: 'currency',
+        label: 'Moneda',
+        value: filterCurrency,
+        onChange: setFilterCurrency,
+        options: CURRENCIES,
+        placeholder: 'Moneda',
+        getOptionKey: (cur: Currency) => cur.code,
+        getOptionValue: (cur: Currency) => cur.code,
+        renderOption: (cur: Currency) => <>{cur.code}</>,
+        className: 'w-[120px]',
+      },
+      {
+        id: 'month',
+        label: 'Mes',
+        value: filterMonth,
+        onChange: setFilterMonth,
+        options: MONTHS,
+        placeholder: 'Mes',
+        getOptionKey: (m: Month) => m.item,
+        getOptionValue: (m: Month) => m.item, 
+        renderOption: (m: Month) => <>{m.item}</>,
+        className: 'w-[120px]',
+      },
+    ];
+
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
           <p className="text-sm text-muted-foreground">
-            {filtered.length} {i18nString("resumen")}<span className="money-font text-success">{formatCOP(totalFiltered)}</span>
+            {filteredIncomes.length} {i18nString("resumen")}<span className="money-font text-success">{formatCOP(totalFiltered)}</span>
           </p>
         </div>
         <Dialog open={dialogOpen} onOpenChange={o => { setDialogOpen(o); if (!o) resetForm(); }}>
@@ -167,53 +207,23 @@ export const IncomeList = () => {
         </Dialog>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input className="pl-9" placeholder={i18nString("searchIncomes")} value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-        </div>
-        <Filter
-          value={filterCategory}
-          onValueChange={setFilterCategory}
-          items={incomeCategories}
-          placeholder={i18nString("category")}
-          className="w-[160px]"
-          getKey={(c: any) => c.id}
-          getValue={(c: any) => c.id}
-          renderLabel={(c: any) => <>{c.name}</>}
-          allLabel={i18nString('filterCategory')}
-        />
-        <Filter
-          value={filterCurrency}
-          onValueChange={setFilterCurrency}
-          items={CURRENCIES}
-          placeholder="Moneda"
-          className="w-[120px]"
-          getKey={(c: any) => c.code}
-          getValue={(c: any) => c.code}
-          renderLabel={(c: any) => <>{c.code}</>}
-          allLabel={i18nString('filterCurrency')}
-        />
-        <Filter
-          value={filterMonth}
-          onValueChange={setFilterMonth}
-          items={MONTHS}
-          placeholder={i18nString("month")}
-          className="w-[120px]"
-          getKey={(m: any) => m.item}    
-          getValue={(m: any) => m.item}   
-          renderLabel={(m: any) => <>{m.item}</>}
-          allLabel={i18nString('filterMonth')}
-        />
-      </div>
+      <Filters
+        search={{
+          value: searchQuery,
+          onChange: setSearchQuery,
+          placeholder: i18nString('searchIncomes'),
+        }}
+        filters={filterConfigs}
+        onClearAll={clearFilters}
+      />
 
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
-          {filtered.length === 0 ? (
+          {filteredIncomes.length === 0 ? (
             <p className="p-8 text-center text-sm text-muted-foreground">{i18nString("noRecords")}</p>
           ) : (
             <div className="divide-y divide-border">
-              {filtered.map(income => {
+              {filteredIncomes.map(income => {
                 const cat = income.categories as any;
                 return (
                   <div key={income.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors sm:px-6">

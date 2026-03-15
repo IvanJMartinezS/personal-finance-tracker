@@ -12,8 +12,7 @@ export interface Currency {
 }
 
 export interface Month {
-  value: string;   
-  label: string;   
+  item: string;   
 }
 
 export interface Expense {
