@@ -1,43 +1,26 @@
-import { useState } from "react";
-import { Plus, TrendingDown, Trash2 } from "lucide-react";
-import { Button } from "@/shared/components/ui/button";
-import { Input } from "@/shared/components/ui/input";
+import { TrendingDown } from "lucide-react";
 import { Card, CardContent } from "@/shared/components/ui/card";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/shared/components/ui/dialog";
-import { Filter } from "@/shared/components/ui/Filter";
-import { Label } from "@/shared/components/ui/label";
-import { Textarea } from "@/shared/components/ui/textarea";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/shared/components/ui/alert-dialog";
 import { CURRENCIES, formatCOP, formatCurrency, MONTHS } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
-import { useDeleteExpense } from "@/modules/expenses/hooks/useDeleteExpense";
 import { useCreateExpense } from "@/modules/expenses/hooks/useGetCreateExpense";
 import { useTranslation } from "react-i18next";
 import { useExpenseFilters } from "@/modules/expenses/hooks/useExpenseFilters";
 import { Filters } from "@/shared/components/Filters";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import type { Category, Currency, Month, Expense } from "../utils/types"; 
+import { CreateExpense } from "./CreateExpense";
+import { DeleteExpense } from "./DeleteExpense";
 
 export const ExpensesList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t('expenses.' + key);
 
-  const [dialogOpen, setDialogOpen] = useState(false);
-
-  const [formDate, setFormDate] = useState(new Date().toISOString().split("T")[0]);
-  const [formCategory, setFormCategory] = useState("");
-  const [formItem, setFormItem] = useState("");
-  const [formAmount, setFormAmount] = useState("");
-  const [formCurrency, setFormCurrency] = useState("COP");
-  const [formRate, setFormRate] = useState("");
-  const [formNotes, setFormNotes] = useState("");
-
   const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense");
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
 
   const createExpense = useCreateExpense();
-  const deletedExpenses = useDeleteExpense();
+ 
 
   const {
     searchQuery,
@@ -97,35 +80,6 @@ export const ExpensesList = () => {
     },
   ];
 
-  const resetForm = () => {
-    setFormDate(new Date().toISOString().split("T")[0]);
-    setFormCategory("");
-    setFormItem("");
-    setFormAmount("");
-    setFormCurrency("COP");
-    setFormRate("");
-    setFormNotes("");
-  };
-
-  const handleSave = () => {
-    const amount = parseFloat(formAmount);
-    const rate = formCurrency === "COP" ? 1 : parseFloat(formRate);
-    if (!formCategory || !formItem || isNaN(amount) || (formCurrency !== "COP" && isNaN(rate))) return;
-
-    createExpense.mutate({
-      date: formDate,
-      category_id: formCategory,
-      item: formItem,
-      amount,
-      currency: formCurrency,
-      exchange_rate: rate,
-      amount_in_base: amount * rate,
-      notes: formNotes || null,
-    }, {
-      onSuccess: () => { setDialogOpen(false); resetForm(); },
-    });
-  };
-
   if (expensesLoading || categoriesLoading) {
     return <div className="space-y-4"><Skeleton className="h-10 w-48" /><Skeleton className="h-64 w-full" /></div>;
   }
@@ -140,74 +94,12 @@ export const ExpensesList = () => {
             <span className="money-font text-destructive ml-1">{formatCOP(totalFiltered)}</span>
           </p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={(o) => { setDialogOpen(o); if (!o) resetForm(); }}>
-          <DialogTrigger asChild>
-            <Button className="gap-2"><Plus className="h-4 w-4" /> {i18nString('newExpense')}</Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader><DialogTitle>{i18nString('registerExpense')}</DialogTitle></DialogHeader>
-            <div className="grid gap-4 py-2">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>{i18nString('date')}</Label>
-                  <Input type="date" value={formDate} onChange={e => setFormDate(e.target.value)} />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{i18nString('category')}</Label>
-                  <Filter
-                    value={formCategory}
-                    onValueChange={setFormCategory}
-                    items={categories || []}
-                    firstValue={categories?.length > 0 ? categories[0].name : 'all'}
-                    placeholder={i18nString('selectCategory')}
-                    getKey={(c: Category) => c.id}
-                    getValue={(c: Category) => c.id}
-                    renderLabel={(c: Category) => (
-                      <span className="flex items-center gap-2">
-                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
-                        {c.name}
-                      </span>
-                    )}
-                  />
-                </div>
-              </div>
-              <div className="space-y-1.5">
-                <Label>{i18nString('item')}</Label>
-                <Input value={formItem} onChange={e => setFormItem(e.target.value)} placeholder={i18nString('exampleItem')} />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div className="space-y-1.5">
-                  <Label>{i18nString('amount')}</Label>
-                  <Input type="number" value={formAmount} onChange={e => setFormAmount(e.target.value)} placeholder="0" />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{i18nString('currency')}</Label>
-                  <Filter
-                    value={formCurrency}
-                    onValueChange={setFormCurrency}
-                    items={CURRENCIES}
-                    getKey={(c: Currency) => c.code}
-                    getValue={(c: Currency) => c.code}
-                    renderLabel={(c: Currency) => <>{c.code} - {c.symbol}</>}
-                  />
-                </div>
-              </div>
-              {formCurrency !== "COP" && (
-                <div className="space-y-1.5">
-                  <Label>{i18nString('exchangeRate')}</Label>
-                  <Input type="number" value={formRate} onChange={e => setFormRate(e.target.value)} placeholder="Ej: 4200" />
-                </div>
-              )}
-              <div className="space-y-1.5">
-                <Label>{i18nString('notes')}</Label>
-                <Textarea value={formNotes} onChange={e => setFormNotes(e.target.value)} placeholder={i18nString('descriptionNote')} rows={2} />
-              </div>
-              <Button className="w-full mt-2" onClick={handleSave}>
-                {i18nString('save')}
-              </Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+
+        <CreateExpense
+          categories={categories ?? []} 
+          createExpense={createExpense} 
+        />
+        
       </div>
 
       {/* Filtros */}
@@ -248,23 +140,8 @@ export const ExpensesList = () => {
                         <p className="text-[10px] text-muted-foreground money-font">({formatCOP(Number(expense.amount_in_base))})</p>
                       )}
                     </div>
-                    <div className="flex gap-1 shrink-0">
-                      <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive"><Trash2 className="h-3.5 w-3.5" /></Button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>{i18nString('deleteExpense')}</AlertDialogTitle>
-                            <AlertDialogDescription>{i18nString('deleteExpenseDescription')}</AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter>
-                            <AlertDialogCancel>{i18nString('cancel')}</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => deletedExpenses.mutate(expense.id)}>{i18nString('delete')}</AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </div>
+                    
+                    <DeleteExpense id={expense.id}/>
                   </div>
                 );
               })}
