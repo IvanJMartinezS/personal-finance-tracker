@@ -69,6 +69,9 @@ export const EN = {
     filterMonth: 'Months',
     filterCategory: 'Category',
     filterCurrency: 'Currency',
+    createSuccess: 'Expense successfully created',
+    createError: 'Error creating the expense',
+    exampleItemExchange: 'E.g: 4200',
   },
 
   incomes:{

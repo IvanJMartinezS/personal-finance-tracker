@@ -69,6 +69,9 @@ export const ES = {
     filterMonth: 'Mes',
     filterCategory: 'Categoria',
     filterCurrency: 'Moneda',
+    createSuccess: 'Gasto creado con exito',
+    createError: 'Error al crear el gasto',
+    exampleItemExchange: 'Ej: 4200',
   },
 
   incomes:{
