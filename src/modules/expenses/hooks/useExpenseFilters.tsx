@@ -1,10 +1,9 @@
 import { useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import type { Expense, Category } from '../utils/types'; 
+import type { Expense } from '../utils/types'; 
 
 interface UseExpenseFiltersProps {
   expenses: Expense[];
-  categories: Category[]; 
 }
 
 export const useExpenseFilters = ({ expenses }: UseExpenseFiltersProps) => {

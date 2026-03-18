@@ -5,11 +5,10 @@ import { useExpenseFilters } from "@/modules/expenses/hooks/useExpenseFilters";
 import { Filters } from "@/shared/components/Filters";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import type { Expense } from "../utils/types"; 
-import { CreateExpenseDialog } from "./CreateExpenseDialog";
 import { ExpenseRow } from "../components/ExpenseRow";
 import { ExpensesListSkeleton } from "../components/ExpensesListSkeleton";
 import { useExpenseFilterConfigs } from "../hooks/useExpenseFilterConfig";
-import { formatCOP } from "@/lib/mock-data";
+import { ExpensesListHeader } from "../components/ExpensesListHeader";
 
 export const ExpensesList = () => {
   const { t } = useTranslation();
@@ -30,7 +29,7 @@ export const ExpensesList = () => {
     filteredExpenses,
     totalFiltered,
     clearFilters,
-  } = useExpenseFilters({ expenses: expenses ?? [], categories: categories ?? [] });
+  } = useExpenseFilters({ expenses: expenses ?? []});
 
   const filterConfigs = useExpenseFilterConfigs(
     filterCategory,
@@ -48,20 +47,8 @@ export const ExpensesList = () => {
 
   return (
     <div className="space-y-5 animate-fade-in">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
-          <p className="text-sm text-muted-foreground">
-            {filteredExpenses.length} {i18nString('resumen')}
-            <span className="money-font text-destructive ml-1">{formatCOP(totalFiltered)}</span>
-          </p>
-        </div>
 
-        <CreateExpenseDialog
-          categories={categories ?? []} 
-        />
-        
-      </div>
+      <ExpensesListHeader categories={categories} total={totalFiltered} count={filteredExpenses.length} /> 
 
       <Filters
         search={{

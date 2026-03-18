@@ -31,7 +31,6 @@ export const ExpenseForm = ({
 
   return (
     <form onSubmit={onSubmit} className="grid gap-4 py-2">
-      {/* Fecha y Categoría */}
       <div className="grid grid-cols-2 gap-3">
         <FormField
           name="date"
@@ -70,7 +69,6 @@ export const ExpenseForm = ({
         </FormField>
       </div>
 
-      {/* Item */}
       <FormField
         name="item"
         label={i18nString("item")}
@@ -82,7 +80,6 @@ export const ExpenseForm = ({
         )}
       </FormField>
 
-      {/* Monto y Moneda */}
       <div className="grid grid-cols-2 gap-3">
         <FormField
           name="amount"
@@ -122,7 +119,6 @@ export const ExpenseForm = ({
         </FormField>
       </div>
 
-      {/* Tasa de cambio (solo si no es COP) */}
       {watchCurrency !== "COP" && (
         <FormField
           name="exchange_rate"
@@ -148,7 +144,6 @@ export const ExpenseForm = ({
         </FormField>
       )}
 
-      {/* Notas */}
       <FormField
         name="notes"
         label={i18nString("notes")}

@@ -13,7 +13,7 @@ import {
 } from "@/shared/components/ui/dialog";
 import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchema";
 import { useCreateExpense } from "../hooks/useGetCreateExpense";
-import { ExpenseForm } from "./ExpenseForm";
+import { ExpenseForm } from "../components/ExpenseForm";
 import type { Category } from "../utils/types";
 
 interface CreateExpenseDialogProps {
