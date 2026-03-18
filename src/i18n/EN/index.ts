@@ -135,5 +135,32 @@ export const EN = {
   filters: {
     all: 'Todas',
     clearAll: 'Clear',
+  },
+
+  schemas: {
+    expenses: {
+      date: {
+        required: "Date is required"
+      },
+      category_id: {
+        required: "Please select a category"
+      },
+      item: {
+        required: "Concept is required"
+      },
+      amount: {
+        required: "Amount is required",
+        invalid_type: "Amount must be a number",
+        positive: "Amount must be positive"
+      },
+      currency: {
+        required: "Currency is required"
+      },
+      exchange_rate: {
+        invalid_type: "Exchange rate must be a number",
+        required_for_foreign: "Exchange rate is required for foreign currency",
+        positive: "Exchange rate must be positive"
+      }
+    }
   }
 }

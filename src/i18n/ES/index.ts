@@ -135,5 +135,32 @@ export const ES = {
   filters: {
     all: 'Todas',
     clearAll: 'Borrar Filtro',
+  },
+
+  schemas: {
+    expenses: {
+      date: {
+        required: "La fecha es requerida"
+      },
+      category_id: {
+        "required": "Selecciona una categoría"
+      },
+      item: {
+        required: "El concepto es requerido"
+      },
+      amount: {
+        required: "El monto es requerido",
+        invalid_type: "El monto debe ser un número",
+        positive: "El monto debe ser positivo"
+      },
+      currency: {
+        required: "La moneda es requerida"
+      },
+      exchange_rate: {
+        invalid_type: "La tasa debe ser un número",
+        required_for_foreign: "La tasa de cambio es requerida para moneda extranjera",
+        positive: "La tasa de cambio debe ser positiva"
+      }
+    }
   }
 }
