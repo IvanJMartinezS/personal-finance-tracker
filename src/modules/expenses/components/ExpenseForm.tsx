@@ -1,14 +1,14 @@
 // src/modules/expenses/components/ExpenseForm.tsx
 import { useWatch } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
-import { Filter } from "@/shared/components/ui/Filter";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Button } from "@/shared/components/ui/button";
 import { CURRENCIES } from "@/lib/mock-data";
 import { FormField } from "@/shared/components/FormField";
 import type { Control, FieldErrors } from "react-hook-form";
 import type { ExpenseFormValues } from "@/schemas/expenseSchema";
-import type { Category, Currency } from "../utils/types";
+import type { Category } from "../utils/types";
 
 interface ExpenseFormProps {
   control: Control<ExpenseFormValues>;
@@ -48,23 +48,21 @@ export const ExpenseForm = ({
           errors={errors}
         >
           {(field) => (
-            <Filter
-              {...field}
-              items={categories}
-              firstValue={categories.length > 0 ? categories[0].name : "all"}
-              placeholder={i18nString("selectCategory")}
-              getKey={(c: Category) => c.id}
-              getValue={(c: Category) => c.id}
-              renderLabel={(c: Category) => (
-                <span className="flex items-center gap-2">
-                  <span
-                    className="h-2 w-2 rounded-full"
-                    style={{ backgroundColor: c.color }}
-                  />
-                  {c.name}
-                </span>
-              )}
-            />
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder={i18nString("selectCategory")} />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((c: Category) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    <span className="flex items-center gap-2">
+                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
+                      {c.name}
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
         </FormField>
       </div>
@@ -108,13 +106,18 @@ export const ExpenseForm = ({
           errors={errors}
         >
           {(field) => (
-            <Filter
-              {...field}
-              items={CURRENCIES}
-              getKey={(c: Currency) => c.code}
-              getValue={(c: Currency) => c.code}
-              renderLabel={(c: Currency) => <>{c.code} - {c.symbol}</>}
-            />
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {CURRENCIES.map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.code} - {c.symbol}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
         </FormField>
       </div>

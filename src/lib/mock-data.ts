@@ -33,18 +33,18 @@ export const CURRENCIES = [
 ] as const;
 
 export const MONTHS = [
-  { item: 'Enero'},
-  { item: 'Febrero'},
-  { item: 'Marzo'},
-  { item: 'Abril'},
-  { item: 'Mayo'},
-  { item: 'Junio'},
-  { item: 'Julio'},
-  { item: 'Agosto'},
-  { item: 'Septiembre'},
-  { item: 'Octubre'},
-  { item: 'Noviembre'},
-  { item: 'Diciembre'},
+  { item: 'Enero', value: '1' },
+  { item: 'Febrero', value: '2' },
+  { item: 'Marzo', value: '3' },
+  { item: 'Abril', value: '4' },
+  { item: 'Mayo', value: '5' },
+  { item: 'Junio', value: '6' },
+  { item: 'Julio', value: '7' },
+  { item: 'Agosto', value: '8' },
+  { item: 'Septiembre', value: '9' },
+  { item: 'Octubre', value: '10' },
+  { item: 'Noviembre', value: '11' },
+  { item: 'Diciembre', value: '12' },
 ] as const;
 
 export const mockCategories: Category[] = [

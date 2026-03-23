@@ -51,6 +51,12 @@ export const CreateExpenseDialog = ({ categories }: CreateExpenseDialogProps) =>
         amount_in_base,
         notes: data.notes || null,
         exchange_rate: data.currency === "COP" ? 1 : data.exchange_rate,
+      },
+      {
+        onSuccess: () => {
+          setOpen(false);
+          reset();
+        },
       }
     );
   };
