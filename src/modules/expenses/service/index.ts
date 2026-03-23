@@ -30,7 +30,7 @@ export class ExpensesService {
     if (error) throw new Error(`Error al obtener gastos: ${error.message}`);
 
     return {
-      data: data || [],
+      data: data as Expense[] || [],
       total: count || 0,
       limit: limit || 0,
       page,

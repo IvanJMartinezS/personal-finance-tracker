@@ -18,6 +18,7 @@ export const EN = {
   
   auth:{
     login: 'Login',
+    loading: 'Loading',
     register: 'Register',
     email: 'Email',
     password: 'Password',
@@ -55,7 +56,6 @@ export const EN = {
     currency: 'Currency',
     exchangeRate: 'Exchange Rate to COP',
     notes: 'Notes',
-    //cancel: 'Cancelar',
     save: 'Save',
     selectCategory: 'Select Category',
     exampleItem: 'E.g: Supermarket',
@@ -70,6 +70,9 @@ export const EN = {
     filterMonth: 'Months',
     filterCategory: 'Category',
     filterCurrency: 'Currency',
+    createSuccess: 'Expense successfully created',
+    createError: 'Error creating the expense',
+    exampleItemExchange: 'E.g: 4200',
   },
 
   incomes:{
@@ -84,10 +87,12 @@ export const EN = {
     currency: 'Currency',
     exchangeRate: 'Exchange Rate to COP',
     notes: 'Notes',
-    //cancel: 'Cancelar',
     save: 'Save',
+    saving: 'Saving...',
     selectCategory: 'Select Category',
-    exampleItem: 'E.g: Salary',
+    source: 'Source',
+    exampleSource: 'E.g: Salary',
+    exampleItemExchange: 'E.g: 4200',
     descriptionNote: 'Additional Notes...',
     allLabel: 'All',
     noRecords: 'No incomes recorded',
@@ -96,6 +101,9 @@ export const EN = {
     deleteIncomeDescription: 'Are you sure you want to delete this income? This action cannot be undone.',
     cancel: 'Cancel',
     delete: 'Delete',
+    deleting: 'Deleting...',
+    deleteSuccess: 'Income deleted',
+    deleteError: 'Error deleting income',
     filterMonth: 'Months',
     filterCategory: 'Category',
     filterCurrency: 'Currency',
@@ -128,5 +136,61 @@ export const EN = {
     saveChanges: 'Save changes',
     account: 'Account',
     logIn: 'Log out',
+  },
+
+  filters: {
+    all: 'Todas',
+    clearAll: 'Clear',
+  },
+
+  schemas: {
+    expenses: {
+      date: {
+        required: "Date is required"
+      },
+      category_id: {
+        required: "Please select a category"
+      },
+      item: {
+        required: "Concept is required"
+      },
+      amount: {
+        required: "Amount is required",
+        invalid_type: "Amount must be a number",
+        positive: "Amount must be positive"
+      },
+      currency: {
+        required: "Currency is required"
+      },
+      exchange_rate: {
+        invalid_type: "Exchange rate must be a number",
+        required_for_foreign: "Exchange rate is required for foreign currency",
+        positive: "Exchange rate must be positive"
+      }
+    },
+    incomes: {
+      date: {
+        required: "Date is required"
+      },
+      category_id: {
+        required: "Please select a category"
+      },
+      source: {
+        required: "Source is required"
+      },
+      amount: {
+        required: "Amount is required",
+        invalid_type: "Amount must be a number",
+        positive: "Amount must be positive"
+      },
+      currency: {
+        required: "Currency is required"
+      },
+      exchange_rate: {
+        invalid_type: "Exchange rate must be a number",
+        required_for_foreign: "Exchange rate is required for foreign currency",
+        positive: "Exchange rate must be positive"
+      }
+    }
   }
 }
