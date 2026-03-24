@@ -1,33 +1,29 @@
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
-import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/shared/components/ui/dialog";
 import { getIncomeSchema, type IncomeFormValues } from "@/schemas/incomeSchema";
 import { useCreateIncome } from "../hooks/useGetCreateIncome";
+import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { IncomeForm } from "../components/IncomeForm";
-import type { Category } from "../utils/types";
 
-interface CreateIncomeDialogProps {
-  categories: Category[];
-}
-
-export const CreateIncomeDialog = ({ categories }: CreateIncomeDialogProps) => {
+export const CreateIncomeDialog = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t(`incomes.${key}`);
+  const navigate = useNavigate();
   const createIncome = useCreateIncome();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
+
+  const { data: categories } = useGetCategories("income");
 
   const incomeSchema = getIncomeSchema(t);
-
   const form = useForm<IncomeFormValues>({
     resolver: zodResolver(incomeSchema),
     defaultValues: {
@@ -43,6 +39,15 @@ export const CreateIncomeDialog = ({ categories }: CreateIncomeDialogProps) => {
 
   const { handleSubmit, reset, control, formState } = form;
 
+  const handleClose = () => setOpen(false);
+
+  useEffect(() => {
+    if (!open) {
+      const timeout = setTimeout(() => navigate(-1), 200);
+      return () => clearTimeout(timeout);
+    }
+  }, [open, navigate]);
+
   const onSubmit = (data: IncomeFormValues) => {
     const amount_in_base = data.amount * (data.exchange_rate || 1);
     createIncome.mutate(
@@ -54,26 +59,15 @@ export const CreateIncomeDialog = ({ categories }: CreateIncomeDialogProps) => {
       },
       {
         onSuccess: () => {
-          setOpen(false);
           reset();
+          handleClose();
         },
       }
     );
   };
 
-  const handleOpenChange = (open: boolean) => {
-    if (!open) reset();
-    setOpen(open);
-  };
-
   return (
-    <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogTrigger asChild>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          {i18nString("newIncome")}
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{i18nString("registerIncome")}</DialogTitle>
@@ -81,7 +75,7 @@ export const CreateIncomeDialog = ({ categories }: CreateIncomeDialogProps) => {
         <IncomeForm
           control={control}
           errors={formState.errors}
-          categories={categories}
+          categories={categories ?? []}
           i18nString={i18nString}
           isSubmitting={formState.isSubmitting}
           onSubmit={handleSubmit(onSubmit)}

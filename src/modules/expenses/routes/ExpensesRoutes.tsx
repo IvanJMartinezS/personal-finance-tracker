@@ -1,11 +1,12 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes } from "react-router-dom";
 import { ExpensesList } from "@/modules/expenses/pages/ExpensesList";
-
 
 export const ExpensesRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<ExpensesList />} />
+      <Route path="create" element={<ExpensesList />} />
+      <Route path="delete/:id" element={<ExpensesList />} />
     </Routes>
   );
-}
+};

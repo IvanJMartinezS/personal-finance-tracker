@@ -73,6 +73,10 @@ export const ES = {
     createSuccess: 'Gasto creado con exito',
     createError: 'Error al crear el gasto',
     exampleItemExchange: 'Ej: 4200',
+    deleteSuccess: 'Gasto eliminado',
+    deleteError: 'Error al eliminar el gasto',
+    deleting: 'Eliminando...',
+    saving: 'Guardando...',
   },
 
   incomes:{

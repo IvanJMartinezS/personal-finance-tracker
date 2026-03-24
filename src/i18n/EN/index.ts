@@ -73,6 +73,10 @@ export const EN = {
     createSuccess: 'Expense successfully created',
     createError: 'Error creating the expense',
     exampleItemExchange: 'E.g: 4200',
+    deleteSuccess: 'Expense deleted',
+    deleteError: 'Error deleting expense',
+    deleting: 'Deleting...',
+    saving: 'Saving...',
   },
 
   incomes:{
