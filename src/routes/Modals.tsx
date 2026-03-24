@@ -3,6 +3,8 @@ import { CreateExpenseDialog } from "@/modules/expenses/pages/CreateExpenseDialo
 import { DeleteExpenseButton } from "@/modules/expenses/pages/DeleteExpenseButton";
 import { CreateIncomeDialog } from "@/modules/incomes/pages/CreateIncomeDialog";
 import { DeleteIncomeButton } from "@/modules/incomes/pages/DeleteIncomeButton";
+import { CreateCategoryDialog } from "@/modules/categories/pages/CreateCategoryDialog";
+import { DeleteCategoryButton } from "@/modules/categories/pages/DeleteCategoryButton";
 
 export const Modals = () => {
   const location = useLocation();
@@ -16,6 +18,8 @@ export const Modals = () => {
       <Route path="expenses/delete/:id" element={<DeleteExpenseButton />} />
       <Route path="income/create" element={<CreateIncomeDialog />} />
       <Route path="income/delete/:id" element={<DeleteIncomeButton />} />
+      <Route path="categories/create" element={<CreateCategoryDialog />} />
+      <Route path="categories/delete/:id" element={<DeleteCategoryButton />} />
     </Routes>
   );
 };
