@@ -47,7 +47,7 @@ export class CategoriesService {
    */
   async createCategory(
     userId: string,
-    categoryData: Omit<Category, 'id' | 'created_at' | 'updated_at'>
+    categoryData: Omit<Category, 'id' | 'user_id' | 'created_at' | 'updated_at'>
   ): Promise<Category> {
     const { data, error } = await supabase
       .from("categories")
