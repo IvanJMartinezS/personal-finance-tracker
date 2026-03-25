@@ -3,6 +3,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Button } from "@/shared/components/ui/button";
+import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { CURRENCIES } from "@/lib/mock-data";
 import { FormField } from "@/shared/components/FormField";
 import type { Control, FieldErrors } from "react-hook-form";
@@ -126,7 +127,7 @@ export const IncomeForm = ({
       </FormField>
 
       <Button type="submit" disabled={isSubmitting} className="w-full mt-2">
-        {isSubmitting ? i18nString("saving") : i18nString("save")}
+        {isSubmitting ? <><ButtonSpinner />{i18nString("saving")}</> : i18nString("save")}
       </Button>
     </form>
   );

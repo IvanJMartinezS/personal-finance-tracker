@@ -73,6 +73,10 @@ export const ES = {
     createSuccess: 'Gasto creado con exito',
     createError: 'Error al crear el gasto',
     exampleItemExchange: 'Ej: 4200',
+    deleteSuccess: 'Gasto eliminado',
+    deleteError: 'Error al eliminar el gasto',
+    deleting: 'Eliminando...',
+    saving: 'Guardando...',
   },
 
   incomes:{
@@ -118,12 +122,21 @@ export const ES = {
     income: 'Ingreso',
     color: 'Color',
     saveCategory: 'Guardar categoria',
+    saving: 'Guardando...',
     selectCategory: 'Seleccionar categoría',
     exampleItem: 'Ej: Alimentacion',
     nameCategory: 'Nombre',
     incomes: 'Categorias de Ingresos',
     expenses: 'Categorias de gastos',
     filterCategory: 'Categoria',
+    deleteCategory: '¿Eliminar categoría?',
+    deleteCategoryDescription: 'Los gastos/ingresos con esta categoría quedarán sin categoría asignada.',
+    deleteSuccess: 'Categoría eliminada',
+    deleteError: 'Error al eliminar la categoría',
+    cancel: 'Cancelar',
+    delete: 'Eliminar',
+    deleting: 'Eliminando...',
+    noCategories: 'Sin categorías',
   },
 
   settings: {

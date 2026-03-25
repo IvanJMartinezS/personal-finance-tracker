@@ -1,7 +1,9 @@
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, Trash2 } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { formatCOP, formatCurrency } from "@/lib/mock-data";
+import { Button } from "@/shared/components/ui/button";
 import type { Income } from "../utils/types";
-import { DeleteIncomeButton } from "../pages/DeleteIncomeButton";
 
 interface IncomeRowProps {
   income: Income;
@@ -9,11 +11,20 @@ interface IncomeRowProps {
 
 export const IncomeRow = ({ income }: IncomeRowProps) => {
   const cat = income.categories;
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { t } = useTranslation();
+  const i18nString = (key: string) => t(`incomes.${key}`);
+
   const formattedDate = new Date(income.date + 'T12:00:00').toLocaleDateString('es-CO', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
   });
+
+  const handleDelete = () => {
+    navigate(`delete/${income.id}`, { state: { backgroundLocation: location } });
+  };
 
   return (
     <div className="flex items-center gap-3 px-4 py-3 hover:bg-muted/50 transition-colors sm:px-6">
@@ -39,7 +50,15 @@ export const IncomeRow = ({ income }: IncomeRowProps) => {
           </p>
         )}
       </div>
-      <DeleteIncomeButton id={income.id} />
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 text-destructive hover:text-destructive"
+        aria-label={i18nString("deleteIncome")}
+        onClick={handleDelete}
+      >
+        <Trash2 className="h-3.5 w-3.5" />
+      </Button>
     </div>
   );
 };

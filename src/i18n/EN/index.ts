@@ -73,6 +73,10 @@ export const EN = {
     createSuccess: 'Expense successfully created',
     createError: 'Error creating the expense',
     exampleItemExchange: 'E.g: 4200',
+    deleteSuccess: 'Expense deleted',
+    deleteError: 'Error deleting expense',
+    deleting: 'Deleting...',
+    saving: 'Saving...',
   },
 
   incomes:{
@@ -119,11 +123,20 @@ export const EN = {
     income: 'Income',
     color: 'Color',
     saveCategory: 'Save category',
+    saving: 'Saving...',
     selectCategory: 'Select category',
     exampleItem: 'E.g: Salary',
     nameCategory: 'Category name',
     incomes: 'Incomes categories',
     expenses: 'Expenses categories',
+    deleteCategory: 'Delete category?',
+    deleteCategoryDescription: 'Expenses/incomes with this category will be left without an assigned category.',
+    deleteSuccess: 'Category deleted',
+    deleteError: 'Error deleting category',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    deleting: 'Deleting...',
+    noCategories: 'No categories',
   },
 
   settings: {

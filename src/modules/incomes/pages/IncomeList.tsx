@@ -47,7 +47,7 @@ export const IncomeList = () => {
 
   return (
     <div className="space-y-5 animate-fade-in">
-      <IncomesListHeader categories={categories ?? []} total={totalFiltered} count={filteredIncomes.length} />
+      <IncomesListHeader total={totalFiltered} count={filteredIncomes.length} />
 
       <Filters
         search={{

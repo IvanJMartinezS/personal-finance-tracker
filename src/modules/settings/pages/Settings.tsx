@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ButtonSpinner } from "@/shared/components/ui/loader";
 
 export const Settings = () => {
   const { t } = useTranslation();
@@ -67,7 +68,10 @@ export const Settings = () => {
               <Input value={fullName} onChange={e => setFullName(e.target.value)} />
             </div>
           </div>
-          <Button onClick={handleSave} disabled={saving}>{saving ? i18nString('saving') : i18nString('saveChanges')}</Button>
+          <Button onClick={handleSave} disabled={saving} className="gap-2">
+            {saving && <ButtonSpinner />}
+            {saving ? i18nString('saving') : i18nString('saveChanges')}
+          </Button>
         </CardContent>
       </Card>
 

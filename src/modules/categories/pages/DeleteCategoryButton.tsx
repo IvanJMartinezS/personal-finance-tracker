@@ -12,15 +12,15 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
-import { useDeleteExpense } from "../hooks/useDeleteExpense";
+import { useDeleteCategory } from "../hooks/useDeleteCategories";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 
-export const DeleteExpenseButton = () => {
+export const DeleteCategoryButton = () => {
   const { t } = useTranslation();
-  const i18nString = (key: string) => t(`expenses.${key}`);
+  const i18nString = (key: string) => t(`categories.${key}`);
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const deleteExpense = useDeleteExpense();
+  const deleteCategory = useDeleteCategory();
   const [open, setOpen] = useState(true);
   const submitted = useRef(false);
 
@@ -36,7 +36,7 @@ export const DeleteExpenseButton = () => {
   const handleDelete = () => {
     if (!id || submitted.current) return;
     submitted.current = true;
-    deleteExpense.mutate(id, {
+    deleteCategory.mutate(id, {
       onSuccess: () => {
         toast.success(i18nString("deleteSuccess"));
         handleClose();
@@ -48,14 +48,14 @@ export const DeleteExpenseButton = () => {
     });
   };
 
-  const isPending = deleteExpense.isPending || submitted.current;
+  const isPending = deleteCategory.isPending || submitted.current;
 
   return (
     <AlertDialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>{i18nString("deleteExpense")}</AlertDialogTitle>
-          <AlertDialogDescription>{i18nString("deleteExpenseDescription")}</AlertDialogDescription>
+          <AlertDialogTitle>{i18nString("deleteCategory")}</AlertDialogTitle>
+          <AlertDialogDescription>{i18nString("deleteCategoryDescription")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending} onClick={handleClose}>

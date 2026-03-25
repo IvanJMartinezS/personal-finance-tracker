@@ -1,17 +1,23 @@
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CreateIncomeDialog } from "../pages/CreateIncomeDialog";
+import { Plus } from "lucide-react";
+import { Button } from "@/shared/components/ui/button";
 import { formatCOP } from "@/lib/mock-data";
-import type { Category } from "../utils/types";
 
 interface IncomesListHeaderProps {
   count: number;
   total: number;
-  categories: Category[];
 }
 
-export const IncomesListHeader = ({ count, total, categories }: IncomesListHeaderProps) => {
+export const IncomesListHeader = ({ count, total }: IncomesListHeaderProps) => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t(`incomes.${key}`);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleCreate = () => {
+    navigate("create", { state: { backgroundLocation: location } });
+  };
 
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -22,7 +28,10 @@ export const IncomesListHeader = ({ count, total, categories }: IncomesListHeade
           <span className="money-font text-success ml-1">{formatCOP(total)}</span>
         </p>
       </div>
-      <CreateIncomeDialog categories={categories} />
+      <Button className="gap-2" onClick={handleCreate}>
+        <Plus className="h-4 w-4" />
+        {i18nString("newIncome")}
+      </Button>
     </div>
   );
 };
