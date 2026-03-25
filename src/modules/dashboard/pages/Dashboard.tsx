@@ -6,17 +6,21 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useGetIncomes } from "@/modules/incomes/hooks/useGetIncomes";
-import { useTranslation } from "react-i18next";
+import { useDashboardTotals } from "../hooks/useDashboardTotals";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+
+// Load only the 10 most recent records for the dashboard list
+const RECENT_LIMIT = 10;
 
 export const Dashboard = () => {
-  const { data: expenses, isLoading: expensesLoading } = useGetExpenses(); 
-  const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
+  const i18nString = useModuleTranslation("dashboard");
 
-  const totalExpenses = useMemo(() => (expenses ?? []).reduce((s, e) => s + Number(e.amount_in_base), 0), [expenses]);
-  const totalIncome = useMemo(() => (incomes ?? []).reduce((s, i) => s + Number(i.amount_in_base), 0), [incomes]);
-  const balance = totalIncome - totalExpenses;
-  const { t } = useTranslation(); 
-  const i18nString = (key: string) => t('dashboard.' + key);
+  // Totals come from a lightweight query (only amount_in_base column)
+  const { totalExpenses, totalIncome, balance, isLoading: totalsLoading } = useDashboardTotals();
+
+  // Recent transactions limited to RECENT_LIMIT — not all records
+  const { data: expenses, isLoading: expensesLoading } = useGetExpenses(RECENT_LIMIT);
+  const { data: incomes, isLoading: incomesLoading } = useGetIncomes(RECENT_LIMIT);
 
   const categoryExpenseData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; color: string }>();
@@ -38,7 +42,7 @@ export const Dashboard = () => {
     return all.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   }, [expenses, incomes]);
 
-  if (expensesLoading || incomesLoading) {
+  if (expensesLoading || incomesLoading || totalsLoading) {
     return <div className="space-y-4"><div className="grid gap-4 sm:grid-cols-3">{[1,2,3].map(i => <Skeleton key={i} className="h-28" />)}</div><Skeleton className="h-80" /></div>;
   }
 

@@ -1,14 +1,14 @@
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { useGetIncomes } from "../hooks/useGetIncomes";
 import { useTranslation } from "react-i18next";
-import { useIncomeFilters } from "../hooks/useIncomeFilters";
 import { Filters } from "@/shared/components/Filters";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
-import { useIncomeFilterConfigs } from "../hooks/useIncomeFilterConfig";
+import { useListFilters } from "@/shared/hooks/useListFilters";
+import { useListFilterConfigs } from "@/shared/hooks/useListFilterConfigs";
+import type { Income } from "@/types";
 import { IncomesListHeader } from "../components/IncomesListHeader";
 import { IncomesListSkeleton } from "../components/IncomesListSkeleton";
 import { IncomeRow } from "../components/IncomeRow";
-import type { Income } from "../utils/types";
 
 export const IncomeList = () => {
   const { t } = useTranslation();
@@ -18,47 +18,39 @@ export const IncomeList = () => {
   const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
 
   const {
-    searchQuery,
-    setSearchQuery,
-    filterCategory,
-    setFilterCategory,
-    filterCurrency,
-    setFilterCurrency,
-    filterMonth,
-    setFilterMonth,
-    filteredIncomes,
+    searchQuery, setSearchQuery,
+    filterCategory, setFilterCategory,
+    filterCurrency, setFilterCurrency,
+    filterMonth, setFilterMonth,
+    filteredItems: filteredIncomes,
     totalFiltered,
     clearFilters,
-  } = useIncomeFilters({ incomes: incomes ?? [], categories: categories ?? [] });
+  } = useListFilters<Income>({
+    items: incomes ?? [],
+    searchFn: (i, q) => i.source.toLowerCase().includes(q.toLowerCase()),
+    categoryFn: (i) => i.category_id,
+    currencyFn: (i) => i.currency,
+    dateFn: (i) => i.date,
+    amountFn: (i) => Number(i.amount_in_base),
+  });
 
-  const filterConfigs = useIncomeFilterConfigs(
-    filterCategory,
-    setFilterCategory,
-    filterCurrency,
-    setFilterCurrency,
-    filterMonth,
-    setFilterMonth,
-    categories ?? []
-  );
+  const filterConfigs = useListFilterConfigs({
+    filterCategory, setFilterCategory,
+    filterCurrency, setFilterCurrency,
+    filterMonth, setFilterMonth,
+    categories: categories ?? [],
+  });
 
-  if (incomesLoading || categoriesLoading) {
-    return <IncomesListSkeleton />;
-  }
+  if (incomesLoading || categoriesLoading) return <IncomesListSkeleton />;
 
   return (
     <div className="space-y-5 animate-fade-in">
       <IncomesListHeader total={totalFiltered} count={filteredIncomes.length} />
-
       <Filters
-        search={{
-          value: searchQuery,
-          onChange: setSearchQuery,
-          placeholder: i18nString("searchIncomes"),
-        }}
+        search={{ value: searchQuery, onChange: setSearchQuery, placeholder: i18nString("searchIncomes") }}
         filters={filterConfigs}
         onClearAll={clearFilters}
       />
-
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {filteredIncomes.length === 0 ? (

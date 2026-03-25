@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 
@@ -8,8 +8,7 @@ interface CategoriesListHeaderProps {
 }
 
 export const CategoriesListHeader = ({ total }: CategoriesListHeaderProps) => {
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`categories.${key}`);
+  const i18nString = useModuleTranslation("categories");
   const navigate = useNavigate();
   const location = useLocation();
 

@@ -1,17 +1,27 @@
 import { useMemo } from 'react';
 import type { FilterConfig } from '@/shared/components/Filters';
-import type { Category, Currency, Month } from '../utils/types';
+import type { Category, Currency, Month } from '@/types';
 import { CURRENCIES, MONTHS } from '@/lib/mock-data';
 
-export const useExpenseFilterConfigs = (
-  filterCategory: string,
-  setFilterCategory: (value: string) => void,
-  filterCurrency: string,
-  setFilterCurrency: (value: string) => void,
-  filterMonth: string,
-  setFilterMonth: (value: string) => void,
-  categories: Category[]
-) => {
+interface UseListFilterConfigsParams {
+  filterCategory: string;
+  setFilterCategory: (value: string) => void;
+  filterCurrency: string;
+  setFilterCurrency: (value: string) => void;
+  filterMonth: string;
+  setFilterMonth: (value: string) => void;
+  categories: Category[];
+}
+
+export const useListFilterConfigs = ({
+  filterCategory,
+  setFilterCategory,
+  filterCurrency,
+  setFilterCurrency,
+  filterMonth,
+  setFilterMonth,
+  categories,
+}: UseListFilterConfigsParams) => {
   return useMemo<FilterConfig[]>(
     () => [
       {

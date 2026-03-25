@@ -1,6 +1,6 @@
 import { Trash2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { Button } from "@/shared/components/ui/button";
 import type { Category } from "../utils/types";
 
@@ -11,8 +11,7 @@ interface CategoryRowProps {
 export const CategoryRow = ({ category }: CategoryRowProps) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`categories.${key}`);
+  const i18nString = useModuleTranslation("categories");
 
   const handleDelete = () => {
     navigate(`delete/${category.id}`, { state: { backgroundLocation: location } });

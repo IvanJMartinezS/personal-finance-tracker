@@ -2,14 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoriesService } from "../service";
 import { toast } from "sonner";
 
+const categoriesService = new CategoriesService();
+
 export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
-  const service = new CategoriesService();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      await service.deleteCategory(id);
-    },
+    mutationFn: (id: string) => categoriesService.deleteCategory(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Categoría eliminada");
