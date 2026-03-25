@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 import { useDeleteExpense } from "../hooks/useDeleteExpense";
+import { ButtonSpinner } from "@/shared/components/ui/loader";
 
 export const DeleteExpenseButton = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export const DeleteExpenseButton = () => {
   const navigate = useNavigate();
   const deleteExpense = useDeleteExpense();
   const [open, setOpen] = useState(true);
+  const submitted = useRef(false);
 
   const handleClose = () => setOpen(false);
 
@@ -32,17 +34,21 @@ export const DeleteExpenseButton = () => {
   }, [open, navigate]);
 
   const handleDelete = () => {
-    if (!id) return;
+    if (!id || submitted.current) return;
+    submitted.current = true;
     deleteExpense.mutate(id, {
       onSuccess: () => {
         toast.success(i18nString("deleteSuccess"));
         handleClose();
       },
       onError: (error) => {
+        submitted.current = false;
         toast.error(i18nString("deleteError"), { description: error.message });
       },
     });
   };
+
+  const isPending = deleteExpense.isPending || submitted.current;
 
   return (
     <AlertDialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
@@ -52,11 +58,12 @@ export const DeleteExpenseButton = () => {
           <AlertDialogDescription>{i18nString("deleteExpenseDescription")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteExpense.isPending} onClick={handleClose}>
+          <AlertDialogCancel disabled={isPending} onClick={handleClose}>
             {i18nString("cancel")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleteExpense.isPending}>
-            {deleteExpense.isPending ? i18nString("deleting") : i18nString("delete")}
+          <AlertDialogAction onClick={handleDelete} disabled={isPending} className="gap-2">
+            {isPending && <ButtonSpinner />}
+            {isPending ? i18nString("deleting") : i18nString("delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

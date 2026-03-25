@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ export const CreateIncomeDialog = () => {
   const navigate = useNavigate();
   const createIncome = useCreateIncome();
   const [open, setOpen] = useState(true);
+  const submitted = useRef(false);
 
   const { data: categories } = useGetCategories("income");
 
@@ -49,6 +50,8 @@ export const CreateIncomeDialog = () => {
   }, [open, navigate]);
 
   const onSubmit = (data: IncomeFormValues) => {
+    if (submitted.current) return;
+    submitted.current = true;
     const amount_in_base = data.amount * (data.exchange_rate || 1);
     createIncome.mutate(
       {
@@ -62,9 +65,14 @@ export const CreateIncomeDialog = () => {
           reset();
           handleClose();
         },
+        onError: () => {
+          submitted.current = false;
+        },
       }
     );
   };
+
+  const isSubmitting = formState.isSubmitting || submitted.current;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
@@ -77,7 +85,7 @@ export const CreateIncomeDialog = () => {
           errors={formState.errors}
           categories={categories ?? []}
           i18nString={i18nString}
-          isSubmitting={formState.isSubmitting}
+          isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
         />
       </DialogContent>

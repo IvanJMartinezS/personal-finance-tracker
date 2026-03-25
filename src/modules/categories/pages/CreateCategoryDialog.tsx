@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "@/shared/components/ui/button";
@@ -6,6 +6,7 @@ import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
+import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { useCreateCategory } from "../hooks/useCreateCategory";
 
 const PRESET_COLORS = [
@@ -20,6 +21,7 @@ export const CreateCategoryDialog = () => {
   const navigate = useNavigate();
   const createCategory = useCreateCategory();
   const [open, setOpen] = useState(true);
+  const submitted = useRef(false);
 
   const [name, setName] = useState("");
   const [type, setType] = useState("");
@@ -35,14 +37,18 @@ export const CreateCategoryDialog = () => {
   }, [open, navigate]);
 
   const handleSave = () => {
-    if (!name || !type) return;
+    if (!name || !type || submitted.current) return;
+    submitted.current = true;
     createCategory.mutate(
       { name, type, color: selectedColor },
       {
         onSuccess: () => handleClose(),
+        onError: () => { submitted.current = false; },
       }
     );
   };
+
+  const isPending = createCategory.isPending || submitted.current;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
@@ -88,8 +94,8 @@ export const CreateCategoryDialog = () => {
               ))}
             </div>
           </div>
-          <Button className="w-full mt-2" onClick={handleSave} disabled={createCategory.isPending}>
-            {createCategory.isPending ? i18nString("saving") : i18nString("saveCategory")}
+          <Button className="w-full mt-2" onClick={handleSave} disabled={isPending}>
+            {isPending ? <><ButtonSpinner />{i18nString("saving")}</> : i18nString("saveCategory")}
           </Button>
         </div>
       </DialogContent>

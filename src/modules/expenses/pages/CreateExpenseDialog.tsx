@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,7 @@ export const CreateExpenseDialog = () => {
   const navigate = useNavigate();
   const createExpense = useCreateExpense();
   const [open, setOpen] = useState(true);
+  const submitted = useRef(false);
 
   const { data: categories } = useGetCategories("expense");
 
@@ -51,6 +52,8 @@ export const CreateExpenseDialog = () => {
   }, [open, navigate]);
 
   const onSubmit = (data: ExpenseFormValues) => {
+    if (submitted.current) return;
+    submitted.current = true;
     const amount_in_base = data.amount * (data.exchange_rate || 1);
     createExpense.mutate(
       {
@@ -64,9 +67,14 @@ export const CreateExpenseDialog = () => {
           reset();
           handleClose();
         },
+        onError: () => {
+          submitted.current = false;
+        },
       }
     );
   };
+
+  const isSubmitting = formState.isSubmitting || submitted.current;
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
@@ -79,7 +87,7 @@ export const CreateExpenseDialog = () => {
           errors={formState.errors}
           categories={categories ?? []}
           i18nString={i18nString}
-          isSubmitting={formState.isSubmitting}
+          isSubmitting={isSubmitting}
           onSubmit={handleSubmit(onSubmit)}
         />
       </DialogContent>

@@ -11,5 +11,4 @@ export interface CreateCategory {
     name: string;
     type: string;
     color: string;
-    user_id: string;
 }

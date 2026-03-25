@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/shared/components/ui/alert-dialog";
 import { useDeleteCategory } from "../hooks/useDeleteCategories";
+import { ButtonSpinner } from "@/shared/components/ui/loader";
 
 export const DeleteCategoryButton = () => {
   const { t } = useTranslation();
@@ -21,6 +22,7 @@ export const DeleteCategoryButton = () => {
   const navigate = useNavigate();
   const deleteCategory = useDeleteCategory();
   const [open, setOpen] = useState(true);
+  const submitted = useRef(false);
 
   const handleClose = () => setOpen(false);
 
@@ -32,17 +34,21 @@ export const DeleteCategoryButton = () => {
   }, [open, navigate]);
 
   const handleDelete = () => {
-    if (!id) return;
+    if (!id || submitted.current) return;
+    submitted.current = true;
     deleteCategory.mutate(id, {
       onSuccess: () => {
         toast.success(i18nString("deleteSuccess"));
         handleClose();
       },
       onError: (error) => {
+        submitted.current = false;
         toast.error(i18nString("deleteError"), { description: error.message });
       },
     });
   };
+
+  const isPending = deleteCategory.isPending || submitted.current;
 
   return (
     <AlertDialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
@@ -52,11 +58,12 @@ export const DeleteCategoryButton = () => {
           <AlertDialogDescription>{i18nString("deleteCategoryDescription")}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={deleteCategory.isPending} onClick={handleClose}>
+          <AlertDialogCancel disabled={isPending} onClick={handleClose}>
             {i18nString("cancel")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={handleDelete} disabled={deleteCategory.isPending}>
-            {deleteCategory.isPending ? i18nString("deleting") : i18nString("delete")}
+          <AlertDialogAction onClick={handleDelete} disabled={isPending} className="gap-2">
+            {isPending && <ButtonSpinner />}
+            {isPending ? i18nString("deleting") : i18nString("delete")}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
