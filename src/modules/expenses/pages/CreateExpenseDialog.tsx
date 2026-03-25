@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import {
   Dialog,
   DialogContent,
@@ -16,7 +17,7 @@ import { ExpenseForm } from "../components/ExpenseForm";
 
 export const CreateExpenseDialog = () => {
   const { t } = useTranslation();
-  const i18nString = (key: string) => t(`expenses.${key}`);
+  const i18nString = useModuleTranslation("expenses");
   const navigate = useNavigate();
   const createExpense = useCreateExpense();
   const [open, setOpen] = useState(true);
