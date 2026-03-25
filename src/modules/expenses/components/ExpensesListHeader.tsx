@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
 import { formatCOP } from "@/lib/mock-data";
@@ -10,8 +10,7 @@ interface ExpensesListHeaderProps {
 }
 
 export const ExpensesListHeader = ({ count, total }: ExpensesListHeaderProps) => {
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`expenses.${key}`);
+  const i18nString = useModuleTranslation("expenses");
   const navigate = useNavigate();
   const location = useLocation();
 

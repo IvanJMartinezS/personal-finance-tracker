@@ -1,13 +1,13 @@
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useTranslation } from "react-i18next";
-import { useExpenseFilters } from "@/modules/expenses/hooks/useExpenseFilters";
 import { Filters } from "@/shared/components/Filters";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
-import type { Expense } from "../utils/types"; 
+import { useListFilters } from "@/shared/hooks/useListFilters";
+import { useListFilterConfigs } from "@/shared/hooks/useListFilterConfigs";
+import type { Expense } from "@/types";
 import { ExpenseRow } from "../components/ExpenseRow";
 import { ExpensesListSkeleton } from "../components/ExpensesListSkeleton";
-import { useExpenseFilterConfigs } from "../hooks/useExpenseFilterConfig";
 import { ExpensesListHeader } from "../components/ExpensesListHeader";
 
 export const ExpensesList = () => {
@@ -18,48 +18,39 @@ export const ExpensesList = () => {
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
 
   const {
-    searchQuery,
-    setSearchQuery,
-    filterCategory,
-    setFilterCategory,
-    filterCurrency,
-    setFilterCurrency,
-    filterMonth,
-    setFilterMonth,
-    filteredExpenses,
+    searchQuery, setSearchQuery,
+    filterCategory, setFilterCategory,
+    filterCurrency, setFilterCurrency,
+    filterMonth, setFilterMonth,
+    filteredItems: filteredExpenses,
     totalFiltered,
     clearFilters,
-  } = useExpenseFilters({ expenses: expenses ?? []});
+  } = useListFilters<Expense>({
+    items: expenses ?? [],
+    searchFn: (e, q) => e.item.toLowerCase().includes(q.toLowerCase()),
+    categoryFn: (e) => e.category_id,
+    currencyFn: (e) => e.currency,
+    dateFn: (e) => e.date,
+    amountFn: (e) => Number(e.amount_in_base),
+  });
 
-  const filterConfigs = useExpenseFilterConfigs(
-    filterCategory,
-    setFilterCategory,
-    filterCurrency,
-    setFilterCurrency,
-    filterMonth,
-    setFilterMonth,
-    categories ?? []
-  );
+  const filterConfigs = useListFilterConfigs({
+    filterCategory, setFilterCategory,
+    filterCurrency, setFilterCurrency,
+    filterMonth, setFilterMonth,
+    categories: categories ?? [],
+  });
 
-  if (expensesLoading || categoriesLoading) {
-    return <ExpensesListSkeleton />;
-  }
+  if (expensesLoading || categoriesLoading) return <ExpensesListSkeleton />;
 
   return (
     <div className="space-y-5 animate-fade-in">
-
       <ExpensesListHeader total={totalFiltered} count={filteredExpenses.length} />
-
       <Filters
-        search={{
-          value: searchQuery,
-          onChange: setSearchQuery,
-          placeholder: i18nString('searchExpenses'),
-        }}
+        search={{ value: searchQuery, onChange: setSearchQuery, placeholder: i18nString('searchExpenses') }}
         filters={filterConfigs}
         onClearAll={clearFilters}
       />
-
       <Card className="border-border/50 overflow-hidden">
         <CardContent className="p-0">
           {filteredExpenses.length === 0 ? (

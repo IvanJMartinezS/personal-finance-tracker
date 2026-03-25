@@ -16,8 +16,8 @@ export const Modals = () => {
     <Routes>
       <Route path="expenses/create" element={<CreateExpenseDialog />} />
       <Route path="expenses/delete/:id" element={<DeleteExpenseButton />} />
-      <Route path="income/create" element={<CreateIncomeDialog />} />
-      <Route path="income/delete/:id" element={<DeleteIncomeButton />} />
+      <Route path="incomes/create" element={<CreateIncomeDialog />} />
+      <Route path="incomes/delete/:id" element={<DeleteIncomeButton />} />
       <Route path="categories/create" element={<CreateCategoryDialog />} />
       <Route path="categories/delete/:id" element={<DeleteCategoryButton />} />
     </Routes>

@@ -11,7 +11,7 @@ interface NavLin {
 export const NavLinks: NavLin[] = [
   { title: "dashboard", url: "/home", icon: LayoutDashboard },
   { title: "expenses", url: "/expenses", icon: TrendingDown },
-  { title: "incomes", url: "/income", icon: TrendingUp },
+  { title: "incomes", url: "/incomes", icon: TrendingUp },
   { title: "categories", url: "/categories", icon: Tags },
   { title: "settings", url: "/settings", icon: Settings },
 ]

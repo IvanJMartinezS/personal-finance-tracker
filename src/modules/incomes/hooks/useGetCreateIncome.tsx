@@ -1,21 +1,20 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/shared/auth/useAuth";
 import { toast } from "sonner";
-import type { CreateIncomeInput } from "../utils/types";
+import type { CreateIncomeInput } from "@/types";
 import { IncomesService } from "../service";
+
+const incomesService = new IncomesService();
 
 export const useCreateIncome = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const service = new IncomesService();
-
-  const create = async (incomeData: Omit<CreateIncomeInput, 'user_id'>) => {
-      if (!user) throw new Error("Usuario no autenticado");
-      return await service.createIncome({ ...incomeData, user_id: user.id });
-    };
 
   return useMutation({
-    mutationFn: create,
+    mutationFn: async (incomeData: Omit<CreateIncomeInput, 'user_id'>) => {
+      if (!user) throw new Error("Usuario no autenticado");
+      return await incomesService.createIncome({ ...incomeData, user_id: user.id });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["incomes"] });
       toast.success("Ingreso registrado");

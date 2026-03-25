@@ -22,7 +22,7 @@ export function AppRoutes() {
           <Route index element={<DashboardRoutes />} />
           <Route index path='home' element={<DashboardRoutes />} />
           <Route path="expenses" element={<ExpensesRoutes />} />
-          <Route path="income" element={<IncomeRoutes />} />
+          <Route path="incomes" element={<IncomeRoutes />} />
           <Route path="categories" element={<CategoriesRoutes />} />
           <Route path="settings" element={<SettingsRoutes />} />
         </Route>

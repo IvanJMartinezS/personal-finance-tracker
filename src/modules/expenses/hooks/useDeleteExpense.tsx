@@ -2,14 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ExpensesService } from "@/modules/expenses/service/index";
 import { toast } from "sonner";
 
+const expensesService = new ExpensesService();
+
 export const useDeleteExpense = () => {
   const queryClient = useQueryClient();
-  const service = new ExpensesService();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      await service.deleteExpense(id);
-    },
+    mutationFn: (id: string) => expensesService.deleteExpense(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["expenses"] });
       toast.success("Gasto eliminado");

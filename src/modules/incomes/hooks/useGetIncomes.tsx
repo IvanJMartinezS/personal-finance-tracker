@@ -2,19 +2,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/shared/auth/useAuth";
 import { IncomesService } from "../service";
 
+const incomesService = new IncomesService();
 
 export const useGetIncomes = (limit?: number, currentPage: number = 1) => {
   const { user } = useAuth();
-  const service = new IncomesService();
-
-  const list = async () => {
-    const result = await service.getIncomes( user?.id, limit, currentPage);
-    return result;
-  };
 
   const { data, isLoading } = useQuery({
-    queryFn: list,
-    queryKey:["incomes", user?.id, limit, currentPage],
+    queryFn: () => incomesService.getIncomes(user?.id, limit, currentPage),
+    queryKey: ["incomes", user?.id, limit, currentPage],
     enabled: !!user,
   });
 
@@ -24,5 +19,5 @@ export const useGetIncomes = (limit?: number, currentPage: number = 1) => {
     limit: data?.limit || limit,
     page: data?.page || currentPage,
     isLoading,
-  }
+  };
 };

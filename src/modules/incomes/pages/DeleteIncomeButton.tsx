@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -16,8 +16,7 @@ import { useDeleteIncome } from "../hooks/useDeleteIncome";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 
 export const DeleteIncomeButton = () => {
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`incomes.${key}`);
+  const i18nString = useModuleTranslation("incomes");
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const deleteIncome = useDeleteIncome();

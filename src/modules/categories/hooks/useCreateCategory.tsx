@@ -2,20 +2,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoriesService } from "../service";
 import { useAuth } from "@/shared/auth/useAuth";
 import { toast } from "sonner";
-import type { CreateCategory } from "../utils/types";
+import type { CreateCategory } from "@/types";
+
+const categoriesService = new CategoriesService();
 
 export const useCreateCategory = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
-  const service = new CategoriesService();
-
-  const create = async (data: CreateCategory) => {
-      if (!user) throw new Error("Usuario no autenticado");
-      return await service.createCategory(user.id, data);
-    };
 
   return useMutation({
-    mutationFn: create,
+    mutationFn: async (data: CreateCategory) => {
+      if (!user) throw new Error("Usuario no autenticado");
+      return await categoriesService.createCategory(user.id, data);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
       toast.success("Categoría creada");
