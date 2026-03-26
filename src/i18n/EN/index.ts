@@ -42,6 +42,7 @@ export const EN = {
     incomes: 'Incomes',
     categories: 'Categories',
     settings: 'Settings',
+    summary: 'Yearly summary',
   },
 
   expenses:{
