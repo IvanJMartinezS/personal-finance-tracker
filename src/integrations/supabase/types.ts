@@ -12,6 +12,83 @@ export type Database = {
   }
   public: {
     Tables: {
+      accounts: {
+        Row: {
+          id: string
+          user_id: string
+          name: string
+          currency: string
+          type: string
+          color: string
+          is_active: boolean
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          name: string
+          currency?: string
+          type?: string
+          color?: string
+          is_active?: boolean
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          name?: string
+          currency?: string
+          type?: string
+          color?: string
+          is_active?: boolean
+          created_at?: string
+        }
+        Relationships: []
+      }
+      account_snapshots: {
+        Row: {
+          id: string
+          account_id: string
+          user_id: string
+          amount: number
+          year: number
+          month: number
+          notes: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          account_id: string
+          user_id: string
+          amount: number
+          year: number
+          month: number
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          account_id?: string
+          user_id?: string
+          amount?: number
+          year?: number
+          month?: number
+          notes?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_snapshots_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "accounts"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
       categories: {
         Row: {
           color: string
