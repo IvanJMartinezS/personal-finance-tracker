@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -16,8 +16,7 @@ const PRESET_COLORS = [
 ];
 
 export const CreateCategoryDialog = () => {
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`categories.${key}`);
+  const i18nString = useModuleTranslation("categories");
   const navigate = useNavigate();
   const createCategory = useCreateCategory();
   const [open, setOpen] = useState(true);

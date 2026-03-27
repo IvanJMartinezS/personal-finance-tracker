@@ -1,6 +1,6 @@
 import { TrendingDown, Trash2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { useTranslation } from "react-i18next";
+import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { formatCOP, formatCurrency } from "@/lib/mock-data";
 import { Button } from "@/shared/components/ui/button";
 import type { Expense } from "../utils/types";
@@ -13,8 +13,7 @@ export const ExpenseRow = ({ expense }: ExpenseRowProps) => {
   const cat = expense.categories;
   const navigate = useNavigate();
   const location = useLocation();
-  const { t } = useTranslation();
-  const i18nString = (key: string) => t(`expenses.${key}`);
+  const i18nString = useModuleTranslation("expenses");
 
   const formattedDate = new Date(expense.date + 'T12:00:00').toLocaleDateString('es-CO', {
     day: 'numeric',

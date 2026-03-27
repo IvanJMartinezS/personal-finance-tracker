@@ -42,6 +42,7 @@ export const ES = {
     incomes: 'Ingresos',
     categories: 'Categorías',
     settings: 'Configuración',
+    summary: 'Resumen anual',
   },
 
   expenses:{
@@ -137,6 +138,23 @@ export const ES = {
     delete: 'Eliminar',
     deleting: 'Eliminando...',
     noCategories: 'Sin categorías',
+  },
+
+  summary: {
+    title: 'Resumen {{year}}',
+    subtitle: 'Gastos por categoría',
+    monthsRegistered_one: '{{count}} mes registrado',
+    monthsRegistered_other: '{{count}} meses registrados',
+    category: 'Categoría',
+    total: 'Total',
+    noCategories: 'No hay categorías de gastos registradas',
+    usdNote: '* Los valores en USD se calculan usando la tasa de cambio registrada en cada gasto. Los gastos en COP se convierten usando una tasa referencial de $3.700.',
+  },
+
+  months: {
+    ene: 'Ene', feb: 'Feb', mar: 'Mar', abr: 'Abr',
+    may: 'May', jun: 'Jun', jul: 'Jul', ago: 'Ago',
+    sep: 'Sep', oct: 'Oct', nov: 'Nov', dic: 'Dic',
   },
 
   settings: {

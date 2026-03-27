@@ -42,6 +42,7 @@ export const EN = {
     incomes: 'Incomes',
     categories: 'Categories',
     settings: 'Settings',
+    summary: 'Yearly summary',
   },
 
   expenses:{
@@ -137,6 +138,23 @@ export const EN = {
     delete: 'Delete',
     deleting: 'Deleting...',
     noCategories: 'No categories',
+  },
+
+  summary: {
+    title: 'Summary {{year}}',
+    subtitle: 'Expenses by category',
+    monthsRegistered_one: '{{count}} month registered',
+    monthsRegistered_other: '{{count}} months registered',
+    category: 'Category',
+    total: 'Total',
+    noCategories: 'No expense categories registered',
+    usdNote: '* USD values are calculated using the exchange rate recorded on each expense. COP expenses are converted using a reference rate of $3,700.',
+  },
+
+  months: {
+    ene: 'Jan', feb: 'Feb', mar: 'Mar', abr: 'Apr',
+    may: 'May', jun: 'Jun', jul: 'Jul', ago: 'Aug',
+    sep: 'Sep', oct: 'Oct', nov: 'Nov', dic: 'Dec',
   },
 
   settings: {
