@@ -62,6 +62,7 @@ export const useYearlySummary = () => {
       for (let m = 1; m <= 12; m++) months[m] = emptyMonth();
 
       for (const exp of expenses ?? []) {
+        console.log("expense:", exp)
         const month = new Date(exp.date + "T12:00:00").getMonth() + 1;
         const ms = months[month];
         const catId = exp.category_id ?? "uncategorized";
@@ -71,9 +72,14 @@ export const useYearlySummary = () => {
         }
 
         const amountInBase = Number(exp.amount_in_base);
-        const amountUSD = exp.currency !== "COP"
-          ? Number(exp.amount)
-          : amountInBase / 3700;
+        // const amountUSD = exp.currency !== "COP"
+        //   ? Number(exp.amount)
+        //   : amountInBase / 3700;
+
+        const amountUSD = exp.currency === "USD"
+        ? amountInBase / exp.exchange_rate       
+        : amountInBase / 3700;       
+
 
         ms.byCategory[catId].amountCOP += amountInBase;
         ms.byCategory[catId].amountUSD += amountUSD;
