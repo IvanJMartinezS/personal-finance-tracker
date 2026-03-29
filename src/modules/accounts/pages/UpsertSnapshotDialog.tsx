@@ -43,8 +43,8 @@ export const UpsertSnapshotDialog = () => {
     upsert.mutate(
       { account_id: accountId, amount: parseFloat(amount), year: YEAR, month: currentMonth, notes: notes || null },
       {
-        onSuccess: () => handleClose(),
-        onError: () => { submitted.current = false; },
+        onSuccess: () => { toast.success(i18nString("registerBalanceSuccess")); handleClose(); },
+        onError: (e: Error) => { submitted.current = false; toast.error(i18nString("registerBalanceError"), { description: e.message }); },
       }
     );
   };
