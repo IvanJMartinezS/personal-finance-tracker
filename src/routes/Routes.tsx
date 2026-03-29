@@ -8,6 +8,7 @@ import { NotFoundPage } from '@/modules/notFound/pages/NotFoundPage';
 import { CategoriesRoutes } from '@/modules/categories/routes/CategoriesRoutes';
 import { SettingsRoutes } from '@/modules/settings/routes/SettingsRoutes';
 import { SummaryRoutes } from '@/modules/summary/routes/SummaryRoutes';
+import { AccountsRoutes } from '@/modules/accounts/routes/AccountsRoutes';
 import { Modals } from '@/routes/Modals';
 
 export function AppRoutes() {
@@ -26,6 +27,7 @@ export function AppRoutes() {
           <Route path="incomes" element={<IncomeRoutes />} />
           <Route path="categories" element={<CategoriesRoutes />} />
           <Route path="summary" element={<SummaryRoutes />} />
+          <Route path="accounts" element={<AccountsRoutes />} />
           <Route path="settings" element={<SettingsRoutes />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />

@@ -5,6 +5,9 @@ import { CreateIncomeDialog } from "@/modules/incomes/pages/CreateIncomeDialog";
 import { DeleteIncomeButton } from "@/modules/incomes/pages/DeleteIncomeButton";
 import { CreateCategoryDialog } from "@/modules/categories/pages/CreateCategoryDialog";
 import { DeleteCategoryButton } from "@/modules/categories/pages/DeleteCategoryButton";
+import { CreateAccountDialog } from "@/modules/accounts/pages/CreateAccountDialog";
+import { DeleteAccountButton } from "@/modules/accounts/pages/DeleteAccountButton";
+import { UpsertSnapshotDialog } from "@/modules/accounts/pages/UpsertSnapshotDialog";
 
 export const Modals = () => {
   const location = useLocation();
@@ -20,6 +23,9 @@ export const Modals = () => {
       <Route path="incomes/delete/:id" element={<DeleteIncomeButton />} />
       <Route path="categories/create" element={<CreateCategoryDialog />} />
       <Route path="categories/delete/:id" element={<DeleteCategoryButton />} />
+      <Route path="accounts/create" element={<CreateAccountDialog />} />
+      <Route path="accounts/delete/:id" element={<DeleteAccountButton />} />
+      <Route path="accounts/snapshot/:accountId" element={<UpsertSnapshotDialog />} />
     </Routes>
   );
 };

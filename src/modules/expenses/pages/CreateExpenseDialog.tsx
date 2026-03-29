@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslation } from "react-i18next";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -65,11 +66,17 @@ export const CreateExpenseDialog = () => {
       },
       {
         onSuccess: () => {
+          toast.success(i18nString("createSuccess"));
           reset();
           handleClose();
         },
-        onError: () => {
+        onError: (error: any) => {
           submitted.current = false;
+          if (error.code === '22P02') {
+            toast.error(i18nString("invalidCategory"));
+          } else {
+            toast.error(i18nString("createError"), { description: error.message });
+          }
         },
       }
     );

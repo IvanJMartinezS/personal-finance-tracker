@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CategoriesService } from "../service";
 import { useAuth } from "@/shared/auth/useAuth";
-import { toast } from "sonner";
 import type { CreateCategory } from "@/types";
 
 const categoriesService = new CategoriesService();
@@ -17,10 +16,6 @@ export const useCreateCategory = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["categories"] });
-      toast.success("Categoría creada");
-    },
-    onError: (error: Error) => {
-      toast.error(error.message);
     },
   });
 };
