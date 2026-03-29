@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/shared/auth/useAuth";
-import { toast } from "sonner";
 import type { CreateAccountInput } from "../utils/types";
 
 export const useCreateAccount = () => {
@@ -18,8 +17,6 @@ export const useCreateAccount = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["accounts"] });
-      toast.success("Cuenta creada");
     },
-    onError: (e: Error) => toast.error(e.message),
   });
 };

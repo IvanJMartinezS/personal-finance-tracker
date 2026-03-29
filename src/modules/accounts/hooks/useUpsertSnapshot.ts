@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/shared/auth/useAuth";
-import { toast } from "sonner";
 import type { UpsertSnapshotInput } from "../utils/types";
 
 export const useUpsertSnapshot = () => {
@@ -21,8 +20,6 @@ export const useUpsertSnapshot = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["account-snapshots"] });
-      toast.success("Saldo registrado");
     },
-    onError: (e: Error) => toast.error(e.message),
   });
 };

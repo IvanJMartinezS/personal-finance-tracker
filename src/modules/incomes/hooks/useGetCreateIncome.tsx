@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/shared/auth/useAuth";
-import { toast } from "sonner";
 import type { CreateIncomeInput } from "@/types";
 import { IncomesService } from "../service";
 
@@ -17,14 +16,6 @@ export const useCreateIncome = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["incomes"] });
-      toast.success("Ingreso registrado");
-    },
-    onError: (error: any) => {
-      if (error.code === '22P02') {
-        toast.error("La categoría seleccionada no existe. Por favor, elige una categoría válida.");
-      } else {
-        toast.error(error.message);
-      }
     },
   });
 };

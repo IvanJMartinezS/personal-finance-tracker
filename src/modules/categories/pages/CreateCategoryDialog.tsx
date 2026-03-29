@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+import { toast } from "sonner";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -41,8 +42,8 @@ export const CreateCategoryDialog = () => {
     createCategory.mutate(
       { name, type, color: selectedColor },
       {
-        onSuccess: () => handleClose(),
-        onError: () => { submitted.current = false; },
+        onSuccess: () => { toast.success(i18nString("createSuccess")); handleClose(); },
+        onError: (e: Error) => { submitted.current = false; toast.error(i18nString("createError"), { description: e.message }); },
       }
     );
   };

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
 import { Input } from "@/shared/components/ui/input";
 import { Label } from "@/shared/components/ui/label";
@@ -42,8 +43,8 @@ export const CreateAccountDialog = () => {
     createAccount.mutate(
       { name, currency, type, color, is_active: true },
       {
-        onSuccess: () => handleClose(),
-        onError: () => { submitted.current = false; },
+        onSuccess: () => { toast.success(i18nString("createSuccess")); handleClose(); },
+        onError: (e: Error) => { submitted.current = false; toast.error(i18nString("createError"), { description: e.message }); },
       }
     );
   };
