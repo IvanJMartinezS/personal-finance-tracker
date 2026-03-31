@@ -32,6 +32,16 @@ export const ES = {
     espanish: 'Español',
     english: 'English',
     checkEmail: 'Revisa tu email para confirmar tu cuenta',
+    forgotPassword: 'Olvidé mi contraseña',
+    forgotPasswordLink: '¿Olvidaste tu contraseña?',
+    forgotPasswordDescription: 'Te enviaremos un enlace para restablecer tu contraseña',
+    resetEmailSent: 'Revisa tu email para restablecer tu contraseña',
+    resetPassword: 'Nueva contraseña',
+    resetPasswordDescription: 'Ingresa tu nueva contraseña',
+    confirmPassword: 'Confirmar contraseña',
+    passwordsMismatch: 'Las contraseñas no coinciden',
+    passwordUpdated: 'Contraseña actualizada correctamente',
+    backToLogin: 'Volver al inicio de sesión',
   },
 
   sideNavBar: {

@@ -32,6 +32,16 @@ export const EN = {
     espanish: 'Spanish',
     english: 'English',
     checkEmail: 'Check your email to confirm your account',
+    forgotPassword: 'Forgot password',
+    forgotPasswordLink: 'Forgot your password?',
+    forgotPasswordDescription: 'We will send you a link to reset your password',
+    resetEmailSent: 'Check your email to reset your password',
+    resetPassword: 'New password',
+    resetPasswordDescription: 'Enter your new password',
+    confirmPassword: 'Confirm password',
+    passwordsMismatch: 'Passwords do not match',
+    passwordUpdated: 'Password updated successfully',
+    backToLogin: 'Back to login',
   },
 
   sideNavBar: {
