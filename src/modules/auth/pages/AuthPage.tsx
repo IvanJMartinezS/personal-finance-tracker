@@ -50,7 +50,7 @@ export default function AuthPage() {
   };
 
   const handleRegister = async () => {
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -59,6 +59,14 @@ export default function AuthPage() {
       },
     });
     if (error) throw error;
+
+    if (data?.user && !data?.session) {
+      if (data.user.confirmed_at) {
+        throw new Error("EMAIL_ALREADY_REGISTERED");
+      } else {
+        throw new Error("EMAIL_PENDING_CONFIRMATION");
+      }
+    }
     toast.success(i18nString("checkEmail"));
   };
 
@@ -93,7 +101,10 @@ export default function AuthPage() {
       else if (mode === "forgotPassword") await handleForgotPassword();
       else if (mode === "resetPassword") await handleResetPassword();
     } catch (error: any) {
-      toast.error(getErrorMessage(error));
+      const errorKey = getErrorMessage(error);
+      // Intentar traducir el error, si no encuentra la traducción, mostrar el mensaje directo
+      const translatedError = i18nString(errorKey) || errorKey;
+      toast.error(translatedError);
     } finally {
       setLoading(false);
     }

@@ -42,6 +42,17 @@ export const EN = {
     passwordsMismatch: 'Passwords do not match',
     passwordUpdated: 'Password updated successfully',
     backToLogin: 'Back to login',
+    emailAlreadyRegistered: 'This email is already registered. Please login or use a different email.',
+    emailPendingConfirmation: 'Please enter a valid email address to continue with registration.',
+    invalid_credentials: 'Invalid credentials. Please check your email and password.',
+    email_not_confirmed: 'Please confirm your email address before logging in.',
+    user_not_found: 'No user found with this email.',
+    password_recovery_disabled: 'Password recovery is not enabled.',
+    unique_violation: 'A record with this unique value already exists.',
+    permission_denied: 'You do not have permission to perform this operation.',
+    rate_limit_exceeded: 'Too many requests. Please try again later.',
+    invalid_api_key: 'Invalid API key. Please check your configuration.',
+    unexpected_error: 'An unexpected error occurred.',
   },
 
   sideNavBar: {

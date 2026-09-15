@@ -42,6 +42,17 @@ export const ES = {
     passwordsMismatch: 'Las contraseñas no coinciden',
     passwordUpdated: 'Contraseña actualizada correctamente',
     backToLogin: 'Volver al inicio de sesión',
+    emailAlreadyRegistered: 'Este correo ya está registrado. Por favor inicia sesión o usa un correo diferente.',
+    emailPendingConfirmation: 'Por favor agrega un correo valido para continuar con el registro.',
+    invalid_credentials: 'Credenciales inválidas. Revisa tu email y contraseña.',
+    email_not_confirmed: 'Debes confirmar tu correo electrónico antes de iniciar sesión.',
+    user_not_found: 'No existe un usuario con ese correo.',
+    password_recovery_disabled: 'La recuperación de contraseña no está habilitada.',
+    unique_violation: 'Ya existe un registro con ese valor único.',
+    permission_denied: 'No tienes permisos para realizar esta operación.',
+    rate_limit_exceeded: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
+    invalid_api_key: 'Clave API inválida. Verifica tu configuración.',
+    unexpected_error: 'Ocurrió un error inesperado.',
   },
 
   sideNavBar: {

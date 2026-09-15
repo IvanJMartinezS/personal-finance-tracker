@@ -5,40 +5,46 @@ interface SupabaseError {
 }
 
 export const errorMessages: Record<string, string> = {  
-  invalid_credentials: 'Credenciales inválidas. Revisa tu email y contraseña.',
-  email_not_confirmed: 'Debes confirmar tu correo electrónico antes de iniciar sesión.',
-  user_not_found: 'No existe un usuario con ese correo.',
-  password_recovery_disabled: 'La recuperación de contraseña no está habilitada.',
-  '23505': 'Ya existe un registro con ese valor único.', 
-  '42501': 'No tienes permisos para realizar esta operación.',
-  over_rate_limit: 'Demasiadas solicitudes. Intenta de nuevo más tarde.',
- "Invalid API key": 'Clave API inválida. Verifica tu configuración.',
+  invalid_credentials: 'invalid_credentials',
+  email_not_confirmed: 'email_not_confirmed',
+  user_not_found: 'user_not_found',
+  password_recovery_disabled: 'password_recovery_disabled',
+  '23505': 'unique_violation', 
+  '42501': 'permission_denied',
+  over_rate_limit: 'rate_limit_exceeded',
+  "Invalid API key": 'invalid_api_key',
+  "EMAIL_ALREADY_REGISTERED": 'emailAlreadyRegistered',
+  "EMAIL_PENDING_CONFIRMATION": 'emailPendingConfirmation',
 };
 
 /**
- * Obtiene un mensaje de error amigable en español.
+ * Obtiene un código de error que puede ser traducido.
  * @param error - Error devuelto por Supabase u otro origen.
- * @returns Mensaje traducido o genérico.
+ * @returns Código de error para traducción.
  */
 export function getErrorMessage(error: unknown): string {
-  if (!error) return 'Error inesperado.';
+  if (!error) return 'unexpected_error';
 
   const supabaseError = error as SupabaseError;
 
   if (supabaseError.code && errorMessages[supabaseError.code]) {
     return errorMessages[supabaseError.code];
   }
-  if (supabaseError.message) {
-    return supabaseError.message;
-  }
-
+  
   if (error instanceof Error) {
-    return error.message;
+    const errorMessage = error.message;
+    if (errorMessages[errorMessage]) {
+      return errorMessages[errorMessage];
+    }
+    return errorMessage;
   }
 
   if (typeof error === 'string') {
+    if (errorMessages[error]) {
+      return errorMessages[error];
+    }
     return error;
   }
 
-  return 'Ocurrió un error inesperado.';
+  return 'unexpected_error';
 }
