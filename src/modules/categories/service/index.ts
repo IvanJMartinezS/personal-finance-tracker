@@ -66,5 +66,28 @@ export class CategoriesService {
   async deleteCategory(id: string): Promise<void> {
     const { error } = await supabase.from("categories").delete().eq("id", id);
     if (error) throw new Error(`Error al eliminar categoría: ${error.message}`);
+  }
+
+  /**
+   * Actualiza una categoría existente.
+   * @param id - ID de la categoría
+   * @param categoryData - Datos actualizados de la categoría
+   */
+  async updateCategory(
+    id: string,
+    categoryData: Partial<Omit<Category, 'id' | 'user_id' | 'created_at' | 'updated_at'>>
+  ): Promise<Category> {
+    const { data, error } = await supabase
+      .from("categories")
+      .update({ 
+        ...categoryData, 
+        updated_at: new Date().toISOString() 
+      })
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw new Error(`Error al actualizar categoría: ${error.message}`);
+    return data as Category;
   } 
 }

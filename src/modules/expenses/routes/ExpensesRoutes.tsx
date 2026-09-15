@@ -6,6 +6,7 @@ export const ExpensesRoutes = () => {
     <Routes>
       <Route path="/" element={<ExpensesList />} />
       <Route path="create" element={<ExpensesList />} />
+      <Route path="edit/:id" element={<ExpensesList />} />
       <Route path="delete/:id" element={<ExpensesList />} />
     </Routes>
   );

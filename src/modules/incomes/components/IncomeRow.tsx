@@ -1,4 +1,4 @@
-import { TrendingUp, Trash2 } from "lucide-react";
+import { PencilLine, TrendingUp, Trash2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { formatCOP, formatCurrency } from "@/lib/mock-data";
@@ -20,6 +20,10 @@ export const IncomeRow = ({ income }: IncomeRowProps) => {
     month: 'short',
     year: 'numeric',
   });
+
+  const handleEdit = () => {
+    navigate(`edit/${income.id}`, { state: { backgroundLocation: location } });
+  };
 
   const handleDelete = () => {
     navigate(`delete/${income.id}`, { state: { backgroundLocation: location } });
@@ -49,6 +53,15 @@ export const IncomeRow = ({ income }: IncomeRowProps) => {
           </p>
         )}
       </div>
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-8 w-8 hover:text-primary"
+        aria-label={i18nString("editIncome")}
+        onClick={handleEdit}
+      >
+        <PencilLine className="h-3.5 w-3.5" />
+      </Button>
       <Button
         variant="ghost"
         size="icon"

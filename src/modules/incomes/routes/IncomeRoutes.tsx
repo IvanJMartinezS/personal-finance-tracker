@@ -6,6 +6,7 @@ export const IncomeRoutes = () => {
     <Routes>
       <Route path="/" element={<IncomeList />} />
       <Route path="create" element={<IncomeList />} />
+      <Route path="edit/:id" element={<IncomeList />} />
       <Route path="delete/:id" element={<IncomeList />} />
     </Routes>
   );

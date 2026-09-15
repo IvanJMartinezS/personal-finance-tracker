@@ -9,13 +9,22 @@ import type { Income } from "@/types";
 import { IncomesListHeader } from "../components/IncomesListHeader";
 import { IncomesListSkeleton } from "../components/IncomesListSkeleton";
 import { IncomeRow } from "../components/IncomeRow";
+import { CreateIncomeDialog } from "./CreateIncomeDialog";
+import { EditIncomeDialog } from "./EditIncomeDialog";
+import { DeleteIncomeButton } from "./DeleteIncomeButton";
+import { useLocation } from "react-router-dom";
 
 export const IncomeList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t(`incomes.${key}`);
+  const location = useLocation();
 
   const { data: categories, isLoading: categoriesLoading } = useGetCategories("income");
   const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
+
+  const isCreateDialog = location.pathname.includes("/create");
+  const isEditDialog = location.pathname.includes("/edit/");
+  const isDeleteDialog = location.pathname.includes("/delete/");
 
   const {
     searchQuery, setSearchQuery,
@@ -44,26 +53,32 @@ export const IncomeList = () => {
   if (incomesLoading || categoriesLoading) return <IncomesListSkeleton />;
 
   return (
-    <div className="space-y-5 animate-fade-in">
-      <IncomesListHeader total={totalFiltered} count={filteredIncomes.length} />
-      <Filters
-        search={{ value: searchQuery, onChange: setSearchQuery, placeholder: i18nString("searchIncomes") }}
-        filters={filterConfigs}
-        onClearAll={clearFilters}
-      />
-      <Card className="border-border/50 overflow-hidden">
-        <CardContent className="p-0">
-          {filteredIncomes.length === 0 ? (
-            <p className="p-8 text-center text-sm text-muted-foreground">{i18nString("noRecords")}</p>
-          ) : (
-            <div className="divide-y divide-border">
-              {filteredIncomes.map((income: Income) => (
-                <IncomeRow key={income.id} income={income} />
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </div>
+    <>
+      <div className="space-y-5 animate-fade-in">
+        <IncomesListHeader total={totalFiltered} count={filteredIncomes.length} />
+        <Filters
+          search={{ value: searchQuery, onChange: setSearchQuery, placeholder: i18nString("searchIncomes") }}
+          filters={filterConfigs}
+          onClearAll={clearFilters}
+        />
+        <Card className="border-border/50 overflow-hidden">
+          <CardContent className="p-0">
+            {filteredIncomes.length === 0 ? (
+              <p className="p-8 text-center text-sm text-muted-foreground">{i18nString("noRecords")}</p>
+            ) : (
+              <div className="divide-y divide-border">
+                {filteredIncomes.map((income: Income) => (
+                  <IncomeRow key={income.id} income={income} />
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {isCreateDialog && <CreateIncomeDialog />}
+      {isEditDialog && <EditIncomeDialog />}
+      {isDeleteDialog && <DeleteIncomeButton />}
+    </>
   );
 };

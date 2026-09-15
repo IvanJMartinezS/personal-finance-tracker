@@ -6,6 +6,7 @@ export const CategoriesRoutes = () => {
     <Routes>
       <Route path="/" element={<Categories />} />
       <Route path="create" element={<Categories />} />
+      <Route path="edit/:id" element={<Categories />} />
       <Route path="delete/:id" element={<Categories />} />
     </Routes>
   );
