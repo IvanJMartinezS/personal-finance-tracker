@@ -108,6 +108,8 @@ export const EN = {
     updating: 'Updating...',
     expenseNotFound: 'Expense not found',
     close: 'Close',
+    viewExpense: 'View expense details',
+    viewDetails: 'View more',
   },
 
   incomes:{
@@ -152,6 +154,8 @@ export const EN = {
     filterCurrency: 'Currency',
     incomeNotFound: 'Income not found',
     close: 'Close',
+    viewIncome: 'View income details',
+    viewDetails: 'View more',
   },
 
   categories:{

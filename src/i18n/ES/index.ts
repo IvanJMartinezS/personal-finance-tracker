@@ -108,6 +108,8 @@ export const ES = {
     updating: 'Actualizando...',
     expenseNotFound: 'Gasto no encontrado',
     close: 'Cerrar',
+    viewExpense: 'Ver detalle del gasto',
+    viewDetails: 'Ver más',
   },
 
   incomes:{
@@ -151,6 +153,8 @@ export const ES = {
     filterCategory: 'Categoria',
     incomeNotFound: 'Ingreso no encontrado',
     close: 'Cerrar',
+    viewIncome: 'Ver detalle del ingreso',
+    viewDetails: 'Ver más',
   },
 
   categories:{

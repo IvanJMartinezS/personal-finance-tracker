@@ -8,6 +8,7 @@ export const IncomeRoutes = () => {
       <Route path="create" element={<IncomeList />} />
       <Route path="edit/:id" element={<IncomeList />} />
       <Route path="delete/:id" element={<IncomeList />} />
+      <Route path="view/:id" element={<IncomeList />} />
     </Routes>
   );
 };

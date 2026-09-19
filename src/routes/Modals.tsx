@@ -2,8 +2,10 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import { CreateExpenseDialog } from "@/modules/expenses/pages/CreateExpenseDialog";
 import { DeleteExpenseButton } from "@/modules/expenses/pages/DeleteExpenseButton";
 import { EditExpenseDialog } from "@/modules/expenses/pages/EditExpenseDialog";
+import { ViewExpenseDialog } from "@/modules/expenses/pages/ViewExpenseDialog";
 import { CreateIncomeDialog } from "@/modules/incomes/pages/CreateIncomeDialog";
 import { DeleteIncomeButton } from "@/modules/incomes/pages/DeleteIncomeButton";
+import { ViewIncomeDialog } from "@/modules/incomes/pages/ViewIncomeDialog";
 import { CreateCategoryDialog } from "@/modules/categories/pages/CreateCategoryDialog";
 import { EditIncomeDialog } from "@/modules/incomes/pages/EditIncomeDialog";
 import { DeleteCategoryButton } from "@/modules/categories/pages/DeleteCategoryButton";
@@ -24,11 +26,13 @@ export const Modals = () => {
       <Route path="expenses/create" element={<CreateExpenseDialog />} />
       <Route path="expenses/delete/:id" element={<DeleteExpenseButton />} />
       <Route path="expenses/edit/:id" element={<EditExpenseDialog />} />
+      <Route path="expenses/view/:id" element={<ViewExpenseDialog />} />
 
       /* Incomes */
       <Route path="incomes/create" element={<CreateIncomeDialog />} />
       <Route path="incomes/delete/:id" element={<DeleteIncomeButton />} />
       <Route path="incomes/edit/:id" element={<EditIncomeDialog />} />
+      <Route path="incomes/view/:id" element={<ViewIncomeDialog />} />
 
       /* Categories */
       <Route path="categories/create" element={<CreateCategoryDialog />} />
