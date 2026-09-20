@@ -11,6 +11,7 @@ import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { useCreateBudget } from "../hooks/useCreateBudget";
 import { useGetBudgets } from "../hooks/useGetBudgets";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import { getAvailableCategoriesForBudget } from "../utils/getAvailableCategoriesForBudget";
 import type { AppError } from "@/lib/errorMessages";
 
 export const CreateBudgetDialog = () => {
@@ -23,10 +24,7 @@ export const CreateBudgetDialog = () => {
   const { data: categories, isLoading: categoriesLoading } = useGetCategories("expense");
   const { data: budgets, isLoading: budgetsLoading } = useGetBudgets();
 
-  // Solo se pueden crear presupuestos para categorías de gasto que todavía no
-  // tienen uno (para editar un monto ya asignado se usa "editar" en el listado).
-  const budgetedCategoryIds = new Set(budgets.map((b) => b.category_id));
-  const availableCategories = (categories ?? []).filter((c) => !budgetedCategoryIds.has(c.id));
+  const availableCategories = getAvailableCategoriesForBudget(categories ?? [], budgets);
 
   const [categoryId, setCategoryId] = useState("");
   const [amount, setAmount] = useState("");
