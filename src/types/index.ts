@@ -62,3 +62,19 @@ export interface Income {
 }
 
 export type CreateIncomeInput = Omit<Income, 'id' | 'created_at' | 'updated_at' | 'categories'>;
+
+/**
+ * Presupuesto mensual objetivo por categoría de gasto, siempre en USD.
+ * Un solo registro por (user_id, category_id) — ver 005_create_budgets.sql.
+ */
+export interface Budget {
+  id: string;
+  user_id: string;
+  category_id: string;
+  amount_usd: number;
+  created_at: string;
+  updated_at: string;
+  categories: Category | null;
+}
+
+export type CreateBudgetInput = Omit<Budget, 'id' | 'created_at' | 'updated_at' | 'categories'>;

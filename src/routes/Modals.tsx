@@ -13,6 +13,9 @@ import { EditCategoryDialog } from "@/modules/categories/pages/EditCategoryDialo
 import { CreateAccountDialog } from "@/modules/accounts/pages/CreateAccountDialog";
 import { DeleteAccountButton } from "@/modules/accounts/pages/DeleteAccountButton";
 import { UpsertSnapshotDialog } from "@/modules/accounts/pages/UpsertSnapshotDialog";
+import { CreateBudgetDialog } from "@/modules/budgets/pages/CreateBudgetDialog";
+import { EditBudgetDialog } from "@/modules/budgets/pages/EditBudgetDialog";
+import { DeleteBudgetButton } from "@/modules/budgets/pages/DeleteBudgetButton";
 
 export const Modals = () => {
   const location = useLocation();
@@ -43,6 +46,11 @@ export const Modals = () => {
       <Route path="accounts/create" element={<CreateAccountDialog />} />
       <Route path="accounts/delete/:id" element={<DeleteAccountButton />} />
       <Route path="accounts/snapshot/:accountId" element={<UpsertSnapshotDialog />} />
+
+      /* Budgets */
+      <Route path="budgets/create" element={<CreateBudgetDialog />} />
+      <Route path="budgets/edit/:id" element={<EditBudgetDialog />} />
+      <Route path="budgets/delete/:id" element={<DeleteBudgetButton />} />
     </Routes>
   );
 };
