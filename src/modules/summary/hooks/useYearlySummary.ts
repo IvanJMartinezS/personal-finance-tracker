@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/shared/auth/useAuth";
+import { DEFAULT_YEAR } from "@/lib/dateUtils";
+import { REFERENCE_USD_TO_COP_RATE } from "@/lib/mock-data";
 import type { Category } from "@/types";
 
-const YEAR = 2026;
+const YEAR = DEFAULT_YEAR;
 
 export interface MonthlyCategoryData {
   amountCOP: number;
@@ -62,7 +64,6 @@ export const useYearlySummary = () => {
       for (let m = 1; m <= 12; m++) months[m] = emptyMonth();
 
       for (const exp of expenses ?? []) {
-        console.log("expense:", exp)
         const month = new Date(exp.date + "T12:00:00").getMonth() + 1;
         const ms = months[month];
         const catId = exp.category_id ?? "uncategorized";
@@ -72,13 +73,11 @@ export const useYearlySummary = () => {
         }
 
         const amountInBase = Number(exp.amount_in_base);
-        // const amountUSD = exp.currency !== "COP"
-        //   ? Number(exp.amount)
-        //   : amountInBase / 3700;
-
+        // Gastos en USD: el monto original ya está en USD.
+        // Gastos en COP (u otra moneda sin tasa propia): se estima con la tasa de referencia.
         const amountUSD = exp.currency === "USD"
-        ? amountInBase / exp.exchange_rate       
-        : amountInBase / 3700;       
+          ? Number(exp.amount)
+          : amountInBase / REFERENCE_USD_TO_COP_RATE;
 
 
         ms.byCategory[catId].amountCOP += amountInBase;

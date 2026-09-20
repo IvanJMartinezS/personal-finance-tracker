@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchema";
+import type { AppError } from "@/lib/errorMessages";
 import { useCreateExpense } from "../hooks/useGetCreateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { ExpenseForm } from "../components/ExpenseForm";
@@ -70,7 +71,7 @@ export const CreateExpenseDialog = () => {
           reset();
           handleClose();
         },
-        onError: (error: any) => {
+        onError: (error: AppError) => {
           submitted.current = false;
           if (error.code === '22P02') {
             toast.error(i18nString("invalidCategory"));

@@ -4,6 +4,13 @@ interface SupabaseError {
   status?: number;
 }
 
+/**
+ * Forma del error que lanzan los servicios de la app al crear/actualizar un
+ * registro (ver `createTransactionCrud`): un `Error` estándar con un `code`
+ * opcional (código de error de Postgres/Supabase, p. ej. `22P02`).
+ */
+export type AppError = Error & { code?: string };
+
 export const errorMessages: Record<string, string> = {  
   invalid_credentials: 'invalid_credentials',
   email_not_confirmed: 'email_not_confirmed',

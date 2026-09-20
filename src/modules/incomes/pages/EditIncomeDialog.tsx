@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { getIncomeSchema, type IncomeFormValues } from "@/schemas/incomeSchema";
+import type { AppError } from "@/lib/errorMessages";
 import { useUpdateIncomes } from "../hooks/useUpdateIncomes";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useGetIncomes } from "../hooks/useGetIncomes";
@@ -92,7 +93,7 @@ export const EditIncomeDialog = () => {
           toast.success(i18nString("updateSuccess"));
           handleClose();
         },
-        onError: (error: any) => {
+        onError: (error: AppError) => {
           submitted.current = false;
           if (error.code === '22P02') {
             toast.error(i18nString("invalidCategory"));

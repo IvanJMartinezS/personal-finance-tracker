@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchema";
+import type { AppError } from "@/lib/errorMessages";
 import { useUpdateExpense } from "../hooks/useUpdateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useGetExpenses } from "../hooks/useGetExpenses";
@@ -92,7 +93,7 @@ export const EditExpenseDialog = () => {
           toast.success(i18nString("updateSuccess"));
           handleClose();
         },
-        onError: (error: any) => {
+        onError: (error: AppError) => {
           submitted.current = false;
           if (error.code === '22P02') {
             toast.error(i18nString("invalidCategory"));

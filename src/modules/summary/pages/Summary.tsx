@@ -5,13 +5,12 @@ import { useYearlySummary } from "../hooks/useYearlySummary";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { formatCOP } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
+import { DEFAULT_YEAR, getElapsedMonthsInYear } from "@/lib/dateUtils";
 
-const YEAR = 2026;
+const YEAR = DEFAULT_YEAR;
 const MONTH_KEYS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 
-const currentMonth = new Date().getFullYear() === YEAR
-  ? new Date().getMonth() + 1
-  : 12;
+const currentMonth = getElapsedMonthsInYear(YEAR);
 
 function fmtUSD(val: number) {
   return val === 0 ? "—" : `$${val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

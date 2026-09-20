@@ -2,8 +2,13 @@ import { Search, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { Input } from '@/shared/components/ui/input';
 import { Button } from '@/shared/components/ui/button';
-import { Filter } from '@/shared/components/ui/Filter';
+import { Filter } from '@/shared/components/Filter';
 
+// `filters: FilterConfig[]` es una lista heterogénea: cada entrada es internamente
+// consistente (sus accessors calzan con `options`) en el sitio donde se construye
+// (ver useListFilterConfigs), pero el array en sí necesita un T común para poder
+// mezclar entradas de distinto tipo (Category, Currency, Month...).
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface FilterConfig<T = any> {
   id: string;
   label: string;

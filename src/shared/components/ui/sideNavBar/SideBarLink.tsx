@@ -1,7 +1,13 @@
-import { NavLink } from "@/shared/components/ui/NavLink";
+import { NavLink } from "@/shared/components/NavLink";
 import { useTranslation } from "react-i18next";
+import type { NavLinkItem } from "./NavLink";
 
-export const SideNavLink = ({ item, setSidebarOpen }: any) => {
+interface SideNavLinkProps {
+  item: NavLinkItem;
+  setSidebarOpen: (open: boolean) => void;
+}
+
+export const SideNavLink = ({ item, setSidebarOpen }: SideNavLinkProps) => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t('sideNavBar.' + key);
 

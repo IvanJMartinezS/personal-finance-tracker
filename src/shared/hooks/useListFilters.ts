@@ -26,16 +26,16 @@ export const useListFilters = <T,>({
   const filterMonth = searchParams.get('month') || 'all';
 
   const setSearchQuery = (value: string) => {
-    setSearchParams(prev => { value ? prev.set('q', value) : prev.delete('q'); return prev; });
+    setSearchParams(prev => { if (value) prev.set('q', value); else prev.delete('q'); return prev; });
   };
   const setFilterCategory = (value: string) => {
-    setSearchParams(prev => { value !== 'all' ? prev.set('category', value) : prev.delete('category'); return prev; });
+    setSearchParams(prev => { if (value !== 'all') prev.set('category', value); else prev.delete('category'); return prev; });
   };
   const setFilterCurrency = (value: string) => {
-    setSearchParams(prev => { value !== 'all' ? prev.set('currency', value) : prev.delete('currency'); return prev; });
+    setSearchParams(prev => { if (value !== 'all') prev.set('currency', value); else prev.delete('currency'); return prev; });
   };
   const setFilterMonth = (value: string) => {
-    setSearchParams(prev => { value !== 'all' ? prev.set('month', value) : prev.delete('month'); return prev; });
+    setSearchParams(prev => { if (value !== 'all') prev.set('month', value); else prev.delete('month'); return prev; });
   };
   const clearFilters = () => setSearchParams({});
 

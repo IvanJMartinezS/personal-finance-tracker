@@ -12,13 +12,6 @@ type ToasterToast = ToastProps & {
   action?: ToastActionElement;
 };
 
-const actionTypes = {
-  ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
-  DISMISS_TOAST: "DISMISS_TOAST",
-  REMOVE_TOAST: "REMOVE_TOAST",
-} as const;
-
 let count = 0;
 
 function genId() {
@@ -26,7 +19,14 @@ function genId() {
   return count.toString();
 }
 
-type ActionType = typeof actionTypes;
+// Solo se usa como tipo (los valores en sí nunca se leen en runtime), así que
+// se declara directamente como tipo en vez de derivarlo de un objeto en runtime.
+type ActionType = {
+  ADD_TOAST: "ADD_TOAST";
+  UPDATE_TOAST: "UPDATE_TOAST";
+  DISMISS_TOAST: "DISMISS_TOAST";
+  REMOVE_TOAST: "REMOVE_TOAST";
+};
 
 type Action =
   | {

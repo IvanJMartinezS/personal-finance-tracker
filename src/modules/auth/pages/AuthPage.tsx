@@ -100,7 +100,7 @@ export default function AuthPage() {
       else if (mode === "register") await handleRegister();
       else if (mode === "forgotPassword") await handleForgotPassword();
       else if (mode === "resetPassword") await handleResetPassword();
-    } catch (error: any) {
+    } catch (error) {
       const errorKey = getErrorMessage(error);
       // Intentar traducir el error, si no encuentra la traducción, mostrar el mensaje directo
       const translatedError = i18nString(errorKey) || errorKey;

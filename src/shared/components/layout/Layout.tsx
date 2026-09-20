@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Header } from "@/shared/components/ui/Header";
+import { Header } from "@/shared/components/Header";
 import { SideNavBar } from "@/shared/components/ui/sideNavBar/SideNavBar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {

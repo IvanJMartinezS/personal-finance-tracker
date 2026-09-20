@@ -25,7 +25,7 @@ export const Dashboard = () => {
   const categoryExpenseData = useMemo(() => {
     const map = new Map<string, { name: string; value: number; color: string }>();
     (expenses ?? []).forEach(e => {
-      const cat = e.categories as any;
+      const cat = e.categories;
       const key = cat?.name ?? "Sin categoría";
       const existing = map.get(key);
       if (existing) existing.value += Number(e.amount_in_base);
@@ -36,8 +36,8 @@ export const Dashboard = () => {
 
   const recentTransactions = useMemo(() => {
     const all = [
-      ...(expenses ?? []).map(e => ({ ...e, _type: "expense" as const, _label: e.item, _cat: e.categories as any })),
-      ...(incomes ?? []).map(i => ({ ...i, _type: "income" as const, _label: i.source, _cat: i.categories as any })),
+      ...(expenses ?? []).map(e => ({ ...e, _type: "expense" as const, _label: e.item, _cat: e.categories })),
+      ...(incomes ?? []).map(i => ({ ...i, _type: "income" as const, _label: i.source, _cat: i.categories })),
     ];
     return all.sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5);
   }, [expenses, incomes]);

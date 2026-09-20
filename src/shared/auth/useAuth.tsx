@@ -48,4 +48,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// Exportar el hook junto al provider rompe Fast Refresh para este archivo,
+// pero separarlo cambiaría la ruta de import (`@/shared/auth/useAuth`) usada
+// en toda la app; no vale la pena el riesgo solo por una molestia de HMR.
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);

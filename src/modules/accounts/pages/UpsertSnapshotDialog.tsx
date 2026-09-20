@@ -10,9 +10,10 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { useUpsertSnapshot } from "../hooks/useUpsertSnapshot";
 import { useGetAccounts } from "../hooks/useGetAccounts";
+import { DEFAULT_YEAR, getElapsedMonthsInYear } from "@/lib/dateUtils";
 
-const YEAR = 2026;
-const currentMonth = new Date().getFullYear() === YEAR ? new Date().getMonth() + 1 : 12;
+const YEAR = DEFAULT_YEAR;
+const currentMonth = getElapsedMonthsInYear(YEAR);
 
 export const UpsertSnapshotDialog = () => {
   const i18nString = useModuleTranslation("accounts");

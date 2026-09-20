@@ -21,6 +21,15 @@ export const MONTHS = [
   { item: 'Diciembre', value: '12' },
 ] as const;
 
+/**
+ * Tasa de referencia COP → USD usada para estimar el equivalente en USD de
+ * montos registrados en COP (que no tienen una tasa de cambio propia
+ * asociada, a diferencia de los montos ya registrados en USD).
+ * Es una aproximación fija, no la tasa de mercado en tiempo real; centralizada
+ * aquí para no repetirla como número mágico en cada módulo que la necesita.
+ */
+export const REFERENCE_USD_TO_COP_RATE = 3700;
+
 export function formatCOP(amount: number): string {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',

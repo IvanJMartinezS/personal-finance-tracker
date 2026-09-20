@@ -1,14 +1,15 @@
 import {
   LayoutDashboard, TrendingDown, TrendingUp, Tags, Settings, BarChart3, Wallet,
+  type LucideIcon,
 } from "lucide-react";
 
-interface NavLin {
+export interface NavLinkItem {
   title: string;
   url: string;
-  icon: React.ComponentType<any>;
+  icon: LucideIcon;
 }
 
-export const NavLinks: NavLin[] = [
+export const NavLinks: NavLinkItem[] = [
   { title: "dashboard", url: "/home", icon: LayoutDashboard },
   { title: "expenses", url: "/expenses", icon: TrendingDown },
   { title: "incomes", url: "/incomes", icon: TrendingUp },
