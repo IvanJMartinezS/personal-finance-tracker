@@ -1,8 +1,10 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useAccountsSummary } from "../hooks/useAccountsSummary";
+import { useYearFilter } from "@/shared/hooks/useYearFilter";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Button } from "@/shared/components/ui/button";
+import { YearFilter } from "@/shared/components/YearFilter";
 import { Plus } from "lucide-react";
 import { AccountsSummaryCards } from "../components/AccountsSummaryCards";
 import { AccountsByCurrencySection } from "../components/AccountsByCurrencySection";
@@ -13,7 +15,8 @@ export const AccountsPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const { year, currentMonth, accounts, snapshotMap, currentTotals, monthlyTotals, grouped, isLoading } = useAccountsSummary();
+  const { year, years, setYear } = useYearFilter();
+  const { currentMonth, accounts, snapshotMap, currentTotals, monthlyTotals, grouped, isLoading } = useAccountsSummary(year);
 
   if (isLoading) {
     return (
@@ -26,22 +29,25 @@ export const AccountsPage = () => {
 
   const handleAddAccount = () => navigate("create", { state: { backgroundLocation: location } });
   const handleDeleteAccount = (id: string) => navigate(`delete/${id}`, { state: { backgroundLocation: location } });
-  const handleRegisterBalance = (accountId: string) => navigate(`snapshot/${accountId}`, { state: { backgroundLocation: location } });
+  const handleRegisterBalance = (accountId: string) => navigate(`snapshot/${accountId}`, { state: { backgroundLocation: location, year } });
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
           <p className="text-sm text-muted-foreground">
             {i18nString("subtitle")} · {new Date().toLocaleDateString("es-CO", { day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
-        <Button className="gap-2" onClick={handleAddAccount}>
-          <Plus className="h-4 w-4" />
-          {i18nString("newAccount")}
-        </Button>
+        <div className="flex items-center gap-2">
+          <YearFilter year={year} years={years} onChange={setYear} />
+          <Button className="gap-2" onClick={handleAddAccount}>
+            <Plus className="h-4 w-4" />
+            {i18nString("newAccount")}
+          </Button>
+        </div>
       </div>
 
       <AccountsSummaryCards

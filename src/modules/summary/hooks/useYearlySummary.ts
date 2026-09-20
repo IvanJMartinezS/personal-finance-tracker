@@ -1,11 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/shared/auth/useAuth";
-import { DEFAULT_YEAR } from "@/lib/dateUtils";
 import { REFERENCE_USD_TO_COP_RATE } from "@/lib/mock-data";
 import type { Category } from "@/types";
-
-const YEAR = DEFAULT_YEAR;
 
 export interface MonthlyCategoryData {
   amountCOP: number;
@@ -30,11 +27,11 @@ const emptyMonth = (): MonthSummary => ({
   totalUSD: 0,
 });
 
-export const useYearlySummary = () => {
+export const useYearlySummary = (year: number) => {
   const { user } = useAuth();
 
   return useQuery({
-    queryKey: ["yearly-summary", user?.id, YEAR],
+    queryKey: ["yearly-summary", user?.id, year],
     enabled: !!user,
     queryFn: async (): Promise<YearlySummary> => {
       // Fetch all expense categories for this user
@@ -52,8 +49,8 @@ export const useYearlySummary = () => {
         .from("expenses")
         .select("date, amount, amount_in_base, currency, exchange_rate, category_id")
         .eq("user_id", user!.id)
-        .gte("date", `${YEAR}-01-01`)
-        .lte("date", `${YEAR}-12-31`);
+        .gte("date", `${year}-01-01`)
+        .lte("date", `${year}-12-31`);
 
       if (expError) throw new Error(expError.message);
 

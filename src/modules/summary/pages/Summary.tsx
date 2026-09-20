@@ -3,14 +3,13 @@ import { useTranslation } from "react-i18next";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useYearlySummary } from "../hooks/useYearlySummary";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { YearFilter } from "@/shared/components/YearFilter";
+import { useYearFilter } from "@/shared/hooks/useYearFilter";
 import { formatCOP } from "@/lib/mock-data";
 import { cn } from "@/lib/utils";
-import { DEFAULT_YEAR, getElapsedMonthsInYear } from "@/lib/dateUtils";
+import { getElapsedMonthsInYear } from "@/lib/dateUtils";
 
-const YEAR = DEFAULT_YEAR;
 const MONTH_KEYS = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
-
-const currentMonth = getElapsedMonthsInYear(YEAR);
 
 function fmtUSD(val: number) {
   return val === 0 ? "—" : `$${val.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -24,11 +23,13 @@ export const Summary = () => {
   const { t } = useTranslation();
   const i18nString = useModuleTranslation("summary");
 
-  const { data, isLoading } = useYearlySummary();
+  const { year, years, setYear } = useYearFilter();
+  const { data, isLoading } = useYearlySummary(year);
+  const currentMonth = getElapsedMonthsInYear(year);
 
   const visibleMonths = useMemo(
     () => Array.from({ length: currentMonth }, (_, i) => i + 1),
-    []
+    [currentMonth]
   );
 
   if (isLoading) {
@@ -45,11 +46,14 @@ export const Summary = () => {
 
   return (
     <div className="space-y-4 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold">{i18nString("title", { year: YEAR })}</h1>
-        <p className="text-sm text-muted-foreground">
-          {i18nString("subtitle")} · {t("summary.monthsRegistered", { count: currentMonth })}
-        </p>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold">{i18nString("title", { year })}</h1>
+          <p className="text-sm text-muted-foreground">
+            {i18nString("subtitle")} · {t("summary.monthsRegistered", { count: currentMonth })}
+          </p>
+        </div>
+        <YearFilter year={year} years={years} onChange={setYear} />
       </div>
 
       <div className="rounded-lg border border-border/50 overflow-auto">

@@ -1,12 +1,9 @@
 import { useMemo } from "react";
 import { useGetAccounts } from "./useGetAccounts";
 import { useGetSnapshots } from "./useGetSnapshots";
-import { DEFAULT_YEAR, getElapsedMonthsInYear } from "@/lib/dateUtils";
+import { getElapsedMonthsInYear } from "@/lib/dateUtils";
 import { REFERENCE_USD_TO_COP_RATE } from "@/lib/mock-data";
 import type { Account, AccountSnapshot } from "../utils/types";
-
-const YEAR = DEFAULT_YEAR;
-const currentMonth = getElapsedMonthsInYear(YEAR);
 
 export function toUSD(amount: number, currency: string, rate = REFERENCE_USD_TO_COP_RATE): number {
   if (currency === "USD") return amount;
@@ -24,9 +21,10 @@ export function fmtUSD(val: number): string {
  * cuentas y sus snapshots. Separado de `AccountsPage` para que la página se
  * enfoque en el layout y esta lógica se pueda probar/reutilizar aparte.
  */
-export const useAccountsSummary = () => {
+export const useAccountsSummary = (year: number) => {
+  const currentMonth = getElapsedMonthsInYear(year);
   const { data: accounts, isLoading: loadingAccounts } = useGetAccounts();
-  const { data: snapshots, isLoading: loadingSnapshots } = useGetSnapshots(YEAR);
+  const { data: snapshots, isLoading: loadingSnapshots } = useGetSnapshots(year);
 
   // Lookup: accountId → month → snapshot
   const snapshotMap = useMemo(() => {
@@ -49,7 +47,7 @@ export const useAccountsSummary = () => {
       else ves += snap.amount;
     }
     return { usd, cop, ves, totalUSD: usd + cop / REFERENCE_USD_TO_COP_RATE };
-  }, [accounts, snapshotMap]);
+  }, [accounts, snapshotMap, currentMonth]);
 
   // Totales mensuales en USD para la tabla de historial
   const monthlyTotals = useMemo(() => {
@@ -62,7 +60,7 @@ export const useAccountsSummary = () => {
       }
       return { month: m, totalUSD: total };
     });
-  }, [accounts, snapshotMap]);
+  }, [accounts, snapshotMap, currentMonth]);
 
   // Cuentas agrupadas por moneda para el listado
   const grouped = useMemo(() => {
@@ -74,7 +72,7 @@ export const useAccountsSummary = () => {
   }, [accounts]);
 
   return {
-    year: YEAR,
+    year,
     currentMonth,
     accounts: accounts ?? [],
     snapshotMap,

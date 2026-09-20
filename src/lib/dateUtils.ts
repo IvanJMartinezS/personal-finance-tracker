@@ -1,14 +1,29 @@
 // Utilidades de fecha compartidas por los reportes anuales (resumen, cuentas).
 
 /**
- * Año de referencia usado por defecto en los reportes anuales (resumen y
- * cuentas) mientras no exista un selector de año en la interfaz.
- *
- * TODO(fase-2): reemplazar por el año que el usuario seleccione en un filtro,
- * en vez de un valor fijo. Centralizar esta constante aquí permite que ese
- * cambio se haga en un solo lugar en vez de en cada página que la usaba.
+ * Primer año con datos en la app. Define el límite inferior del selector de
+ * año en los reportes anuales (resumen y cuentas).
  */
-export const DEFAULT_YEAR = 2026;
+export const MIN_YEAR = 2026;
+
+/**
+ * Año seleccionado por defecto al entrar a un reporte anual: el año en curso,
+ * salvo que sea anterior a `MIN_YEAR` (en cuyo caso no habría datos aún).
+ */
+export function getDefaultYear(referenceDate: Date = new Date()): number {
+  return Math.max(referenceDate.getFullYear(), MIN_YEAR);
+}
+
+/**
+ * Años que se pueden elegir en el selector: desde `MIN_YEAR` hasta el año en
+ * curso (no tiene sentido ofrecer años futuros, todavía sin datos).
+ */
+export function getSelectableYears(referenceDate: Date = new Date()): number[] {
+  const lastYear = getDefaultYear(referenceDate);
+  const years: number[] = [];
+  for (let y = MIN_YEAR; y <= lastYear; y++) years.push(y);
+  return years;
+}
 
 /**
  * Calcula cuántos meses de `year` ya transcurrieron respecto a `referenceDate`.

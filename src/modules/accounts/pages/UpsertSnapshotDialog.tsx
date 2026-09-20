@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/shared/components/ui/dialog";
@@ -10,15 +11,20 @@ import { Textarea } from "@/shared/components/ui/textarea";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { useUpsertSnapshot } from "../hooks/useUpsertSnapshot";
 import { useGetAccounts } from "../hooks/useGetAccounts";
-import { DEFAULT_YEAR, getElapsedMonthsInYear } from "@/lib/dateUtils";
+import { getDefaultYear, getElapsedMonthsInYear } from "@/lib/dateUtils";
 
-const YEAR = DEFAULT_YEAR;
-const currentMonth = getElapsedMonthsInYear(YEAR);
+const MONTH_KEYS = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
 
 export const UpsertSnapshotDialog = () => {
+  const { t } = useTranslation();
   const i18nString = useModuleTranslation("accounts");
   const { accountId } = useParams<{ accountId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  // Año que el usuario tenía seleccionado en la página de cuentas al abrir
+  // este modal (ver `AccountsPage` → `handleRegisterBalance`).
+  const { year = getDefaultYear() } = (location.state as { year?: number }) ?? {};
+  const currentMonth = getElapsedMonthsInYear(year);
   const upsert = useUpsertSnapshot();
   const { data: accounts } = useGetAccounts();
   const [open, setOpen] = useState(true);
@@ -42,7 +48,7 @@ export const UpsertSnapshotDialog = () => {
     if (!accountId || !amount || submitted.current) return;
     submitted.current = true;
     upsert.mutate(
-      { account_id: accountId, amount: parseFloat(amount), year: YEAR, month: currentMonth, notes: notes || null },
+      { account_id: accountId, amount: parseFloat(amount), year, month: currentMonth, notes: notes || null },
       {
         onSuccess: () => { toast.success(i18nString("registerBalanceSuccess")); handleClose(); },
         onError: (e: Error) => { submitted.current = false; toast.error(i18nString("registerBalanceError"), { description: e.message }); },
@@ -61,6 +67,9 @@ export const UpsertSnapshotDialog = () => {
               ? `${i18nString("registerBalance")} · ${account.name} (${account.currency})`
               : i18nString("registerBalance")}
           </DialogTitle>
+          <p className="text-xs text-muted-foreground">
+            {t(`months.${MONTH_KEYS[currentMonth - 1]}`)} {year}
+          </p>
         </DialogHeader>
         <div className="grid gap-4 py-2">
           <div className="space-y-1.5">

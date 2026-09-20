@@ -1,5 +1,25 @@
 import { describe, expect, it } from 'vitest';
-import { getElapsedMonthsInYear } from './dateUtils';
+import { getDefaultYear, getElapsedMonthsInYear, getSelectableYears, MIN_YEAR } from './dateUtils';
+
+describe('getDefaultYear', () => {
+  it('devuelve el año en curso cuando ya hay datos disponibles', () => {
+    expect(getDefaultYear(new Date('2027-03-10T12:00:00'))).toBe(2027);
+  });
+
+  it('no baja de MIN_YEAR aunque el reloj marque un año anterior', () => {
+    expect(getDefaultYear(new Date('2024-01-01T12:00:00'))).toBe(MIN_YEAR);
+  });
+});
+
+describe('getSelectableYears', () => {
+  it('va desde MIN_YEAR hasta el año en curso, incluyendo ambos extremos', () => {
+    expect(getSelectableYears(new Date('2028-05-01T12:00:00'))).toEqual([2026, 2027, 2028]);
+  });
+
+  it('solo ofrece MIN_YEAR cuando el año en curso es anterior a MIN_YEAR', () => {
+    expect(getSelectableYears(new Date('2024-01-01T12:00:00'))).toEqual([MIN_YEAR]);
+  });
+});
 
 describe('getElapsedMonthsInYear', () => {
   it('devuelve el mes actual cuando el año consultado es el año en curso', () => {
