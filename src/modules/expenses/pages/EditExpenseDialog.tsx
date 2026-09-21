@@ -18,6 +18,7 @@ import type { AppError } from "@/lib/errorMessages";
 import { useUpdateExpense } from "../hooks/useUpdateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useGetExpenses } from "../hooks/useGetExpenses";
+import { useNotifyBudgetUsage } from "@/modules/budgets/hooks/useNotifyBudgetUsage";
 import { ExpenseForm } from "../components/ExpenseForm";
 import type { Expense } from "@/types";
 
@@ -27,6 +28,7 @@ export const EditExpenseDialog = () => {
   const i18nString = useModuleTranslation("expenses");
   const navigate = useNavigate();
   const updateExpense = useUpdateExpense();
+  const notifyBudgetUsage = useNotifyBudgetUsage();
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
   const [open, setOpen] = useState(true);
   const submitted = useRef(false);
@@ -91,6 +93,7 @@ export const EditExpenseDialog = () => {
       {
         onSuccess: () => {
           toast.success(i18nString("updateSuccess"));
+          notifyBudgetUsage(data.category_id, data.date);
           handleClose();
         },
         onError: (error: AppError) => {

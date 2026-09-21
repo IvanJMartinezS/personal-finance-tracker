@@ -15,6 +15,7 @@ import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchem
 import type { AppError } from "@/lib/errorMessages";
 import { useCreateExpense } from "../hooks/useGetCreateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
+import { useNotifyBudgetUsage } from "@/modules/budgets/hooks/useNotifyBudgetUsage";
 import { ExpenseForm } from "../components/ExpenseForm";
 
 export const CreateExpenseDialog = () => {
@@ -22,6 +23,7 @@ export const CreateExpenseDialog = () => {
   const i18nString = useModuleTranslation("expenses");
   const navigate = useNavigate();
   const createExpense = useCreateExpense();
+  const notifyBudgetUsage = useNotifyBudgetUsage();
   const [open, setOpen] = useState(true);
   const submitted = useRef(false);
 
@@ -68,6 +70,7 @@ export const CreateExpenseDialog = () => {
       {
         onSuccess: () => {
           toast.success(i18nString("createSuccess"));
+          notifyBudgetUsage(data.category_id, data.date);
           reset();
           handleClose();
         },

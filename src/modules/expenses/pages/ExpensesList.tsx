@@ -32,6 +32,7 @@ export const ExpensesList = () => {
     filterCategory, setFilterCategory,
     filterCurrency, setFilterCurrency,
     filterMonth, setFilterMonth,
+    filterYear, setFilterYear,
     filteredItems: filteredExpenses,
     totalFiltered,
     clearFilters,
@@ -48,6 +49,7 @@ export const ExpensesList = () => {
     filterCategory, setFilterCategory,
     filterCurrency, setFilterCurrency,
     filterMonth, setFilterMonth,
+    filterYear, setFilterYear,
     categories: categories ?? [],
   });
 

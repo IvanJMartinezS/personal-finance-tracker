@@ -8,6 +8,7 @@ import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useGetIncomes } from "@/modules/incomes/hooks/useGetIncomes";
 import { useDashboardTotals } from "../hooks/useDashboardTotals";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+import { DashboardBudgetsCard } from "@/modules/budgets/components/DashboardBudgetsCard";
 
 // Load only the 10 most recent records for the dashboard list
 const RECENT_LIMIT = 10;
@@ -72,32 +73,36 @@ export const Dashboard = () => {
         </div>
       </div>
 
-      {categoryExpenseData.length > 0 && (
-        <Card className="border-border/50">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">{i18nString('expensesPerCategory')}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={categoryExpenseData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
-                  {categoryExpenseData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
-                </Pie>
-                <Tooltip formatter={(value: number) => formatCOP(value)} />
-              </PieChart>
-            </ResponsiveContainer>
-            <div className="mt-2 grid grid-cols-1 gap-1.5">
-              {categoryExpenseData.map(cat => (
-                <div key={cat.name} className="flex items-center gap-1.5 text-xs">
-                  <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
-                  <span className="text-muted-foreground truncate">{cat.name}</span>
-                  <span className="ml-auto money-font text-foreground">{formatCOP(cat.value)}</span>
-                </div>
-              ))}
-            </div> 
-          </CardContent>
-        </Card>
-      )}
+      <div className="grid gap-4 lg:grid-cols-2">
+        {categoryExpenseData.length > 0 && (
+          <Card className="border-border/50">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium">{i18nString('expensesPerCategory')}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie data={categoryExpenseData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
+                    {categoryExpenseData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
+                  </Pie>
+                  <Tooltip formatter={(value: number) => formatCOP(value)} />
+                </PieChart>
+              </ResponsiveContainer>
+              <div className="mt-2 grid grid-cols-1 gap-1.5">
+                {categoryExpenseData.map(cat => (
+                  <div key={cat.name} className="flex items-center gap-1.5 text-xs">
+                    <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
+                    <span className="text-muted-foreground truncate">{cat.name}</span>
+                    <span className="ml-auto money-font text-foreground">{formatCOP(cat.value)}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <DashboardBudgetsCard />
+      </div>
 
       <Card className="border-border/50">
         <CardHeader className="pb-3">

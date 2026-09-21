@@ -31,6 +31,7 @@ export const IncomeList = () => {
     filterCategory, setFilterCategory,
     filterCurrency, setFilterCurrency,
     filterMonth, setFilterMonth,
+    filterYear, setFilterYear,
     filteredItems: filteredIncomes,
     totalFiltered,
     clearFilters,
@@ -47,6 +48,7 @@ export const IncomeList = () => {
     filterCategory, setFilterCategory,
     filterCurrency, setFilterCurrency,
     filterMonth, setFilterMonth,
+    filterYear, setFilterYear,
     categories: categories ?? [],
   });
 

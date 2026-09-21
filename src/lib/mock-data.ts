@@ -30,6 +30,18 @@ export const MONTHS = [
  */
 export const REFERENCE_USD_TO_COP_RATE = 3700;
 
+/**
+ * Equivalente en USD de un gasto/ingreso: si ya está en USD se usa su monto
+ * original; si está en otra moneda (típicamente COP) se estima dividiendo su
+ * equivalente en la moneda base (`amount_in_base`) por la tasa de referencia.
+ * Centralizado aquí porque lo usan el resumen anual y el presupuesto.
+ */
+export function toUsdEquivalent(entry: { currency: string; amount: number; amount_in_base: number }): number {
+  return entry.currency === "USD"
+    ? Number(entry.amount)
+    : Number(entry.amount_in_base) / REFERENCE_USD_TO_COP_RATE;
+}
+
 export function formatCOP(amount: number): string {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',

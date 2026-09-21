@@ -63,4 +63,21 @@ export class BudgetsService {
     const { error } = await supabase.from("budgets").delete().eq("id", id);
     if (error) throw new Error(`Error al eliminar presupuesto: ${error.message}`);
   }
+
+  /**
+   * Obtiene el presupuesto de una categoría puntual, o `null` si no tiene uno
+   * asignado. Usado al guardar un gasto, para saber si hay que avisar cuánto
+   * queda disponible de esa categoría.
+   */
+  async getBudgetForCategory(userId: string, categoryId: string): Promise<Budget | null> {
+    const { data, error } = await supabase
+      .from("budgets")
+      .select("*, categories(name, color, type)")
+      .eq("user_id", userId)
+      .eq("category_id", categoryId)
+      .maybeSingle();
+
+    if (error) throw new Error(`Error al obtener presupuesto de la categoría: ${error.message}`);
+    return data as Budget | null;
+  }
 }

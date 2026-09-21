@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import type { FilterConfig } from '@/shared/components/Filters';
 import type { Category, Currency, Month } from '@/types';
 import { CURRENCIES, MONTHS } from '@/lib/mock-data';
+import { getSelectableYears } from '@/lib/dateUtils';
 
 interface UseListFilterConfigsParams {
   filterCategory: string;
@@ -10,6 +11,8 @@ interface UseListFilterConfigsParams {
   setFilterCurrency: (value: string) => void;
   filterMonth: string;
   setFilterMonth: (value: string) => void;
+  filterYear: string;
+  setFilterYear: (value: string) => void;
   categories: Category[];
 }
 
@@ -20,6 +23,8 @@ export const useListFilterConfigs = ({
   setFilterCurrency,
   filterMonth,
   setFilterMonth,
+  filterYear,
+  setFilterYear,
   categories,
 }: UseListFilterConfigsParams) => {
   return useMemo<FilterConfig[]>(
@@ -54,6 +59,18 @@ export const useListFilterConfigs = ({
         className: 'w-[120px]',
       },
       {
+        id: 'year',
+        label: 'Año',
+        value: filterYear,
+        onChange: setFilterYear,
+        options: getSelectableYears(),
+        placeholder: 'Año',
+        getOptionKey: (y: number) => String(y),
+        getOptionValue: (y: number) => String(y),
+        renderOption: (y: number) => <>{y}</>,
+        className: 'w-[100px]',
+      },
+      {
         id: 'month',
         label: 'Mes',
         value: filterMonth,
@@ -66,6 +83,6 @@ export const useListFilterConfigs = ({
         className: 'w-[120px]',
       },
     ],
-    [filterCategory, setFilterCategory, filterCurrency, setFilterCurrency, filterMonth, setFilterMonth, categories]
+    [filterCategory, setFilterCategory, filterCurrency, setFilterCurrency, filterMonth, setFilterMonth, filterYear, setFilterYear, categories]
   );
 };

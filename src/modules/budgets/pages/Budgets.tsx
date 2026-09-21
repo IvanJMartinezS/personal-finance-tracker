@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/shared/components/ui/card";
 import { BudgetsListHeader } from "../components/BudgetsListHeader";
 import { BudgetsListSkeleton } from "../components/BudgetsListSkeleton";
 import { BudgetRow } from "../components/BudgetRow";
+import { BudgetsHistorySection } from "../components/BudgetsHistorySection";
 import { CreateBudgetDialog } from "./CreateBudgetDialog";
 import { EditBudgetDialog } from "./EditBudgetDialog";
 import { DeleteBudgetButton } from "./DeleteBudgetButton";
@@ -40,6 +41,8 @@ export const Budgets = () => {
             )}
           </CardContent>
         </Card>
+
+        <BudgetsHistorySection />
       </div>
 
       {isCreateDialog && <CreateBudgetDialog />}

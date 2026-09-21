@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/shared/auth/useAuth";
-import { REFERENCE_USD_TO_COP_RATE } from "@/lib/mock-data";
+import { toUsdEquivalent } from "@/lib/mock-data";
 import type { Category } from "@/types";
 
 export interface MonthlyCategoryData {
@@ -70,11 +70,7 @@ export const useYearlySummary = (year: number) => {
         }
 
         const amountInBase = Number(exp.amount_in_base);
-        // Gastos en USD: el monto original ya está en USD.
-        // Gastos en COP (u otra moneda sin tasa propia): se estima con la tasa de referencia.
-        const amountUSD = exp.currency === "USD"
-          ? Number(exp.amount)
-          : amountInBase / REFERENCE_USD_TO_COP_RATE;
+        const amountUSD = toUsdEquivalent(exp);
 
 
         ms.byCategory[catId].amountCOP += amountInBase;
