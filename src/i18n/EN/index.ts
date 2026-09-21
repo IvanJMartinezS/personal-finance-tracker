@@ -313,8 +313,16 @@ export const EN = {
   },
 
   filters: {
-    all: 'Todas',
+    all: 'All',
     clearAll: 'Clear',
+    category: 'Category',
+    allCategories: 'Categorie',
+    currency: 'Currency',
+    allCurrencies: 'Currencie',
+    year: 'Year',
+    allYears: 'Year',
+    month: 'Month',
+    allMonths: 'Month',
   },
 
   schemas: {

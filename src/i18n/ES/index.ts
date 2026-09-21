@@ -313,6 +313,14 @@ export const ES = {
   filters: {
     all: 'Todas',
     clearAll: 'Borrar Filtro',
+    category: 'Categoría',
+    allCategories: 'Categoría',
+    currency: 'Moneda',
+    allCurrencies: 'Moneda',
+    year: 'Año',
+    allYears: 'Año',
+    month: 'Mes',
+    allMonths: 'Mes',
   },
 
   schemas: {

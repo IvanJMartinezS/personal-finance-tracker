@@ -20,6 +20,8 @@ export interface FilterConfig<T = any> {
   getOptionValue: (option: T) => string;
   renderOption: (option: T) => React.ReactNode;
   className?: string;
+  /** Texto de la opción "todos" de este filtro en particular (p. ej. "Todas las categorías"); si no se define, usa el genérico "Todas". */
+  allLabel?: string;
 }
 
 interface FiltersProps {
@@ -66,7 +68,7 @@ export const Filters = ({
           getKey={filter.getOptionKey}
           getValue={filter.getOptionValue}
           renderLabel={filter.renderOption}
-          allLabel={i18nString('all')}
+          allLabel={filter.allLabel ?? i18nString('all')}
         />
       ))}
 

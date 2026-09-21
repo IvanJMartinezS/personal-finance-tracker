@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { FilterConfig } from '@/shared/components/Filters';
 import type { Category, Currency, Month } from '@/types';
 import { CURRENCIES, MONTHS } from '@/lib/mock-data';
@@ -27,15 +28,18 @@ export const useListFilterConfigs = ({
   setFilterYear,
   categories,
 }: UseListFilterConfigsParams) => {
+  const { t } = useTranslation();
+
   return useMemo<FilterConfig[]>(
     () => [
       {
         id: 'category',
-        label: 'Categoría',
+        label: t('filters.category'),
         value: filterCategory,
         onChange: setFilterCategory,
         options: categories,
-        placeholder: 'Categoría',
+        placeholder: t('filters.category'),
+        allLabel: t('filters.allCategories'),
         getOptionKey: (cat: Category) => cat.id,
         getOptionValue: (cat: Category) => cat.id,
         renderOption: (cat: Category) => (
@@ -48,11 +52,12 @@ export const useListFilterConfigs = ({
       },
       {
         id: 'currency',
-        label: 'Moneda',
+        label: t('filters.currency'),
         value: filterCurrency,
         onChange: setFilterCurrency,
         options: CURRENCIES,
-        placeholder: 'Moneda',
+        placeholder: t('filters.currency'),
+        allLabel: t('filters.allCurrencies'),
         getOptionKey: (cur: Currency) => cur.code,
         getOptionValue: (cur: Currency) => cur.code,
         renderOption: (cur: Currency) => <>{cur.code}</>,
@@ -60,11 +65,12 @@ export const useListFilterConfigs = ({
       },
       {
         id: 'year',
-        label: 'Año',
+        label: t('filters.year'),
         value: filterYear,
         onChange: setFilterYear,
         options: getSelectableYears(),
-        placeholder: 'Año',
+        placeholder: t('filters.year'),
+        allLabel: t('filters.allYears'),
         getOptionKey: (y: number) => String(y),
         getOptionValue: (y: number) => String(y),
         renderOption: (y: number) => <>{y}</>,
@@ -72,17 +78,18 @@ export const useListFilterConfigs = ({
       },
       {
         id: 'month',
-        label: 'Mes',
+        label: t('filters.month'),
         value: filterMonth,
         onChange: setFilterMonth,
         options: MONTHS,
-        placeholder: 'Mes',
+        placeholder: t('filters.month'),
+        allLabel: t('filters.allMonths'),
         getOptionKey: (m: Month) => m.value,
         getOptionValue: (m: Month) => m.value,
         renderOption: (m: Month) => <>{m.item}</>,
         className: 'w-[120px]',
       },
     ],
-    [filterCategory, setFilterCategory, filterCurrency, setFilterCurrency, filterMonth, setFilterMonth, filterYear, setFilterYear, categories]
+    [filterCategory, setFilterCategory, filterCurrency, setFilterCurrency, filterMonth, setFilterMonth, filterYear, setFilterYear, categories, t]
   );
 };
