@@ -7,6 +7,7 @@ import { BudgetsListHeader } from "../components/BudgetsListHeader";
 import { BudgetsListSkeleton } from "../components/BudgetsListSkeleton";
 import { BudgetRow } from "../components/BudgetRow";
 import { BudgetsHistorySection } from "../components/BudgetsHistorySection";
+import { sumBudgetsUSD } from "../utils/sumBudgetsUSD";
 import { CreateBudgetDialog } from "./CreateBudgetDialog";
 import { EditBudgetDialog } from "./EditBudgetDialog";
 import { DeleteBudgetButton } from "./DeleteBudgetButton";
@@ -15,10 +16,7 @@ export const Budgets = () => {
   const location = useLocation();
   const i18nString = useModuleTranslation("budgets");
   const { data: budgets, isLoading } = useGetBudgets();
-  const totalAmountUSD = useMemo(
-    () => budgets.reduce((sum, b) => sum + b.amount_usd, 0),
-    [budgets]
-  );
+  const totalAmountUSD = useMemo(() => sumBudgetsUSD(budgets), [budgets]);
 
   // Verificar si estamos en una ruta de diálogo (fallback para navegación
   // directa/recarga sobre una subruta de modal — ver Modals.tsx para el caso

@@ -7,11 +7,13 @@ const MONTHS_SHORT = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "S
 interface MonthlyHistoryTableProps {
   year: number;
   currentMonth: number;
-  monthlyTotals: { month: number; totalUSD: number }[];
+  /** `totalUSD: null` = sin datos ese mes (aún no hay ningún saldo registrado) → se muestra "—". */
+  monthlyTotals: { month: number; totalUSD: number | null }[];
   title: string;
   monthLabel: string;
   totalUSDLabel: string;
   diffLabel: string;
+  note?: string;
 }
 
 export const MonthlyHistoryTable = ({
@@ -22,6 +24,7 @@ export const MonthlyHistoryTable = ({
   monthLabel,
   totalUSDLabel,
   diffLabel,
+  note,
 }: MonthlyHistoryTableProps) => {
   if (monthlyTotals.length <= 1) return null;
 
@@ -43,7 +46,7 @@ export const MonthlyHistoryTable = ({
             <tbody>
               {monthlyTotals.map((row, idx) => {
                 const prev = idx > 0 ? monthlyTotals[idx - 1].totalUSD : null;
-                const diff = prev !== null ? row.totalUSD - prev : null;
+                const diff = (prev !== null && row.totalUSD !== null) ? row.totalUSD - prev : null;
                 const isCurrent = row.month === currentMonth;
                 return (
                   <tr
@@ -54,8 +57,13 @@ export const MonthlyHistoryTable = ({
                     )}
                   >
                     <td className="px-4 py-2.5">{MONTHS_SHORT[row.month - 1]} {year}</td>
-                    <td className="px-4 py-2.5 text-right money-font">
-                      {row.totalUSD > 0 ? fmtUSD(row.totalUSD) : "—"}
+                    <td
+                      className={cn(
+                        "px-4 py-2.5 text-right money-font",
+                        row.totalUSD !== null && row.totalUSD < 0 && "text-destructive"
+                      )}
+                    >
+                      {row.totalUSD === null ? "—" : fmtUSD(row.totalUSD)}
                     </td>
                     <td className={cn(
                       "px-4 py-2.5 text-right money-font",
@@ -71,6 +79,7 @@ export const MonthlyHistoryTable = ({
           </table>
         </div>
       </CardContent>
+      {note && <p className="px-4 pb-3 text-xs text-muted-foreground">{note}</p>}
     </Card>
   );
 };

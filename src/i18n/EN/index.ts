@@ -283,6 +283,10 @@ export const EN = {
     monthlyHistory: 'Monthly history',
     month: 'Month',
     diff: 'Difference',
+    budgetLabel: 'Budget',
+    budgetSummarySubtitle: "Configured monthly total — not an account",
+    availableUSD: 'Available (USD)',
+    availableUSDNote: "* This is your total account balance that month, minus your configured monthly budget ({{amount}}). A negative value is normal early in the month, before you log your balances.",
   },
 
   summary: {

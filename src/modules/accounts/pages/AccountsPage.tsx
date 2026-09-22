@@ -1,13 +1,18 @@
+import { useMemo } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useAccountsSummary } from "../hooks/useAccountsSummary";
 import { useYearFilter } from "@/shared/hooks/useYearFilter";
+import { useGetBudgets } from "@/modules/budgets/hooks/useGetBudgets";
+import { sumBudgetsUSD } from "@/modules/budgets/utils/sumBudgetsUSD";
+import { formatCurrency } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { Button } from "@/shared/components/ui/button";
 import { YearFilter } from "@/shared/components/YearFilter";
 import { Plus } from "lucide-react";
 import { AccountsSummaryCards } from "../components/AccountsSummaryCards";
 import { AccountsByCurrencySection } from "../components/AccountsByCurrencySection";
+import { BudgetSummaryCard } from "../components/BudgetSummaryCard";
 import { MonthlyHistoryTable } from "../components/MonthlyHistoryTable";
 
 export const AccountsPage = () => {
@@ -17,8 +22,22 @@ export const AccountsPage = () => {
 
   const { year, years, setYear } = useYearFilter();
   const { currentMonth, accounts, snapshotMap, currentTotals, monthlyTotals, grouped, isLoading } = useAccountsSummary(year);
+  const { data: budgets, isLoading: budgetsLoading } = useGetBudgets();
+  const budgetTotalUSD = useMemo(() => sumBudgetsUSD(budgets), [budgets]);
 
-  if (isLoading) {
+  // Historial mensual, pero mostrando lo disponible por fuera del presupuesto
+  // (total de cuentas de ese mes − presupuesto configurado), no el total
+  // crudo. `null` = todavía no hay ningún saldo registrado ese mes (se
+  // muestra "—"); no se confunde con un disponible que dio negativo de verdad.
+  const availableMonthlyTotals = useMemo(
+    () => monthlyTotals.map(({ month, totalUSD }) => ({
+      month,
+      totalUSD: totalUSD === 0 ? null : totalUSD - budgetTotalUSD,
+    })),
+    [monthlyTotals, budgetTotalUSD]
+  );
+
+  if (isLoading || budgetsLoading) {
     return (
       <div className="space-y-4">
         <Skeleton className="h-10 w-48" />
@@ -71,14 +90,21 @@ export const AccountsPage = () => {
         />
       ))}
 
+      <BudgetSummaryCard
+        totalUSD={budgetTotalUSD}
+        label={i18nString("budgetLabel")}
+        subtitle={i18nString("budgetSummarySubtitle")}
+      />
+
       <MonthlyHistoryTable
         year={year}
         currentMonth={currentMonth}
-        monthlyTotals={monthlyTotals}
+        monthlyTotals={availableMonthlyTotals}
         title={i18nString("monthlyHistory")}
         monthLabel={i18nString("month")}
-        totalUSDLabel={i18nString("totalUSD")}
+        totalUSDLabel={i18nString("availableUSD")}
         diffLabel={i18nString("diff")}
+        note={budgetTotalUSD > 0 ? i18nString("availableUSDNote", { amount: formatCurrency(budgetTotalUSD, "USD") }) : undefined}
       />
 
       {accounts.length === 0 && (

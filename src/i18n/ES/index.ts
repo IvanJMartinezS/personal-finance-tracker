@@ -281,6 +281,10 @@ export const ES = {
     monthlyHistory: 'Historial mensual',
     month: 'Mes',
     diff: 'Diferencia',
+    budgetLabel: 'Presupuesto',
+    budgetSummarySubtitle: 'Total mensual configurado — no es una cuenta',
+    availableUSD: 'Disponible (USD)',
+    availableUSDNote: '* Es el total de tus cuentas ese mes, menos tu presupuesto mensual configurado ({{amount}}). Un valor negativo es normal al empezar el mes, antes de registrar tus saldos.',
   },
 
   summary: {
