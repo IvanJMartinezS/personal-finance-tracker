@@ -59,7 +59,7 @@ export const ExpensesList = () => {
   // una tasa al registrarlo, estimado donde no) — no convierte el total en
   // USD de una sola vez, para no perder esa precisión por transacción.
   const totalFilteredCOP = useMemo(
-    () => filteredExpenses.reduce((sum, e) => sum + toCopEquivalent(e), 0),
+    () => filteredExpenses.reduce((sum, e) => sum + (toCopEquivalent(e) ?? 0), 0),
     [filteredExpenses]
   );
 

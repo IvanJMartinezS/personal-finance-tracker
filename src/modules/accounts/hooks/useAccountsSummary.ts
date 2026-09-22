@@ -2,13 +2,22 @@ import { useMemo } from "react";
 import { useGetAccounts } from "./useGetAccounts";
 import { useGetSnapshots } from "./useGetSnapshots";
 import { getElapsedMonthsInYear } from "@/lib/dateUtils";
-import { REFERENCE_USD_TO_COP_RATE } from "@/lib/mock-data";
 import type { Account, AccountSnapshot } from "../utils/types";
 
-export function toUSD(amount: number, currency: string, rate = REFERENCE_USD_TO_COP_RATE): number {
+/**
+ * Convierte el saldo de una cuenta a USD.
+ * - USD: el mismo monto, no hace falta tasa.
+ * - Cualquier otra moneda: se divide por `rate` (la tasa dada al registrar
+ *   ese saldo — ver UpsertSnapshotDialog, donde es obligatoria). Si el
+ *   snapshot no tiene una tasa registrada (solo puede pasar en saldos
+ *   guardados antes de que existiera este campo), no hay forma confiable de
+ *   convertir → `null`. No se usa ninguna tasa fija de referencia para
+ *   adivinarlo.
+ */
+export function toUSD(amount: number, currency: string, rate?: number | null): number | null {
   if (currency === "USD") return amount;
-  if (currency === "COP") return amount / rate;
-  return 0; // VES — no reliable conversion without stored rate
+  if (!rate) return null;
+  return amount / rate;
 }
 
 export function fmtUSD(val: number): string {
@@ -38,15 +47,21 @@ export const useAccountsSummary = (year: number) => {
 
   // Totales del mes actual por moneda
   const currentTotals = useMemo(() => {
-    let usd = 0, cop = 0, ves = 0;
+    let usd = 0, cop = 0, ves = 0, copUSD = 0, totalUSD = 0;
     for (const acc of accounts ?? []) {
       const snap = snapshotMap[acc.id]?.[currentMonth];
       if (!snap) continue;
+      // Se convierte cuenta por cuenta (no el agregado de una sola vez), para
+      // no perder la precisión de las cuentas que sí tienen una tasa propia
+      // registrada. Sin tasa registrada, esa cuenta no aporta al total USD
+      // (en vez de estimarla con una tasa fija).
+      const converted = toUSD(snap.amount, acc.currency, snap.exchange_rate) ?? 0;
       if (acc.currency === "USD") usd += snap.amount;
-      else if (acc.currency === "COP") cop += snap.amount;
+      else if (acc.currency === "COP") { cop += snap.amount; copUSD += converted; }
       else ves += snap.amount;
+      totalUSD += converted;
     }
-    return { usd, cop, ves, totalUSD: usd + cop / REFERENCE_USD_TO_COP_RATE };
+    return { usd, cop, ves, copUSD, totalUSD };
   }, [accounts, snapshotMap, currentMonth]);
 
   // Totales mensuales en USD para la tabla de historial
@@ -56,7 +71,7 @@ export const useAccountsSummary = (year: number) => {
       let total = 0;
       for (const acc of accounts ?? []) {
         const snap = snapshotMap[acc.id]?.[m];
-        if (snap) total += toUSD(snap.amount, acc.currency);
+        if (snap) total += toUSD(snap.amount, acc.currency, snap.exchange_rate) ?? 0;
       }
       return { month: m, totalUSD: total };
     });

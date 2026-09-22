@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   calculateAmountInBaseUSD,
   formatOtherCurrencyEquivalent,
-  REFERENCE_USD_TO_COP_RATE,
   toCopEquivalent,
   toUsdEquivalent,
 } from './mock-data';
@@ -33,14 +32,14 @@ describe('toCopEquivalent', () => {
     expect(toCopEquivalent({ currency: 'COP', amount: 400000, amount_in_base: 100 })).toBe(400000);
   });
 
-  it('para un gasto en USD sin tasa específica (guardada como 1), estima con la tasa de referencia', () => {
-    expect(toCopEquivalent({ currency: 'USD', amount: 100, amount_in_base: 100, exchange_rate: 1 }))
-      .toBe(100 * REFERENCE_USD_TO_COP_RATE);
+  it('para un gasto en USD sin tasa real registrada (guardada como 1), no hay forma de convertir → null', () => {
+    // Ya no se usa ninguna tasa fija de referencia para adivinarlo — solo
+    // puede pasar con gastos guardados antes de que la tasa fuera obligatoria.
+    expect(toCopEquivalent({ currency: 'USD', amount: 100, amount_in_base: 100, exchange_rate: 1 })).toBeNull();
   });
 
-  it('sin exchange_rate provisto, también estima con la tasa de referencia', () => {
-    expect(toCopEquivalent({ currency: 'USD', amount: 100, amount_in_base: 100 }))
-      .toBe(100 * REFERENCE_USD_TO_COP_RATE);
+  it('sin exchange_rate provisto, tampoco hay forma de convertir → null', () => {
+    expect(toCopEquivalent({ currency: 'USD', amount: 100, amount_in_base: 100 })).toBeNull();
   });
 
   it('para un gasto en USD con una tasa específica dada, usa esa tasa para un valor exacto', () => {
@@ -52,10 +51,14 @@ describe('toCopEquivalent', () => {
 });
 
 describe('formatOtherCurrencyEquivalent', () => {
-  it('para un gasto en USD, muestra su equivalente en COP', () => {
-    // 4.22 USD * 3700 ≈ $15.614 COP
-    const result = formatOtherCurrencyEquivalent({ currency: 'USD', amount: 4.22, amount_in_base: 4.22 });
+  it('para un gasto en USD con tasa registrada, muestra su equivalente exacto en COP', () => {
+    const result = formatOtherCurrencyEquivalent({ currency: 'USD', amount: 4.22, amount_in_base: 4.22, exchange_rate: 3700 });
     expect(result).toContain('15.614');
+  });
+
+  it('para un gasto en USD sin tasa registrada, muestra "—" en vez de un estimado', () => {
+    const result = formatOtherCurrencyEquivalent({ currency: 'USD', amount: 4.22, amount_in_base: 4.22, exchange_rate: 1 });
+    expect(result).toBe('—');
   });
 
   it('para un gasto en COP, muestra su equivalente en USD', () => {

@@ -58,7 +58,7 @@ export const IncomeList = () => {
   // una tasa al registrarlo, estimado donde no) — no convierte el total en
   // USD de una sola vez, para no perder esa precisión por transacción.
   const totalFilteredCOP = useMemo(
-    () => filteredIncomes.reduce((sum, i) => sum + toCopEquivalent(i), 0),
+    () => filteredIncomes.reduce((sum, i) => sum + (toCopEquivalent(i) ?? 0), 0),
     [filteredIncomes]
   );
 

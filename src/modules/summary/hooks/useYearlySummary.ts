@@ -69,10 +69,12 @@ export const useYearlySummary = (year: number) => {
           ms.byCategory[catId] = { amountCOP: 0, amountUSD: 0 };
         }
 
-        // USD es la moneda base (exacto siempre); COP se estima con la tasa
-        // de referencia para gastos que no se registraron en COP.
+        // USD es la moneda base (exacto siempre). COP es exacto si el gasto
+        // se registró en COP, o si se registró en USD con su propia tasa; si
+        // no hay una tasa real registrada (solo gastos previos a que la tasa
+        // fuera obligatoria), no se puede convertir — no suma al total COP.
         const amountUSD = toUsdEquivalent(exp);
-        const amountCOP = toCopEquivalent(exp);
+        const amountCOP = toCopEquivalent(exp) ?? 0;
 
         ms.byCategory[catId].amountCOP += amountCOP;
         ms.byCategory[catId].amountUSD += amountUSD;

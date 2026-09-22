@@ -10,10 +10,10 @@ interface CurrencyTotals {
 
 /**
  * Suma, para toda la tabla, el total en USD (moneda base, exacto) y en COP
- * (exacto por fila donde se conoce la tasa, estimado donde no — ver
- * `toCopEquivalent`). Suma por fila en vez de convertir el total agregado de
- * una sola vez, para no perder la precisión de las filas que sí tienen una
- * tasa exacta registrada.
+ * (exacto por fila donde se conoce la tasa; las filas sin una tasa real
+ * registrada no aportan al total COP — ver `toCopEquivalent`). Suma por fila
+ * en vez de convertir el total agregado de una sola vez, para no perder la
+ * precisión de las filas que sí tienen una tasa exacta registrada.
  */
 const fetchTotals = async (table: 'expenses' | 'incomes', userId: string): Promise<CurrencyTotals> => {
   const { data, error } = await supabase
@@ -25,7 +25,7 @@ const fetchTotals = async (table: 'expenses' | 'incomes', userId: string): Promi
   return (data ?? []).reduce(
     (totals, row) => ({
       usd: totals.usd + Number(row.amount_in_base),
-      cop: totals.cop + toCopEquivalent(row),
+      cop: totals.cop + (toCopEquivalent(row) ?? 0),
     }),
     { usd: 0, cop: 0 }
   );

@@ -19,6 +19,8 @@ export interface AccountSnapshot {
   amount: number;
   year: number;
   month: number;
+  /** Tasa (COP por USD) dada al registrar este saldo, para cuentas que no están en USD. `null` en cuentas USD o en snapshots previos a esta funcionalidad. */
+  exchange_rate: number | null;
   notes: string | null;
   created_at: string;
   updated_at: string;
@@ -31,5 +33,6 @@ export type UpsertSnapshotInput = {
   amount: number;
   year: number;
   month: number;
+  exchange_rate?: number | null;
   notes?: string | null;
 };

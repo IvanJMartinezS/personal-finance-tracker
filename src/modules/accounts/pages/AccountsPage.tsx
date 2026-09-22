@@ -72,6 +72,7 @@ export const AccountsPage = () => {
       <AccountsSummaryCards
         usd={currentTotals.usd}
         cop={currentTotals.cop}
+        copUSD={currentTotals.copUSD}
         totalUSD={currentTotals.totalUSD}
         totalUSDLabel={i18nString("totalUSD")}
       />

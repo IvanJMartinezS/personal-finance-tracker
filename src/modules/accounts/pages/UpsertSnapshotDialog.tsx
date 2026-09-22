@@ -31,9 +31,12 @@ export const UpsertSnapshotDialog = () => {
   const submitted = useRef(false);
 
   const account = accounts?.find((a) => a.id === accountId);
+  const needsExchangeRate = account?.currency !== "USD";
 
   const [amount, setAmount] = useState("");
+  const [exchangeRate, setExchangeRate] = useState("");
   const [notes, setNotes] = useState("");
+  const [errors, setErrors] = useState<{ amount?: string; exchangeRate?: string }>({});
 
   const handleClose = () => setOpen(false);
 
@@ -45,10 +48,26 @@ export const UpsertSnapshotDialog = () => {
   }, [open, navigate]);
 
   const handleSave = () => {
-    if (!accountId || !amount || submitted.current) return;
+    if (!accountId || submitted.current) return;
+
+    const nextErrors: { amount?: string; exchangeRate?: string } = {};
+    if (!amount) nextErrors.amount = i18nString("amountRequired");
+    if (needsExchangeRate && !exchangeRate) nextErrors.exchangeRate = i18nString("exchangeRateRequired");
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     submitted.current = true;
     upsert.mutate(
-      { account_id: accountId, amount: parseFloat(amount), year, month: currentMonth, notes: notes || null },
+      {
+        account_id: accountId,
+        amount: parseFloat(amount),
+        year,
+        month: currentMonth,
+        // La tasa solo aplica a cuentas que no están en USD — para USD no
+        // hace falta convertir nada.
+        exchange_rate: needsExchangeRate ? parseFloat(exchangeRate) : null,
+        notes: notes || null,
+      },
       {
         onSuccess: () => { toast.success(i18nString("registerBalanceSuccess")); handleClose(); },
         onError: (e: Error) => { submitted.current = false; toast.error(i18nString("registerBalanceError"), { description: e.message }); },
@@ -79,9 +98,31 @@ export const UpsertSnapshotDialog = () => {
               className="no-spinner"
               placeholder="0.00"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => {
+                setAmount(e.target.value);
+                if (errors.amount) setErrors((prev) => ({ ...prev, amount: undefined }));
+              }}
             />
+            {errors.amount && <p className="text-sm text-destructive">{errors.amount}</p>}
           </div>
+
+          {needsExchangeRate && (
+            <div className="space-y-1.5">
+              <Label>{i18nString("exchangeRate", { currency: account?.currency })}</Label>
+              <Input
+                type="number"
+                className="no-spinner"
+                placeholder={i18nString("exchangeRateExample")}
+                value={exchangeRate}
+                onChange={(e) => {
+                  setExchangeRate(e.target.value);
+                  if (errors.exchangeRate) setErrors((prev) => ({ ...prev, exchangeRate: undefined }));
+                }}
+              />
+              {errors.exchangeRate && <p className="text-sm text-destructive">{errors.exchangeRate}</p>}
+            </div>
+          )}
+
           <div className="space-y-1.5">
             <Label>{i18nString("notes")}</Label>
             <Textarea rows={2} placeholder={i18nString("notesPlaceholder")} value={notes} onChange={(e) => setNotes(e.target.value)} />

@@ -53,6 +53,7 @@ export type Database = {
           amount: number
           year: number
           month: number
+          exchange_rate: number | null
           notes: string | null
           created_at: string
           updated_at: string
@@ -64,6 +65,7 @@ export type Database = {
           amount: number
           year: number
           month: number
+          exchange_rate?: number | null
           notes?: string | null
           created_at?: string
           updated_at?: string
@@ -75,6 +77,7 @@ export type Database = {
           amount?: number
           year?: number
           month?: number
+          exchange_rate?: number | null
           notes?: string | null
           created_at?: string
           updated_at?: string

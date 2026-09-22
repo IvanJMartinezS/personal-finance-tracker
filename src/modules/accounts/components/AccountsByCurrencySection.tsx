@@ -41,6 +41,7 @@ export const AccountsByCurrencySection = ({
         <div className="divide-y divide-border">
           {accounts.map((acc) => {
             const snap = snapshotForAccount(acc.id);
+            const usdEquivalent = snap && currency !== "USD" ? toUSD(snap.amount, currency, snap.exchange_rate) : null;
             return (
               <div key={acc.id} className="flex items-center gap-3 px-4 py-3 hover:bg-muted/30 transition-colors">
                 <div className="h-3 w-3 rounded-full shrink-0" style={{ backgroundColor: acc.color }} />
@@ -54,8 +55,10 @@ export const AccountsByCurrencySection = ({
                       <p className="text-sm font-semibold money-font">
                         {currency === "COP" ? formatCOP(snap.amount) : `${snap.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${currency}`}
                       </p>
-                      {currency !== "USD" && currency !== "VES" && (
-                        <p className="text-xs text-muted-foreground">{fmtUSD(toUSD(snap.amount, currency))}</p>
+                      {/* Solo se muestra el equivalente en USD si el saldo tiene una tasa
+                          registrada — mostrar "$0.00" sin tasa conocida sería engañoso. */}
+                      {usdEquivalent !== null && (
+                        <p className="text-xs text-muted-foreground">{fmtUSD(usdEquivalent)}</p>
                       )}
                     </>
                   ) : (

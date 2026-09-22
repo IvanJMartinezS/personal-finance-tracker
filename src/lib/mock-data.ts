@@ -35,15 +35,6 @@ export const MONTHS = [
 ] as const;
 
 /**
- * Tasa de referencia COP ↔ USD usada para estimar el equivalente de un monto
- * en la moneda contraria, cuando no se registró con una tasa propia (ver
- * `toCopEquivalent`). Es una aproximación fija, no la tasa de mercado en
- * tiempo real; centralizada aquí para no repetirla como número mágico en
- * cada módulo que la necesita.
- */
-export const REFERENCE_USD_TO_COP_RATE = 3700;
-
-/**
  * Monto de un gasto/ingreso en USD — la moneda base de la app (ver
  * 006_switch_base_currency_to_usd.sql): `amount_in_base` ya se guarda
  * siempre en USD, exacto para cualquier moneda de origen (para monedas
@@ -59,17 +50,20 @@ export function toUsdEquivalent(entry: { amount_in_base: number }): number {
 /**
  * Equivalente en COP de un gasto/ingreso:
  * - Si se registró en COP, es su monto original (exacto).
- * - Si se registró en USD y se dio una tasa específica al crearlo (opcional,
- *   ver ExpenseForm/IncomeForm), se usa esa tasa para un valor exacto:
- *   `amount_in_base` ya es USD, así que `amount_in_base × tasa` da COP.
- * - Si no se dio tasa (el valor por defecto guardado es 1, y una tasa
- *   COP-por-USD real nunca es 1), se estima con la tasa de referencia.
+ * - Si se registró en USD, se usa la tasa que se dio al crearlo (obligatoria
+ *   desde que existe este campo — ver transactionSchema.ts): `amount_in_base`
+ *   ya es USD, así que `amount_in_base × tasa` da COP exacto.
+ * - Si no hay una tasa real registrada (solo puede pasar en gastos/ingresos
+ *   guardados antes de que la tasa fuera obligatoria, cuando se guardaba 1
+ *   por defecto — una tasa COP-por-USD real nunca es 1), no hay forma
+ *   confiable de convertir → `null`. Ya no se usa ninguna tasa fija de
+ *   referencia para adivinarlo.
  */
-export function toCopEquivalent(entry: { currency: string; amount: number; amount_in_base: number; exchange_rate?: number | null }): number {
+export function toCopEquivalent(entry: { currency: string; amount: number; amount_in_base: number; exchange_rate?: number | null }): number | null {
   if (entry.currency === "COP") return Number(entry.amount);
-  const hasSpecificRate = entry.exchange_rate !== undefined && entry.exchange_rate !== null && entry.exchange_rate !== 1;
-  const rate = hasSpecificRate ? entry.exchange_rate! : REFERENCE_USD_TO_COP_RATE;
-  return Number(entry.amount_in_base) * rate;
+  const hasRealRate = entry.exchange_rate !== undefined && entry.exchange_rate !== null && entry.exchange_rate !== 1;
+  if (!hasRealRate) return null;
+  return Number(entry.amount_in_base) * entry.exchange_rate!;
 }
 
 /**
@@ -107,7 +101,7 @@ export function formatCurrency(amount: number, currency: string): string {
  * listados de gastos e ingresos.
  */
 export function formatOtherCurrencyEquivalent(entry: { currency: string; amount: number; amount_in_base: number; exchange_rate?: number | null }): string {
-  return entry.currency === 'USD'
-    ? formatCOP(toCopEquivalent(entry))
-    : formatCurrency(toUsdEquivalent(entry), 'USD');
+  if (entry.currency !== 'USD') return formatCurrency(toUsdEquivalent(entry), 'USD');
+  const cop = toCopEquivalent(entry);
+  return cop === null ? '—' : formatCOP(cop);
 }
