@@ -27,7 +27,8 @@ export const transactionBaseFields = (i18nString: (key: string) => string) => ({
 
 /**
  * Valida `exchange_rate` según la moneda: requerida y positiva para monedas
- * distintas de COP; opcional pero positiva si se provee para COP.
+ * distintas de USD (la moneda base — ver 006_switch_base_currency_to_usd.sql);
+ * opcional pero positiva si se provee para USD.
  */
 export const validateExchangeRate = (
   i18nString: (key: string) => string,
@@ -35,7 +36,7 @@ export const validateExchangeRate = (
   data: { currency: string; exchange_rate?: number | null },
   ctx: z.RefinementCtx,
 ) => {
-  if (data.currency !== 'COP') {
+  if (data.currency !== 'USD') {
     if (data.exchange_rate === undefined || data.exchange_rate === null) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,

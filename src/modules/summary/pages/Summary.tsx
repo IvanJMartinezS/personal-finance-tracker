@@ -80,8 +80,8 @@ export const Summary = () => {
               <th className="sticky left-0 z-10 bg-muted/60 backdrop-blur-sm px-4 py-1.5 border-r border-border" />
               {visibleMonths.map((m) => (
                 <>
-                  <th key={`${m}-cop`} className="px-3 py-1.5 text-right font-medium">COP</th>
-                  <th key={`${m}-usd`} className="px-3 py-1.5 text-right font-medium border-r border-border">USD</th>
+                  <th key={`${m}-usd`} className="px-3 py-1.5 text-right font-medium">USD</th>
+                  <th key={`${m}-cop`} className="px-3 py-1.5 text-right font-medium border-r border-border">COP</th>
                 </>
               ))}
             </tr>
@@ -124,24 +124,24 @@ export const Summary = () => {
                     return (
                       <>
                         <td
-                          key={`${cat.id}-${m}-cop`}
+                          key={`${cat.id}-${m}-usd`}
                           className={cn(
                             "px-3 py-3 text-right tabular-nums",
                             isCurrentMonth && "bg-primary/5",
-                            cop > 0 ? "text-foreground" : "text-muted-foreground/40"
-                          )}
-                        >
-                          {fmtCOP(cop)}
-                        </td>
-                        <td
-                          key={`${cat.id}-${m}-usd`}
-                          className={cn(
-                            "px-3 py-3 text-right tabular-nums border-r border-border/50",
-                            isCurrentMonth && "bg-primary/5",
-                            usd > 0 ? "text-muted-foreground" : "text-muted-foreground/40"
+                            usd > 0 ? "text-foreground" : "text-muted-foreground/40"
                           )}
                         >
                           {fmtUSD(usd)}
+                        </td>
+                        <td
+                          key={`${cat.id}-${m}-cop`}
+                          className={cn(
+                            "px-3 py-3 text-right tabular-nums border-r border-border/50",
+                            isCurrentMonth && "bg-primary/5",
+                            cop > 0 ? "text-muted-foreground" : "text-muted-foreground/40"
+                          )}
+                        >
+                          {fmtCOP(cop)}
                         </td>
                       </>
                     );
@@ -160,16 +160,16 @@ export const Summary = () => {
                 return (
                   <>
                     <td
-                      key={`total-${m}-cop`}
+                      key={`total-${m}-usd`}
                       className={cn("px-3 py-3 text-right tabular-nums text-destructive", isCurrentMonth && "bg-primary/10")}
                     >
-                      {fmtCOP(ms?.totalCOP ?? 0)}
+                      {fmtUSD(ms?.totalUSD ?? 0)}
                     </td>
                     <td
-                      key={`total-${m}-usd`}
+                      key={`total-${m}-cop`}
                       className={cn("px-3 py-3 text-right tabular-nums text-destructive/80 border-r border-border", isCurrentMonth && "bg-primary/10")}
                     >
-                      {fmtUSD(ms?.totalUSD ?? 0)}
+                      {fmtCOP(ms?.totalCOP ?? 0)}
                     </td>
                   </>
                 );

@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchema";
+import { calculateAmountInBaseUSD } from "@/lib/mock-data";
 import type { AppError } from "@/lib/errorMessages";
 import { useUpdateExpense } from "../hooks/useUpdateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
@@ -46,7 +47,7 @@ export const EditExpenseDialog = () => {
       category_id: "",
       item: "",
       amount: undefined,
-      currency: "COP",
+      currency: "USD",
       exchange_rate: undefined,
       notes: "",
     },
@@ -62,7 +63,10 @@ export const EditExpenseDialog = () => {
       setValue("item", expenseToEdit.item);
       setValue("amount", expenseToEdit.amount);
       setValue("currency", expenseToEdit.currency);
-      setValue("exchange_rate", expenseToEdit.exchange_rate || undefined);
+      // Si es USD y la tasa guardada es 1 (el valor por defecto cuando no se
+      // dio ninguna), se deja en blanco en vez de precargar un "1" engañoso.
+      const hasNoSpecificRate = expenseToEdit.currency === "USD" && expenseToEdit.exchange_rate === 1;
+      setValue("exchange_rate", hasNoSpecificRate ? undefined : expenseToEdit.exchange_rate || undefined);
       setValue("notes", expenseToEdit.notes || "");
     }
   }, [expenseToEdit, setValue]);
@@ -81,14 +85,16 @@ export const EditExpenseDialog = () => {
   const onSubmit = (data: ExpenseFormValues) => {
     if (!id || submitted.current) return;
     submitted.current = true;
-    const amount_in_base = data.amount * (data.exchange_rate || 1);
+    const amount_in_base = calculateAmountInBaseUSD(data.amount, data.currency, data.exchange_rate);
     updateExpense.mutate(
       {
         id,
         ...data,
         amount_in_base,
         notes: data.notes || null,
-        exchange_rate: data.currency === "COP" ? 1 : data.exchange_rate,
+        // En USD la tasa es opcional (solo para un equivalente en COP exacto);
+        // si no se dio ninguna, se guarda 1 (equivale a "sin tasa registrada").
+        exchange_rate: data.currency === "USD" ? (data.exchange_rate || 1) : data.exchange_rate,
       },
       {
         onSuccess: () => {

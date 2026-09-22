@@ -1,7 +1,7 @@
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { formatCOP, formatCurrency } from "@/lib/mock-data";
+import { formatCurrency } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
@@ -16,7 +16,7 @@ const RECENT_LIMIT = 10;
 export const Dashboard = () => {
   const i18nString = useModuleTranslation("dashboard");
 
-  // Totals come from a lightweight query (only amount_in_base column)
+  // Totals come from a lightweight query (only amount_in_base column, in USD)
   const { totalExpenses, totalIncome, balance, isLoading: totalsLoading } = useDashboardTotals();
 
   // Recent transactions limited to RECENT_LIMIT — not all records
@@ -55,21 +55,21 @@ export const Dashboard = () => {
             <p className="text-sm text-muted-foreground">{i18nString('totalIncome')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10"><TrendingUp className="h-4 w-4 text-success" /></div>
           </div>
-          <p className="mt-2 text-2xl font-bold money-font text-success">{formatCOP(totalIncome)}</p>
+          <p className="mt-2 text-2xl font-bold money-font text-success">{formatCurrency(totalIncome, 'USD')}</p>
         </div>
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{i18nString('totalExpenses')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10"><TrendingDown className="h-4 w-4 text-destructive" /></div>
           </div>
-          <p className="mt-2 text-2xl font-bold money-font text-destructive">{formatCOP(totalExpenses)}</p>
+          <p className="mt-2 text-2xl font-bold money-font text-destructive">{formatCurrency(totalExpenses, 'USD')}</p>
         </div>
         <div className="stat-card sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{i18nString('balance')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Wallet className="h-4 w-4 text-primary" /></div>
           </div>
-          <p className={`mt-2 text-2xl font-bold money-font ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCOP(balance)}</p>
+          <p className={`mt-2 text-2xl font-bold money-font ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(balance, 'USD')}</p>
         </div>
       </div>
 
@@ -85,7 +85,7 @@ export const Dashboard = () => {
                   <Pie data={categoryExpenseData} cx="50%" cy="50%" innerRadius={55} outerRadius={80} paddingAngle={3} dataKey="value">
                     {categoryExpenseData.map((entry, index) => <Cell key={index} fill={entry.color} />)}
                   </Pie>
-                  <Tooltip formatter={(value: number) => formatCOP(value)} />
+                  <Tooltip formatter={(value: number) => formatCurrency(value, 'USD')} />
                 </PieChart>
               </ResponsiveContainer>
               <div className="mt-2 grid grid-cols-1 gap-1.5">
@@ -93,7 +93,7 @@ export const Dashboard = () => {
                   <div key={cat.name} className="flex items-center gap-1.5 text-xs">
                     <div className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: cat.color }} />
                     <span className="text-muted-foreground truncate">{cat.name}</span>
-                    <span className="ml-auto money-font text-foreground">{formatCOP(cat.value)}</span>
+                    <span className="ml-auto money-font text-foreground">{formatCurrency(cat.value, 'USD')}</span>
                   </div>
                 ))}
               </div>

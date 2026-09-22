@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
-import { CURRENCIES } from "@/lib/mock-data";
+import { SELECTABLE_CURRENCIES } from "@/lib/mock-data";
 import { FormField } from "@/shared/components/FormField";
 import type { Control, FieldErrors } from "react-hook-form";
 import type { IncomeFormValues } from "@/schemas/incomeSchema";
@@ -84,7 +84,7 @@ export const IncomeForm = ({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {CURRENCIES.map((c) => (
+                {SELECTABLE_CURRENCIES.map((c) => (
                   <SelectItem key={c.code} value={c.code}>
                     {c.code} - {c.symbol}
                   </SelectItem>
@@ -95,25 +95,28 @@ export const IncomeForm = ({
         </FormField>
       </div>
 
-      {watchCurrency !== "COP" && (
-        <FormField name="exchange_rate" label={i18nString("exchangeRate")} control={control} errors={errors}>
-          {(field) => (
-            <Input
-              type="number"
-              placeholder={i18nString("exampleItemExchange")}
-              className="no-spinner"
-              {...field}
-              onChange={(e) => {
-                const value = e.target.value;
-                field.onChange(value === "" ? undefined : e.target.valueAsNumber);
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "-" || e.key === "e") e.preventDefault();
-              }}
-            />
-          )}
-        </FormField>
-      )}
+      <FormField
+        name="exchange_rate"
+        label={watchCurrency === "USD" ? i18nString("exchangeRateOptional") : i18nString("exchangeRate")}
+        control={control}
+        errors={errors}
+      >
+        {(field) => (
+          <Input
+            type="number"
+            placeholder={i18nString("exampleItemExchange")}
+            className="no-spinner"
+            {...field}
+            onChange={(e) => {
+              const value = e.target.value;
+              field.onChange(value === "" ? undefined : e.target.valueAsNumber);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "-" || e.key === "e") e.preventDefault();
+            }}
+          />
+        )}
+      </FormField>
 
       <FormField name="notes" label={i18nString("notes")} control={control} errors={errors}>
         {(field) => (

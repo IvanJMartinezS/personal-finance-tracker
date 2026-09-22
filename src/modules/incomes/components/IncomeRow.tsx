@@ -1,7 +1,7 @@
 import { Eye, PencilLine, TrendingUp, Trash2 } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
-import { formatCOP, formatCurrency } from "@/lib/mock-data";
+import { formatCurrency, formatOtherCurrencyEquivalent } from "@/lib/mock-data";
 import { Button } from "@/shared/components/ui/button";
 import type { Income } from "../utils/types";
 
@@ -51,11 +51,9 @@ export const IncomeRow = ({ income }: IncomeRowProps) => {
         <p className="text-sm font-semibold money-font text-success">
           +{formatCurrency(Number(income.amount), income.currency)}
         </p>
-        {income.currency !== 'COP' && (
-          <p className="text-[10px] text-muted-foreground money-font">
-            ({formatCOP(Number(income.amount_in_base))})
-          </p>
-        )}
+        <p className="text-[10px] text-muted-foreground money-font">
+          ({formatOtherCurrencyEquivalent(income)})
+        </p>
       </div>
       {income.notes && (
         <Button

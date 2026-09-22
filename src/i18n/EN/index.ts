@@ -79,7 +79,8 @@ export const EN = {
     item: 'Item',
     amount: 'Amount',
     currency: 'Currency',
-    exchangeRate: 'Exchange Rate to COP',
+    exchangeRate: 'Exchange rate (COP per USD)',
+    exchangeRateOptional: 'Exchange rate (COP per USD) — optional, for an exact COP equivalent',
     notes: 'Notes',
     save: 'Save',
     update: 'Update',
@@ -124,7 +125,8 @@ export const EN = {
     item: 'Item',
     amount: 'Amount',
     currency: 'Currency',
-    exchangeRate: 'Exchange Rate to COP',
+    exchangeRate: 'Exchange rate (COP per USD)',
+    exchangeRateOptional: 'Exchange rate (COP per USD) — optional, for an exact COP equivalent',
     notes: 'Notes',
     save: 'Save',
     update: 'Update',
@@ -291,7 +293,7 @@ export const EN = {
     category: 'Category',
     total: 'Total',
     noCategories: 'No expense categories registered',
-    usdNote: '* USD values are calculated using the exchange rate recorded on each expense. COP expenses are converted using a reference rate of $3,700.',
+    usdNote: '* USD values are the exact amount of each expense (or converted using the rate you recorded, if it wasn\'t in USD). COP values are exact only for expenses recorded in COP; the rest are estimated using a reference rate of $3,700 per USD.',
   },
 
   months: {

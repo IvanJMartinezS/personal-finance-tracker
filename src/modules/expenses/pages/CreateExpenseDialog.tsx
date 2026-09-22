@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/shared/components/ui/dialog";
 import { getExpenseSchema, type ExpenseFormValues } from "@/schemas/expenseSchema";
+import { calculateAmountInBaseUSD } from "@/lib/mock-data";
 import type { AppError } from "@/lib/errorMessages";
 import { useCreateExpense } from "../hooks/useGetCreateExpense";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
@@ -37,7 +38,7 @@ export const CreateExpenseDialog = () => {
       category_id: "",
       item: "",
       amount: undefined,
-      currency: "COP",
+      currency: "USD",
       exchange_rate: undefined,
       notes: "",
     },
@@ -59,13 +60,15 @@ export const CreateExpenseDialog = () => {
   const onSubmit = (data: ExpenseFormValues) => {
     if (submitted.current) return;
     submitted.current = true;
-    const amount_in_base = data.amount * (data.exchange_rate || 1);
+    const amount_in_base = calculateAmountInBaseUSD(data.amount, data.currency, data.exchange_rate);
     createExpense.mutate(
       {
         ...data,
         amount_in_base,
         notes: data.notes || null,
-        exchange_rate: data.currency === "COP" ? 1 : data.exchange_rate,
+        // En USD la tasa es opcional (solo para un equivalente en COP exacto);
+        // si no se dio ninguna, se guarda 1 (equivale a "sin tasa registrada").
+        exchange_rate: data.currency === "USD" ? (data.exchange_rate || 1) : data.exchange_rate,
       },
       {
         onSuccess: () => {

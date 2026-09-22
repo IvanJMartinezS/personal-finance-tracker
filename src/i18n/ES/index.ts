@@ -79,7 +79,8 @@ export const ES = {
     item: 'Item',
     amount: 'Monto',
     currency: 'Moneda',
-    exchangeRate: 'Tasa de cambio a COP',
+    exchangeRate: 'Tasa de cambio (COP por USD)',
+    exchangeRateOptional: 'Tasa de cambio (COP por USD) — opcional, para un equivalente en COP exacto',
     notes: 'Notas',
     save: 'Guardar',
     update: 'Actualizar',
@@ -124,7 +125,8 @@ export const ES = {
     item: 'Item',
     amount: 'Monto',
     currency: 'Moneda',
-    exchangeRate: 'Tasa de cambio a COP',
+    exchangeRate: 'Tasa de cambio (COP por USD)',
+    exchangeRateOptional: 'Tasa de cambio (COP por USD) — opcional, para un equivalente en COP exacto',
     notes: 'Notas',
     save: 'Guardar',
     update: 'Actualizar',
@@ -289,7 +291,7 @@ export const ES = {
     category: 'Categoría',
     total: 'Total',
     noCategories: 'No hay categorías de gastos registradas',
-    usdNote: '* Los valores en USD se calculan usando la tasa de cambio registrada en cada gasto. Los gastos en COP se convierten usando una tasa referencial de $3.700.',
+    usdNote: '* Los valores en USD son el monto exacto de cada gasto (o convertido con la tasa que registraste, si no fue en USD). Los valores en COP son exactos solo para gastos registrados en COP; el resto se estima con una tasa referencial de $3.700 por USD.',
   },
 
   months: {
