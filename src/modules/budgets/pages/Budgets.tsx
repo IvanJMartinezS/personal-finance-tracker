@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useGetBudgets } from "../hooks/useGetBudgets";
@@ -14,6 +15,10 @@ export const Budgets = () => {
   const location = useLocation();
   const i18nString = useModuleTranslation("budgets");
   const { data: budgets, isLoading } = useGetBudgets();
+  const totalAmountUSD = useMemo(
+    () => budgets.reduce((sum, b) => sum + b.amount_usd, 0),
+    [budgets]
+  );
 
   // Verificar si estamos en una ruta de diálogo (fallback para navegación
   // directa/recarga sobre una subruta de modal — ver Modals.tsx para el caso
@@ -27,7 +32,7 @@ export const Budgets = () => {
   return (
     <>
       <div className="space-y-5 animate-fade-in">
-        <BudgetsListHeader total={budgets.length} />
+        <BudgetsListHeader total={budgets.length} totalAmountUSD={totalAmountUSD} />
         <Card className="border-border/50 overflow-hidden">
           <CardContent className="p-0">
             {budgets.length === 0 ? (

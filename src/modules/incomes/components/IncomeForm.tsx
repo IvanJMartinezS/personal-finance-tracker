@@ -1,4 +1,3 @@
-import { useWatch } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
@@ -27,8 +26,6 @@ export const IncomeForm = ({
   isSubmitting,
   onSubmit,
 }: IncomeFormProps) => {
-  const watchCurrency = useWatch({ control, name: "currency" });
-
   return (
     <form onSubmit={onSubmit} className="grid gap-4 py-2">
       <div className="grid grid-cols-2 gap-3">
@@ -97,7 +94,7 @@ export const IncomeForm = ({
 
       <FormField
         name="exchange_rate"
-        label={watchCurrency === "USD" ? i18nString("exchangeRateOptional") : i18nString("exchangeRate")}
+        label={i18nString("exchangeRate")}
         control={control}
         errors={errors}
       >

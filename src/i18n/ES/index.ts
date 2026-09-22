@@ -80,7 +80,6 @@ export const ES = {
     amount: 'Monto',
     currency: 'Moneda',
     exchangeRate: 'Tasa de cambio (COP por USD)',
-    exchangeRateOptional: 'Tasa de cambio (COP por USD) — opcional, para un equivalente en COP exacto',
     notes: 'Notas',
     save: 'Guardar',
     update: 'Actualizar',
@@ -126,7 +125,6 @@ export const ES = {
     amount: 'Monto',
     currency: 'Moneda',
     exchangeRate: 'Tasa de cambio (COP por USD)',
-    exchangeRateOptional: 'Tasa de cambio (COP por USD) — opcional, para un equivalente en COP exacto',
     notes: 'Notas',
     save: 'Guardar',
     update: 'Actualizar',
@@ -193,6 +191,8 @@ export const ES = {
     deleting: 'Eliminando...',
     noCategories: 'Sin categorías',
     categoryNotFound: 'Categoría no encontrada',
+    nameRequired: 'El nombre es requerido',
+    typeRequired: 'Selecciona un tipo',
     close: 'Cerrar',
   },
 
@@ -346,7 +346,7 @@ export const ES = {
       },
       exchange_rate: {
         invalid_type: "La tasa debe ser un número",
-        required_for_foreign: "La tasa de cambio es requerida para moneda extranjera",
+        required_for_foreign: "La tasa de cambio es requerida",
         positive: "La tasa de cambio debe ser positiva"
       }
     },
@@ -370,7 +370,7 @@ export const ES = {
       },
       exchange_rate: {
         invalid_type: "La tasa debe ser un número",
-        required_for_foreign: "La tasa de cambio es requerida para moneda extranjera",
+        required_for_foreign: "La tasa de cambio es requerida",
         positive: "La tasa de cambio debe ser positiva"
       }
     }

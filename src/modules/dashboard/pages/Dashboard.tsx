@@ -1,7 +1,7 @@
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
 import { Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
-import { formatCurrency } from "@/lib/mock-data";
+import { formatCOP, formatCurrency } from "@/lib/mock-data";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useMemo } from "react";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
@@ -16,8 +16,13 @@ const RECENT_LIMIT = 10;
 export const Dashboard = () => {
   const i18nString = useModuleTranslation("dashboard");
 
-  // Totals come from a lightweight query (only amount_in_base column, in USD)
-  const { totalExpenses, totalIncome, balance, isLoading: totalsLoading } = useDashboardTotals();
+  // Totals come from a lightweight query, in USD (exact) and COP (equivalent)
+  const {
+    totalExpensesUSD, totalExpensesCOP,
+    totalIncomeUSD, totalIncomeCOP,
+    balanceUSD, balanceCOP,
+    isLoading: totalsLoading,
+  } = useDashboardTotals();
 
   // Recent transactions limited to RECENT_LIMIT — not all records
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses(RECENT_LIMIT);
@@ -55,21 +60,24 @@ export const Dashboard = () => {
             <p className="text-sm text-muted-foreground">{i18nString('totalIncome')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-success/10"><TrendingUp className="h-4 w-4 text-success" /></div>
           </div>
-          <p className="mt-2 text-2xl font-bold money-font text-success">{formatCurrency(totalIncome, 'USD')}</p>
+          <p className="mt-2 text-2xl font-bold money-font text-success">{formatCurrency(totalIncomeUSD, 'USD')}</p>
+          <p className="text-xs text-muted-foreground money-font">{formatCOP(totalIncomeCOP)}</p>
         </div>
         <div className="stat-card">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{i18nString('totalExpenses')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-destructive/10"><TrendingDown className="h-4 w-4 text-destructive" /></div>
           </div>
-          <p className="mt-2 text-2xl font-bold money-font text-destructive">{formatCurrency(totalExpenses, 'USD')}</p>
+          <p className="mt-2 text-2xl font-bold money-font text-destructive">{formatCurrency(totalExpensesUSD, 'USD')}</p>
+          <p className="text-xs text-muted-foreground money-font">{formatCOP(totalExpensesCOP)}</p>
         </div>
         <div className="stat-card sm:col-span-2 lg:col-span-1">
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">{i18nString('balance')}</p>
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10"><Wallet className="h-4 w-4 text-primary" /></div>
           </div>
-          <p className={`mt-2 text-2xl font-bold money-font ${balance >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(balance, 'USD')}</p>
+          <p className={`mt-2 text-2xl font-bold money-font ${balanceUSD >= 0 ? 'text-success' : 'text-destructive'}`}>{formatCurrency(balanceUSD, 'USD')}</p>
+          <p className="text-xs text-muted-foreground money-font">{formatCOP(balanceCOP)}</p>
         </div>
       </div>
 

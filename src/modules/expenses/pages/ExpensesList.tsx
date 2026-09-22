@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { useGetExpenses } from "@/modules/expenses/hooks/useGetExpenses";
 import { useTranslation } from "react-i18next";
@@ -5,6 +6,7 @@ import { Filters } from "@/shared/components/Filters";
 import { useGetCategories } from "@/modules/categories/hooks/useGetCategories";
 import { useListFilters } from "@/shared/hooks/useListFilters";
 import { useListFilterConfigs } from "@/shared/hooks/useListFilterConfigs";
+import { toCopEquivalent } from "@/lib/mock-data";
 import type { Expense } from "@/types";
 import { ExpenseRow } from "../components/ExpenseRow";
 import { ExpensesListSkeleton } from "../components/ExpensesListSkeleton";
@@ -53,12 +55,20 @@ export const ExpensesList = () => {
     categories: categories ?? [],
   });
 
+  // Suma el equivalente en COP de cada gasto filtrado (exacto donde se dio
+  // una tasa al registrarlo, estimado donde no) — no convierte el total en
+  // USD de una sola vez, para no perder esa precisión por transacción.
+  const totalFilteredCOP = useMemo(
+    () => filteredExpenses.reduce((sum, e) => sum + toCopEquivalent(e), 0),
+    [filteredExpenses]
+  );
+
   if (expensesLoading || categoriesLoading) return <ExpensesListSkeleton />;
 
   return (
     <>
       <div className="space-y-5 animate-fade-in">
-        <ExpensesListHeader total={totalFiltered} count={filteredExpenses.length} />
+        <ExpensesListHeader total={totalFiltered} totalCOP={totalFilteredCOP} count={filteredExpenses.length} />
         <Filters
           search={{ value: searchQuery, onChange: setSearchQuery, placeholder: i18nString('searchExpenses') }}
           filters={filterConfigs}

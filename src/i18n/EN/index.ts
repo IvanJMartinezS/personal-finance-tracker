@@ -80,7 +80,6 @@ export const EN = {
     amount: 'Amount',
     currency: 'Currency',
     exchangeRate: 'Exchange rate (COP per USD)',
-    exchangeRateOptional: 'Exchange rate (COP per USD) — optional, for an exact COP equivalent',
     notes: 'Notes',
     save: 'Save',
     update: 'Update',
@@ -126,7 +125,6 @@ export const EN = {
     amount: 'Amount',
     currency: 'Currency',
     exchangeRate: 'Exchange rate (COP per USD)',
-    exchangeRateOptional: 'Exchange rate (COP per USD) — optional, for an exact COP equivalent',
     notes: 'Notes',
     save: 'Save',
     update: 'Update',
@@ -193,6 +191,8 @@ export const EN = {
     deleting: 'Deleting...',
     noCategories: 'No categories',
     categoryNotFound: 'Category not found',
+    nameRequired: 'Name is required',
+    typeRequired: 'Select a type',
     close: 'Close',
   },
 
@@ -348,7 +348,7 @@ export const EN = {
       },
       exchange_rate: {
         invalid_type: "Exchange rate must be a number",
-        required_for_foreign: "Exchange rate is required for foreign currency",
+        required_for_foreign: "Exchange rate is required",
         positive: "Exchange rate must be positive"
       }
     },
@@ -372,7 +372,7 @@ export const EN = {
       },
       exchange_rate: {
         invalid_type: "Exchange rate must be a number",
-        required_for_foreign: "Exchange rate is required for foreign currency",
+        required_for_foreign: "Exchange rate is required",
         positive: "Exchange rate must be positive"
       }
     }

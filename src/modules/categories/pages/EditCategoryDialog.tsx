@@ -30,6 +30,7 @@ export const EditCategoryDialog = () => {
   const [name, setName] = useState("");
   const [type, setType] = useState("");
   const [selectedColor, setSelectedColor] = useState(PRESET_COLORS[0]);
+  const [errors, setErrors] = useState<{ name?: string; type?: string }>({});
 
   // Encontrar la categoría a editar
   const categoryToEdit = categories?.find((c: Category) => c.id === id);
@@ -52,7 +53,14 @@ export const EditCategoryDialog = () => {
   }, [open, navigate]);
 
   const handleSave = () => {
-    if (!id || !name || !type || submitted.current) return;
+    if (!id || submitted.current) return;
+
+    const nextErrors: { name?: string; type?: string } = {};
+    if (!name.trim()) nextErrors.name = i18nString("nameRequired");
+    if (!type) nextErrors.type = i18nString("typeRequired");
+    setErrors(nextErrors);
+    if (Object.keys(nextErrors).length > 0) return;
+
     submitted.current = true;
     updateCategory.mutate(
       { id, data: { name, type, color: selectedColor } },
@@ -109,13 +117,23 @@ export const EditCategoryDialog = () => {
             <Label>{i18nString("nameCategory")}</Label>
             <Input
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value);
+                if (errors.name) setErrors((prev) => ({ ...prev, name: undefined }));
+              }}
               placeholder={i18nString("exampleItem")}
             />
+            {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
           </div>
           <div className="space-y-1.5">
             <Label>{i18nString("type")}</Label>
-            <Select value={type} onValueChange={setType}>
+            <Select
+              value={type}
+              onValueChange={(value) => {
+                setType(value);
+                if (errors.type) setErrors((prev) => ({ ...prev, type: undefined }));
+              }}
+            >
               <SelectTrigger>
                 <SelectValue placeholder={i18nString("selectCategory")} />
               </SelectTrigger>
@@ -124,6 +142,7 @@ export const EditCategoryDialog = () => {
                 <SelectItem value="income">{i18nString("income")}</SelectItem>
               </SelectContent>
             </Select>
+            {errors.type && <p className="text-sm text-destructive">{errors.type}</p>}
           </div>
           <div className="space-y-1.5">
             <Label>{i18nString("color")}</Label>

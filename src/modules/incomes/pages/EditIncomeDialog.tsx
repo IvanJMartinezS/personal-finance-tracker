@@ -90,9 +90,9 @@ export const EditIncomeDialog = () => {
         ...data,
         amount_in_base,
         notes: data.notes || null,
-        // En USD la tasa es opcional (solo para un equivalente en COP exacto);
-        // si no se dio ninguna, se guarda 1 (equivale a "sin tasa registrada").
-        exchange_rate: data.currency === "USD" ? (data.exchange_rate || 1) : data.exchange_rate!,
+        // La tasa siempre es requerida (ver transactionSchema.ts), así que
+        // aquí siempre viene con un valor válido — no hace falta un default.
+        exchange_rate: data.exchange_rate!,
       },
       {
         onSuccess: () => {

@@ -26,9 +26,10 @@ export const transactionBaseFields = (i18nString: (key: string) => string) => ({
 });
 
 /**
- * Valida `exchange_rate` según la moneda: requerida y positiva para monedas
- * distintas de USD (la moneda base — ver 006_switch_base_currency_to_usd.sql);
- * opcional pero positiva si se provee para USD.
+ * Valida `exchange_rate`: siempre requerida y positiva, sin importar la
+ * moneda — así cada gasto/ingreso queda con un equivalente exacto tanto en
+ * USD (la moneda base) como en COP, en vez de depender de la tasa de
+ * referencia estimada para las filas en USD que no dieran una tasa propia.
  */
 export const validateExchangeRate = (
   i18nString: (key: string) => string,
@@ -36,21 +37,13 @@ export const validateExchangeRate = (
   data: { currency: string; exchange_rate?: number | null },
   ctx: z.RefinementCtx,
 ) => {
-  if (data.currency !== 'USD') {
-    if (data.exchange_rate === undefined || data.exchange_rate === null) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: i18nString('exchange_rate.required_for_foreign'),
-        path: ['exchange_rate'],
-      });
-    } else if (data.exchange_rate <= 0) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: i18nString('exchange_rate.positive'),
-        path: ['exchange_rate'],
-      });
-    }
-  } else if (data.exchange_rate !== undefined && data.exchange_rate !== null && data.exchange_rate <= 0) {
+  if (data.exchange_rate === undefined || data.exchange_rate === null) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: i18nString('exchange_rate.required_for_foreign'),
+      path: ['exchange_rate'],
+    });
+  } else if (data.exchange_rate <= 0) {
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
       message: i18nString('exchange_rate.positive'),

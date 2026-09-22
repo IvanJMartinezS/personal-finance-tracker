@@ -2,14 +2,15 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { Plus } from "lucide-react";
 import { Button } from "@/shared/components/ui/button";
-import { formatCurrency } from "@/lib/mock-data";
+import { formatCOP, formatCurrency } from "@/lib/mock-data";
 
 interface ExpensesListHeaderProps {
   count: number;
   total: number;
+  totalCOP: number;
 }
 
-export const ExpensesListHeader = ({ count, total }: ExpensesListHeaderProps) => {
+export const ExpensesListHeader = ({ count, total, totalCOP }: ExpensesListHeaderProps) => {
   const i18nString = useModuleTranslation("expenses");
   const navigate = useNavigate();
   const location = useLocation();
@@ -24,7 +25,8 @@ export const ExpensesListHeader = ({ count, total }: ExpensesListHeaderProps) =>
         <h1 className="text-2xl font-bold">{i18nString("title")}</h1>
         <p className="text-sm text-muted-foreground">
           {count} {i18nString("resumen")}
-          <span className="money-font text-destructive ml-1">{formatCurrency(total, 'USD')}</span>
+          <span className="money-font text-destructive font-semibold ml-1">{formatCurrency(total, 'USD')}</span>
+          <span className="money-font ml-1 text-xs">({formatCOP(totalCOP)})</span>
         </p>
       </div>
       <Button className="gap-2" onClick={handleCreate}>
