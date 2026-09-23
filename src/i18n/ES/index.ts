@@ -252,6 +252,8 @@ export const ES = {
     title: 'Mis Cuentas',
     subtitle: 'Saldos actuales',
     newAccount: 'Nueva Cuenta',
+    createSuccess: 'Cuenta creada',
+    createError: 'Error al crear la cuenta',
     accountName: 'Nombre de la cuenta',
     accountNamePlaceholder: 'Ej: Binance, Nequi, Efectivo',
     currency: 'Moneda',
