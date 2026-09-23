@@ -1,8 +1,11 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Loader2, FileDown } from "lucide-react";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useYearlySummary } from "../hooks/useYearlySummary";
+import { useAnnualReportData } from "../hooks/useAnnualReportData";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { Button } from "@/shared/components/ui/button";
 import { YearFilter } from "@/shared/components/YearFilter";
 import { useYearFilter } from "@/shared/hooks/useYearFilter";
 import { formatCOP } from "@/lib/mock-data";
@@ -26,6 +29,22 @@ export const Summary = () => {
   const { year, years, setYear } = useYearFilter();
   const { data, isLoading } = useYearlySummary(year);
   const currentMonth = getElapsedMonthsInYear(year);
+
+  const reportData = useAnnualReportData(year);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExportPdf = async () => {
+    setIsExporting(true);
+    try {
+      // Import dinámico: @react-pdf/renderer pesa varios cientos de KB, y solo
+      // hace falta cargarlo cuando el usuario realmente exporta el reporte, no
+      // en el bundle principal de la app.
+      const { generateAnnualReportPdf } = await import("../pdf/generateAnnualReportPdf");
+      await generateAnnualReportPdf(reportData);
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const visibleMonths = useMemo(
     () => Array.from({ length: currentMonth }, (_, i) => i + 1),
@@ -53,7 +72,13 @@ export const Summary = () => {
             {i18nString("subtitle")} · {t("summary.monthsRegistered", { count: currentMonth })}
           </p>
         </div>
-        <YearFilter year={year} years={years} onChange={setYear} />
+        <div className="flex items-center gap-2">
+          <YearFilter year={year} years={years} onChange={setYear} />
+          <Button variant="outline" onClick={handleExportPdf} disabled={isExporting || reportData.isLoading}>
+            {isExporting ? <Loader2 className="animate-spin" /> : <FileDown />}
+            {isExporting ? i18nString("generatingPdf") : i18nString("exportPdf")}
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-lg border border-border/50 overflow-auto">

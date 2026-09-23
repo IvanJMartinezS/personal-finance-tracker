@@ -304,7 +304,9 @@ export const ES = {
     category: 'Categoría',
     total: 'Total',
     noCategories: 'No hay categorías de gastos registradas',
-    usdNote: '* Los valores en USD son el monto exacto de cada gasto (o convertido con la tasa que registraste, si no fue en USD). Los valores en COP son exactos solo para gastos registrados en COP; el resto se estima con una tasa referencial de $3.700 por USD.',
+    usdNote: '* Los valores en USD son el monto exacto de cada gasto (moneda base). Los valores en COP son exactos para gastos registrados en COP, o registrados en USD con su propia tasa de cambio; los que no tienen una tasa registrada se muestran como "—".',
+    exportPdf: 'Exportar PDF',
+    generatingPdf: 'Generando PDF...',
   },
 
   months: {

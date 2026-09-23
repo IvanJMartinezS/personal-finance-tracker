@@ -306,7 +306,9 @@ export const EN = {
     category: 'Category',
     total: 'Total',
     noCategories: 'No expense categories registered',
-    usdNote: '* USD values are the exact amount of each expense (or converted using the rate you recorded, if it wasn\'t in USD). COP values are exact only for expenses recorded in COP; the rest are estimated using a reference rate of $3,700 per USD.',
+    usdNote: '* USD values are the exact amount of each expense (base currency). COP values are exact for expenses recorded in COP, or recorded in USD with their own exchange rate; those without a recorded rate show as "—".',
+    exportPdf: 'Export PDF',
+    generatingPdf: 'Generating PDF...',
   },
 
   months: {
