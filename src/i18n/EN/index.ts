@@ -327,6 +327,10 @@ export const EN = {
     saveChanges: 'Save changes',
     account: 'Account',
     logIn: 'Log out',
+    shareApp: 'Share the app',
+    shareAppDescription: 'Scan this QR code from another device to open the app directly.',
+    copyLink: 'Copy link',
+    linkCopied: 'Link copied',
   },
 
   filters: {
