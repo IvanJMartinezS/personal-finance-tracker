@@ -19,8 +19,12 @@ export interface CategoryBudgetHistory {
  * - `year` anterior al año de creación → el presupuesto no existía aún (`null`).
  * - `year` igual al año de creación → arranca en el mes en que se creó.
  * - `year` posterior al año de creación → arranca en enero (ya regía todo el año).
+ *
+ * Exportada porque también la usa `calculateExpenseBudgetOverages` — un
+ * gasto de un mes anterior a que el presupuesto existiera no puede haberlo
+ * "superado".
  */
-function firstApplicableMonth(createdAt: string, year: number): number | null {
+export function firstApplicableMonth(createdAt: string, year: number): number | null {
   const created = new Date(createdAt);
   const createdYear = created.getFullYear();
   if (year < createdYear) return null;

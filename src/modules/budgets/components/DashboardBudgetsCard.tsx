@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Progress } from "@/shared/components/ui/progress";
@@ -7,6 +8,7 @@ import { PiggyBank } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { getBudgetStatusColor } from "../utils/calculateBudgetUsage";
 import { useBudgetsUsage } from "../hooks/useBudgetsUsage";
+import { useBudgetsHistory } from "../hooks/useBudgetsHistory";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 
 const STATUS_BAR_CLASS = {
@@ -26,6 +28,18 @@ export const DashboardBudgetsCard = () => {
   const navigate = useNavigate();
   const now = new Date();
   const { data: budgetsUsage, isLoading } = useBudgetsUsage(now.getFullYear(), now.getMonth() + 1);
+
+  // El acumulado del año (misma cifra que la columna "Acumulado" del
+  // historial en la página de Presupuesto) — a diferencia de lo de arriba,
+  // que es solo del mes actual, esto neta todos los meses del año.
+  const { data: budgetsHistory } = useBudgetsHistory(now.getFullYear());
+  const accumulatedByBudgetId = useMemo(() => {
+    const map = new Map<string, number>();
+    for (const { budget, entries } of budgetsHistory) {
+      if (entries.length > 0) map.set(budget.id, entries[entries.length - 1].accumulatedUSD);
+    }
+    return map;
+  }, [budgetsHistory]);
 
   return (
     <Card className="border-border/50">
@@ -56,6 +70,7 @@ export const DashboardBudgetsCard = () => {
             {budgetsUsage.map(({ budget, spentUSD, remainingUSD, percentUsed, percentAvailable }) => {
               const status = getBudgetStatusColor(percentAvailable);
               const cat = budget.categories;
+              const accumulatedUSD = accumulatedByBudgetId.get(budget.id);
               return (
                 <div key={budget.id} className="space-y-1.5">
                   <div className="flex items-center justify-between gap-2 text-xs">
@@ -75,6 +90,14 @@ export const DashboardBudgetsCard = () => {
                     {remainingUSD >= 0
                       ? i18nString("remainingShort", { amount: formatCurrency(remainingUSD, "USD") })
                       : i18nString("overBudgetShort", { amount: formatCurrency(Math.abs(remainingUSD), "USD") })}
+                    {accumulatedUSD !== undefined && (
+                      <>
+                        {" · "}
+                        {accumulatedUSD >= 0
+                          ? i18nString("accumulatedSavings", { amount: formatCurrency(accumulatedUSD, "USD") })
+                          : i18nString("accumulatedDeficit", { amount: formatCurrency(Math.abs(accumulatedUSD), "USD") })}
+                      </>
+                    )}
                   </p>
                 </div>
               );

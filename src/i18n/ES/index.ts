@@ -111,6 +111,9 @@ export const ES = {
     close: 'Cerrar',
     viewExpense: 'Ver detalle del gasto',
     viewDetails: 'Ver más',
+    overBudgetRow: 'Excede presupuesto: +{{amount}}',
+    overBudgetRowTooltip: 'Acumulado superado en esta categoría este mes: {{cumulative}}',
+    overBudgetFilterLabel: 'Sobre presupuesto',
   },
 
   incomes:{
@@ -230,6 +233,8 @@ export const ES = {
     setUpBudget: 'Configurar presupuesto',
     remainingShort: 'Quedan {{amount}}',
     overBudgetShort: 'Superado por {{amount}}',
+    accumulatedSavings: 'Ahorro acumulado {{amount}}',
+    accumulatedDeficit: 'Déficit acumulado {{amount}}',
     historyTitle: 'Historial mensual',
     historySubtitle: 'Lo que quedó disponible cada mes, y el acumulado en {{year}}',
     historyMonth: 'Mes',
