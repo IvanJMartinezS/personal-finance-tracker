@@ -63,9 +63,10 @@ export default function AuthPage() {
     if (data?.user && !data?.session) {
       if (data.user.confirmed_at) {
         throw new Error("EMAIL_ALREADY_REGISTERED");
-      } else {
-        throw new Error("EMAIL_PENDING_CONFIRMATION");
       }
+      // Registro exitoso, pendiente de que confirme el correo — no es un error.
+      toast.success(i18nString("checkEmail"));
+      return;
     }
     toast.success(i18nString("checkEmail"));
   };

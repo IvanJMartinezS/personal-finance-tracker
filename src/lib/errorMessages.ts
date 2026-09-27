@@ -19,9 +19,16 @@ export const errorMessages: Record<string, string> = {
   '23505': 'unique_violation', 
   '42501': 'permission_denied',
   over_rate_limit: 'rate_limit_exceeded',
+  // Código y mensaje literal que devuelve Supabase Auth cuando se supera el
+  // límite de correos que puede ENVIAR el proyecto (confirmación de registro,
+  // magic link, reset de contraseña) — no depende del correo, navegador o IP
+  // del usuario, es un límite global del proyecto (ver el mensaje de
+  // AuthPage.tsx). Se mapean ambas formas porque según la versión del SDK de
+  // Supabase, el error trae `code` o solo `message`.
+  over_email_send_rate_limit: 'emailRateLimitExceeded',
+  "Email rate limit exceeded": 'emailRateLimitExceeded',
   "Invalid API key": 'invalid_api_key',
   "EMAIL_ALREADY_REGISTERED": 'emailAlreadyRegistered',
-  "EMAIL_PENDING_CONFIRMATION": 'emailPendingConfirmation',
 };
 
 /**
