@@ -1,5 +1,10 @@
 # Project Overview
 
+## Release
+
+V1.0.3
+
+
 ## Descripción
 
 Personal Finance Tracker es una aplicación web para gestionar finanzas personales. Su objetivo es ofrecer una vista clara de los ingresos, gastos, cuentas y balances del usuario, además de facilitar el análisis de la información mediante dashboards y resúmenes anuales.

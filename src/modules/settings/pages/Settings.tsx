@@ -12,8 +12,11 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
+import { useAppSetting } from "../hooks/useAppSetting";
 
-const APP_SHARE_URL = "https://personal-finances-app-navy.vercel.app/auth";
+// Respaldo si la fila "app_share_url" todavía no existe en `app_settings`
+// (ver 008_create_app_settings.sql) o si la consulta falla.
+const APP_SHARE_URL_FALLBACK = "https://personal-finances-app-navy.vercel.app/auth";
 
 export const Settings = () => {
   const { t } = useTranslation();
@@ -24,6 +27,7 @@ export const Settings = () => {
   const [fullName, setFullName] = useState(user?.user_metadata?.full_name ?? "");
   const [baseCurrency, setBaseCurrency] = useState("COP");
   const [saving, setSaving] = useState(false);
+  const { value: appShareUrl } = useAppSetting("app_share_url", APP_SHARE_URL_FALLBACK);
 
   useEffect(() => {
     if (!user) return;
@@ -47,7 +51,7 @@ export const Settings = () => {
   const handleSignOut = async () => { await signOut(); navigate("/auth"); };
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(APP_SHARE_URL);
+    await navigator.clipboard.writeText(appShareUrl);
     toast.success(i18nString('linkCopied'));
   };
 
@@ -100,10 +104,10 @@ export const Settings = () => {
             <p className="text-sm text-muted-foreground">{i18nString('shareAppDescription')}</p>
             <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-start">
               <div className="rounded-lg bg-white p-3 shrink-0">
-                <QRCodeSVG value={APP_SHARE_URL} size={140} />
+                <QRCodeSVG value={appShareUrl} size={140} />
               </div>
               <div className="flex w-full flex-col gap-2">
-                <Input value={APP_SHARE_URL} readOnly onFocus={(e) => e.target.select()} className="text-xs" />
+                <Input value={appShareUrl} readOnly onFocus={(e) => e.target.select()} className="text-xs" />
                 <Button variant="outline" onClick={handleCopyLink} className="gap-2">
                   <Copy className="h-4 w-4" />
                   {i18nString('copyLink')}
