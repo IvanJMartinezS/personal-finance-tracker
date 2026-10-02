@@ -296,6 +296,14 @@ export const EN = {
     budgetSummarySubtitle: "Configured monthly total — not an account",
     availableUSD: 'Available (USD)',
     availableUSDNote: "* This is your total account balance that month, minus your configured monthly budget ({{amount}}). A negative value is normal early in the month, before you log your balances.",
+    viewDetail: 'View detail',
+    viewAccount: 'Account detail',
+    accountNotFound: 'Account not found',
+    exchangeRateUsed: 'Rate used',
+    exchangeRateValue: '{{rate}} {{currency}} per USD',
+    exchangeRateUnknown: 'No rate recorded',
+    noNotes: 'No notes',
+    close: 'Close',
   },
 
   summary: {

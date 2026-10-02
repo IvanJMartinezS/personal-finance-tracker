@@ -8,6 +8,7 @@ export const AccountsRoutes = () => {
       <Route path="create" element={<AccountsPage />} />
       <Route path="delete/:id" element={<AccountsPage />} />
       <Route path="snapshot/:accountId" element={<AccountsPage />} />
+      <Route path="view/:accountId" element={<AccountsPage />} />
     </Routes>
   );
 };

@@ -77,6 +77,11 @@ export function calculateAmountInBaseUSD(amount: number, currency: string, excha
   return currency === "USD" ? amount : amount / (exchangeRate || 1);
 }
 
+/**
+ * Formatea un TOTAL agregado en COP (sumas de varios registros: encabezados
+ * de listas, KPIs del dashboard, PDF). Sin decimales a propósito — en una
+ * suma grande el centavo no aporta información y solo agrega ruido visual.
+ */
 export function formatCOP(amount: number): string {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
@@ -86,10 +91,16 @@ export function formatCOP(amount: number): string {
   }).format(amount);
 }
 
+/**
+ * Formatea el monto EXACTO de un único registro (un gasto, un ingreso, el
+ * saldo de una cuenta) en su moneda nativa — siempre con 2 decimales,
+ * incluido COP, para no perder precisión que el usuario sí ingresó. No usar
+ * para totales agregados (para eso está `formatCOP`).
+ */
 export function formatCurrency(amount: number, currency: string): string {
   const sym = CURRENCIES.find(c => c.code === currency)?.symbol ?? '$';
   if (currency === 'COP') {
-    return `${sym}${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount)}`;
+    return `${sym}${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
   }
   return `${sym}${new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount)}`;
 }

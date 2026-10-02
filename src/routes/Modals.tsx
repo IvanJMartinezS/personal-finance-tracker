@@ -13,6 +13,7 @@ import { EditCategoryDialog } from "@/modules/categories/pages/EditCategoryDialo
 import { CreateAccountDialog } from "@/modules/accounts/pages/CreateAccountDialog";
 import { DeleteAccountButton } from "@/modules/accounts/pages/DeleteAccountButton";
 import { UpsertSnapshotDialog } from "@/modules/accounts/pages/UpsertSnapshotDialog";
+import { ViewAccountDialog } from "@/modules/accounts/pages/ViewAccountDialog";
 import { CreateBudgetDialog } from "@/modules/budgets/pages/CreateBudgetDialog";
 import { EditBudgetDialog } from "@/modules/budgets/pages/EditBudgetDialog";
 import { DeleteBudgetButton } from "@/modules/budgets/pages/DeleteBudgetButton";
@@ -46,6 +47,7 @@ export const Modals = () => {
       <Route path="accounts/create" element={<CreateAccountDialog />} />
       <Route path="accounts/delete/:id" element={<DeleteAccountButton />} />
       <Route path="accounts/snapshot/:accountId" element={<UpsertSnapshotDialog />} />
+      <Route path="accounts/view/:accountId" element={<ViewAccountDialog />} />
 
       /* Budgets */
       <Route path="budgets/create" element={<CreateBudgetDialog />} />

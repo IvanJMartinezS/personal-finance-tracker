@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
 import { Button } from "@/shared/components/ui/button";
-import { PencilLine, Trash2 } from "lucide-react";
-import { formatCOP } from "@/lib/mock-data";
+import { Eye, PencilLine, Trash2 } from "lucide-react";
+import { formatCurrency } from "@/lib/mock-data";
 import { fmtUSD, toUSD } from "../hooks/useAccountsSummary";
 import type { Account, AccountSnapshot } from "../utils/types";
 
@@ -12,9 +12,11 @@ interface AccountsByCurrencySectionProps {
   snapshotForAccount: (accountId: string) => AccountSnapshot | undefined;
   noBalanceLabel: string;
   registerBalanceLabel: string;
+  viewDetailLabel: string;
   typeLabel: (type: string) => string;
   onRegisterBalance: (accountId: string) => void;
   onDeleteAccount: (accountId: string) => void;
+  onViewAccount: (accountId: string) => void;
 }
 
 export const AccountsByCurrencySection = ({
@@ -23,9 +25,11 @@ export const AccountsByCurrencySection = ({
   snapshotForAccount,
   noBalanceLabel,
   registerBalanceLabel,
+  viewDetailLabel,
   typeLabel,
   onRegisterBalance,
   onDeleteAccount,
+  onViewAccount,
 }: AccountsByCurrencySectionProps) => {
   if (!accounts.length) return null;
 
@@ -53,7 +57,7 @@ export const AccountsByCurrencySection = ({
                   {snap ? (
                     <>
                       <p className="text-sm font-semibold money-font">
-                        {currency === "COP" ? formatCOP(snap.amount) : `${snap.amount.toLocaleString("en-US", { minimumFractionDigits: 2 })} ${currency}`}
+                        {formatCurrency(snap.amount, currency)}
                       </p>
                       {/* Solo se muestra el equivalente en USD si el saldo tiene una tasa
                           registrada — mostrar "$0.00" sin tasa conocida sería engañoso. */}
@@ -65,6 +69,16 @@ export const AccountsByCurrencySection = ({
                     <p className="text-xs text-muted-foreground italic">{noBalanceLabel}</p>
                   )}
                 </div>
+                {snap && (
+                  <Button
+                    variant="ghost" size="icon"
+                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                    onClick={() => onViewAccount(acc.id)}
+                    title={viewDetailLabel}
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                  </Button>
+                )}
                 <Button
                   variant="ghost" size="icon"
                   className="h-8 w-8 text-muted-foreground hover:text-foreground"

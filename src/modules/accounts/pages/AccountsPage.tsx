@@ -49,6 +49,7 @@ export const AccountsPage = () => {
   const handleAddAccount = () => navigate("create", { state: { backgroundLocation: location } });
   const handleDeleteAccount = (id: string) => navigate(`delete/${id}`, { state: { backgroundLocation: location } });
   const handleRegisterBalance = (accountId: string) => navigate(`snapshot/${accountId}`, { state: { backgroundLocation: location, year } });
+  const handleViewAccount = (accountId: string) => navigate(`view/${accountId}`, { state: { backgroundLocation: location, year } });
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -85,9 +86,11 @@ export const AccountsPage = () => {
           snapshotForAccount={(accountId) => snapshotMap[accountId]?.[currentMonth]}
           noBalanceLabel={i18nString("noBalance")}
           registerBalanceLabel={i18nString("registerBalance")}
+          viewDetailLabel={i18nString("viewDetail")}
           typeLabel={(type) => i18nString(`type_${type}`)}
           onRegisterBalance={handleRegisterBalance}
           onDeleteAccount={handleDeleteAccount}
+          onViewAccount={handleViewAccount}
         />
       ))}
 
