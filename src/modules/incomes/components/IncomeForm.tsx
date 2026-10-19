@@ -5,6 +5,7 @@ import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
 import { SELECTABLE_CURRENCIES } from "@/lib/mock-data";
 import { FormField } from "@/shared/components/FormField";
+import { numericInputValue, parseNumericInput } from "@/shared/components/numericField";
 import type { Control, FieldErrors } from "react-hook-form";
 import type { IncomeFormValues } from "@/schemas/incomeSchema";
 import type { Category } from "../utils/types";
@@ -66,10 +67,8 @@ export const IncomeForm = ({
               placeholder="0"
               className="no-spinner"
               {...field}
-              onChange={(e) => {
-                const value = e.target.value;
-                field.onChange(value === "" ? undefined : e.target.valueAsNumber);
-              }}
+              value={numericInputValue(field.value)}
+              onChange={(e) => field.onChange(parseNumericInput(e))}
             />
           )}
         </FormField>
@@ -104,10 +103,8 @@ export const IncomeForm = ({
             placeholder={i18nString("exampleItemExchange")}
             className="no-spinner"
             {...field}
-            onChange={(e) => {
-              const value = e.target.value;
-              field.onChange(value === "" ? undefined : e.target.valueAsNumber);
-            }}
+            value={numericInputValue(field.value)}
+            onChange={(e) => field.onChange(parseNumericInput(e))}
             onKeyDown={(e) => {
               if (e.key === "-" || e.key === "e") e.preventDefault();
             }}
