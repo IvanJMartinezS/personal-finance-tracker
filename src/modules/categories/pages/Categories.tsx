@@ -5,16 +5,12 @@ import { CategoriesSection } from "../components/CategoriesSection";
 import { CreateCategoryDialog } from "./CreateCategoryDialog";
 import { EditCategoryDialog } from "./EditCategoryDialog";
 import { DeleteCategoryButton } from "./DeleteCategoryButton";
-import { useLocation } from "react-router-dom";
+import { useDialogRouteFallback } from "@/shared/hooks/useDialogRouteFallback";
 
 export const Categories = () => {
-  const location = useLocation();
   const { data: categories, isLoading } = useGetCategories();
 
-  // Verificar si estamos en una ruta de diálogo
-  const isCreateDialog = location.pathname.includes("/create");
-  const isEditDialog = location.pathname.includes("/edit/");
-  const isDeleteDialog = location.pathname.includes("/delete/");
+  const { isCreateDialog, isEditDialog, isDeleteDialog } = useDialogRouteFallback();
 
   if (isLoading && !isEditDialog) return <CategoriesListSkeleton />;
 

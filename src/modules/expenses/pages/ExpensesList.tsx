@@ -19,12 +19,12 @@ import { ExpensesListHeader } from "../components/ExpensesListHeader";
 import { CreateExpenseDialog } from "./CreateExpenseDialog";
 import { EditExpenseDialog } from "./EditExpenseDialog";
 import { DeleteExpenseButton } from "./DeleteExpenseButton";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useDialogRouteFallback } from "@/shared/hooks/useDialogRouteFallback";
 
 export const ExpensesList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t('expenses.' + key);
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const overBudgetOnly = searchParams.get('overBudget') === 'true';
 
@@ -32,10 +32,7 @@ export const ExpensesList = () => {
   const { data: expenses, isLoading: expensesLoading } = useGetExpenses();
   const { data: budgets } = useGetBudgets();
 
-  // Verificar si estamos en una ruta de diálogo
-  const isCreateDialog = location.pathname.includes("/create");
-  const isEditDialog = location.pathname.includes("/edit/");
-  const isDeleteDialog = location.pathname.includes("/delete/");
+  const { isCreateDialog, isEditDialog, isDeleteDialog } = useDialogRouteFallback();
 
   const {
     searchQuery, setSearchQuery,

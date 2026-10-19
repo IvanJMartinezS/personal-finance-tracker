@@ -14,19 +14,16 @@ import { IncomeRow } from "../components/IncomeRow";
 import { CreateIncomeDialog } from "./CreateIncomeDialog";
 import { EditIncomeDialog } from "./EditIncomeDialog";
 import { DeleteIncomeButton } from "./DeleteIncomeButton";
-import { useLocation } from "react-router-dom";
+import { useDialogRouteFallback } from "@/shared/hooks/useDialogRouteFallback";
 
 export const IncomeList = () => {
   const { t } = useTranslation();
   const i18nString = (key: string) => t(`incomes.${key}`);
-  const location = useLocation();
 
   const { data: categories, isLoading: categoriesLoading } = useGetCategories("income");
   const { data: incomes, isLoading: incomesLoading } = useGetIncomes();
 
-  const isCreateDialog = location.pathname.includes("/create");
-  const isEditDialog = location.pathname.includes("/edit/");
-  const isDeleteDialog = location.pathname.includes("/delete/");
+  const { isCreateDialog, isEditDialog, isDeleteDialog } = useDialogRouteFallback();
 
   const {
     searchQuery, setSearchQuery,

@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
+import { useDialogRouteFallback } from "@/shared/hooks/useDialogRouteFallback";
 import { useGetBudgets } from "../hooks/useGetBudgets";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { BudgetsListHeader } from "../components/BudgetsListHeader";
@@ -13,17 +13,11 @@ import { EditBudgetDialog } from "./EditBudgetDialog";
 import { DeleteBudgetButton } from "./DeleteBudgetButton";
 
 export const Budgets = () => {
-  const location = useLocation();
   const i18nString = useModuleTranslation("budgets");
   const { data: budgets, isLoading } = useGetBudgets();
   const totalAmountUSD = useMemo(() => sumBudgetsUSD(budgets), [budgets]);
 
-  // Verificar si estamos en una ruta de diálogo (fallback para navegación
-  // directa/recarga sobre una subruta de modal — ver Modals.tsx para el caso
-  // normal de navegación con backgroundLocation).
-  const isCreateDialog = location.pathname.includes("/create");
-  const isEditDialog = location.pathname.includes("/edit/");
-  const isDeleteDialog = location.pathname.includes("/delete/");
+  const { isCreateDialog, isEditDialog, isDeleteDialog } = useDialogRouteFallback();
 
   if (isLoading) return <BudgetsListSkeleton />;
 
