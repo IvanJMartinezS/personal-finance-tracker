@@ -84,6 +84,8 @@ export const ES = {
     save: 'Guardar',
     update: 'Actualizar',
     selectCategory: 'Seleccionar categoría',
+    categoryBudgetAvailable: 'Disponible este mes: {{amount}}',
+    categoryBudgetExceeded: 'Superado por {{amount}} este mes',
     exampleItem: 'Ej: Supermercado Éxito',
     descriptionNote: 'Notas adicionales...',
     allLabel: 'Todas',

@@ -84,6 +84,8 @@ export const EN = {
     save: 'Save',
     update: 'Update',
     selectCategory: 'Select Category',
+    categoryBudgetAvailable: 'Available this month: {{amount}}',
+    categoryBudgetExceeded: 'Exceeded by {{amount}} this month',
     exampleItem: 'E.g: Supermarket',
     descriptionNote: 'Additional Notes...',
     allLabel: 'All',

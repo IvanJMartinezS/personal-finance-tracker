@@ -1,12 +1,15 @@
 // src/modules/expenses/components/ExpenseForm.tsx
+import { useWatch } from "react-hook-form";
 import { Input } from "@/shared/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/shared/components/ui/select";
 import { Textarea } from "@/shared/components/ui/textarea";
 import { Button } from "@/shared/components/ui/button";
 import { ButtonSpinner } from "@/shared/components/ui/loader";
-import { SELECTABLE_CURRENCIES } from "@/lib/mock-data";
+import { SELECTABLE_CURRENCIES, formatCurrency } from "@/lib/mock-data";
+import { cn } from "@/lib/utils";
 import { FormField } from "@/shared/components/FormField";
 import { numericInputValue, parseNumericInput } from "@/shared/components/numericField";
+import { useBudgetsUsage } from "@/modules/budgets/hooks/useBudgetsUsage";
 import type { Control, FieldErrors } from "react-hook-form";
 import type { ExpenseFormValues } from "@/schemas/expenseSchema";
 import type { Category } from "../utils/types";
@@ -15,10 +18,38 @@ interface ExpenseFormProps {
   control: Control<ExpenseFormValues>;
   errors: FieldErrors<ExpenseFormValues>;
   categories: Category[];
-  i18nString: (key: string) => string;
+  i18nString: (key: string, options?: Record<string, unknown>) => string;
   isSubmitting: boolean;
   onSubmit: () => void;
 }
+
+/** Disponible del presupuesto de la categoría seleccionada, para el mes de la
+ * fecha elegida — así el usuario no registra el gasto "a ciegas" sin saber
+ * cuánto le queda. No se muestra nada si la categoría no tiene presupuesto. */
+const CategoryBudgetHint = ({
+  control,
+  i18nString,
+}: {
+  control: Control<ExpenseFormValues>;
+  i18nString: (key: string, options?: Record<string, unknown>) => string;
+}) => {
+  const categoryId = useWatch({ control, name: "category_id" });
+  const date = useWatch({ control, name: "date" });
+  const [year, month] = (date || new Date().toISOString().slice(0, 10)).split("-").map(Number);
+  const { data: budgetsUsage } = useBudgetsUsage(year, month);
+
+  const usage = budgetsUsage.find((b) => b.budget.category_id === categoryId);
+  if (!usage) return null;
+
+  const isExceeded = usage.remainingUSD < 0;
+  return (
+    <p className={cn("text-xs mt-1", isExceeded ? "text-destructive" : "text-muted-foreground")}>
+      {isExceeded
+        ? i18nString("categoryBudgetExceeded", { amount: formatCurrency(Math.abs(usage.remainingUSD), "USD") })
+        : i18nString("categoryBudgetAvailable", { amount: formatCurrency(usage.remainingUSD, "USD") })}
+    </p>
+  );
+};
 
 export const ExpenseForm = ({
   control,
@@ -40,30 +71,33 @@ export const ExpenseForm = ({
           {(field) => <Input type="date" {...field} />}
         </FormField>
 
-        <FormField
-          name="category_id"
-          label={i18nString("category")}
-          control={control}
-          errors={errors}
-        >
-          {(field) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger>
-                <SelectValue placeholder={i18nString("selectCategory")} />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((c: Category) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    <span className="flex items-center gap-2">
-                      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
-                      {c.name}
-                    </span>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        </FormField>
+        <div>
+          <FormField
+            name="category_id"
+            label={i18nString("category")}
+            control={control}
+            errors={errors}
+          >
+            {(field) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder={i18nString("selectCategory")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((c: Category) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full" style={{ backgroundColor: c.color }} />
+                        {c.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          </FormField>
+          <CategoryBudgetHint control={control} i18nString={i18nString} />
+        </div>
       </div>
 
       <FormField
