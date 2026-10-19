@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/shared/components/ui
 import { Progress } from "@/shared/components/ui/progress";
 import { Button } from "@/shared/components/ui/button";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-import { PiggyBank } from "lucide-react";
+import { AlertTriangle, PiggyBank } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { getBudgetStatusColor } from "../utils/calculateBudgetUsage";
 import { useBudgetsUsage } from "../hooks/useBudgetsUsage";
@@ -15,12 +15,14 @@ const STATUS_BAR_CLASS = {
   green: "bg-success",
   orange: "bg-warning",
   red: "bg-destructive",
+  exceeded: "bg-destructive",
 } as const;
 
 const STATUS_TEXT_CLASS = {
   green: "text-success",
   orange: "text-warning",
   red: "text-destructive",
+  exceeded: "text-destructive",
 } as const;
 
 export const DashboardBudgetsCard = () => {
@@ -69,10 +71,14 @@ export const DashboardBudgetsCard = () => {
           <div className="space-y-4">
             {budgetsUsage.map(({ budget, spentUSD, remainingUSD, percentUsed, percentAvailable }) => {
               const status = getBudgetStatusColor(percentAvailable);
+              const isExceeded = status === "exceeded";
               const cat = budget.categories;
               const accumulatedUSD = accumulatedByBudgetId.get(budget.id);
               return (
-                <div key={budget.id} className="space-y-1.5">
+                <div
+                  key={budget.id}
+                  className={`space-y-1.5 ${isExceeded ? "rounded-md border border-destructive/30 bg-destructive/5 p-2" : ""}`}
+                >
                   <div className="flex items-center justify-between gap-2 text-xs">
                     <span className="flex items-center gap-1.5 font-medium truncate">
                       <span className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: cat?.color ?? "#888" }} />
@@ -86,7 +92,8 @@ export const DashboardBudgetsCard = () => {
                     </span>
                   </div>
                   <Progress value={Math.min(percentUsed, 100)} indicatorClassName={STATUS_BAR_CLASS[status]} />
-                  <p className={`text-[11px] money-font ${STATUS_TEXT_CLASS[status]}`}>
+                  <p className={`flex items-center gap-1 text-[11px] money-font ${STATUS_TEXT_CLASS[status]}`}>
+                    {isExceeded && <AlertTriangle className="h-3 w-3 shrink-0" />}
                     {remainingUSD >= 0
                       ? i18nString("remainingShort", { amount: formatCurrency(remainingUSD, "USD") })
                       : i18nString("overBudgetShort", { amount: formatCurrency(Math.abs(remainingUSD), "USD") })}

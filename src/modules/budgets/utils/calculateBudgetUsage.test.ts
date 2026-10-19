@@ -49,9 +49,13 @@ describe('getBudgetStatusColor', () => {
     expect(getBudgetStatusColor(20)).toBe('orange');
   });
 
-  it('es rojo por debajo del 20% disponible, incluyendo presupuesto superado', () => {
+  it('es rojo entre 0% y 20% disponible', () => {
     expect(getBudgetStatusColor(19)).toBe('red');
     expect(getBudgetStatusColor(0)).toBe('red');
-    expect(getBudgetStatusColor(-50)).toBe('red');
+  });
+
+  it('es "exceeded" (distinto de rojo) cuando el presupuesto ya se superó', () => {
+    expect(getBudgetStatusColor(-0.01)).toBe('exceeded');
+    expect(getBudgetStatusColor(-50)).toBe('exceeded');
   });
 });

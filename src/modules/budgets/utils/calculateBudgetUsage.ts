@@ -20,14 +20,19 @@ export function calculateBudgetUsage(amountUsd: number, spentUSD: number): Budge
   return { spentUSD, remainingUSD, percentUsed, percentAvailable };
 }
 
-export type BudgetStatusColor = "green" | "orange" | "red";
+export type BudgetStatusColor = "green" | "orange" | "red" | "exceeded";
 
 /**
- * Umbrales pedidos: más del 50% disponible → verde; entre 20% y 50% → naranja;
- * menos del 20% (incluyendo presupuesto superado) → rojo.
+ * Umbrales: más del 50% disponible → verde; entre 20% y 50% → naranja; entre
+ * 0% y 20% → rojo; presupuesto ya superado (disponible negativo) →
+ * `"exceeded"`, un estado aparte de `"red"` — la barra de progreso se topa en
+ * 100% en ambos casos (no puede pasarse de lleno), así que sin un estado
+ * propio no había forma de distinguir "casi se acaba" de "ya se gastó de
+ * más", visualmente se veían idénticos.
  */
 export function getBudgetStatusColor(percentAvailable: number): BudgetStatusColor {
   if (percentAvailable > 50) return "green";
   if (percentAvailable >= 20) return "orange";
-  return "red";
+  if (percentAvailable >= 0) return "red";
+  return "exceeded";
 }

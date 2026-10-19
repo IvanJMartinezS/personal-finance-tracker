@@ -1,5 +1,4 @@
 import { AuthProvider } from "@/shared/auth/useAuth";
-import { Toaster } from "@/shared/components/ui/toaster";
 import { Toaster as Sonner } from "@/shared/components/ui/sonner";
 import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { BrowserRouter } from "react-router-dom";
@@ -15,7 +14,6 @@ function App() {
   return (
      <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <Toaster />
         <Sonner />
           <AuthProvider>
             <I18nextProvider i18n={i18n}>
