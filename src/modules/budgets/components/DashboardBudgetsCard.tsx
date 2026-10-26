@@ -7,6 +7,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { AlertTriangle, PiggyBank } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { getBudgetStatusColor } from "../utils/calculateBudgetUsage";
+import { calculateNetBudgetUsage } from "../utils/calculateNetBudgetUsage";
 import { useBudgetsUsage } from "../hooks/useBudgetsUsage";
 import { useBudgetsHistory } from "../hooks/useBudgetsHistory";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
@@ -43,6 +44,8 @@ export const DashboardBudgetsCard = () => {
     return map;
   }, [budgetsHistory]);
 
+  const netUsage = useMemo(() => calculateNetBudgetUsage(budgetsUsage), [budgetsUsage]);
+
   return (
     <Card className="border-border/50">
       <CardHeader className="pb-2 flex-row items-center justify-between space-y-0">
@@ -69,6 +72,26 @@ export const DashboardBudgetsCard = () => {
           </div>
         ) : (
           <div className="space-y-4">
+            <div className="flex items-center justify-between gap-2 rounded-md border border-border/50 bg-muted/20 px-3 py-2">
+              <div>
+                <p className="text-[11px] text-muted-foreground">{i18nString("netTotalLabel")}</p>
+                <p className="text-xs font-medium money-font">
+                  {i18nString("netSpentOfTotal", {
+                    spent: formatCurrency(netUsage.totalSpentUSD, "USD"),
+                    total: formatCurrency(netUsage.totalBudgetUSD, "USD"),
+                  })}
+                </p>
+              </div>
+              <p
+                className={`text-sm font-semibold money-font shrink-0 ${
+                  netUsage.totalRemainingUSD >= 0 ? "text-success" : "text-destructive"
+                }`}
+              >
+                {netUsage.totalRemainingUSD >= 0
+                  ? i18nString("netAvailable", { amount: formatCurrency(netUsage.totalRemainingUSD, "USD") })
+                  : i18nString("netExceeded", { amount: formatCurrency(Math.abs(netUsage.totalRemainingUSD), "USD") })}
+              </p>
+            </div>
             {budgetsUsage.map(({ budget, spentUSD, remainingUSD, percentUsed, percentAvailable }) => {
               const status = getBudgetStatusColor(percentAvailable);
               const isExceeded = status === "exceeded";
