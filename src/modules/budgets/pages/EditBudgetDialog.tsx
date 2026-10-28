@@ -41,10 +41,10 @@ export const EditBudgetDialog = () => {
   }, [open, navigate]);
 
   const handleSave = () => {
-    if (!id || !amount || submitted.current) return;
+    if (!id || !amount || submitted.current || !budgetToEdit) return;
     submitted.current = true;
     updateBudget.mutate(
-      { id, amount_usd: parseFloat(amount) },
+      { budget: budgetToEdit, newAmountUsd: parseFloat(amount) },
       {
         onSuccess: () => { toast.success(i18nString("updateSuccess")); handleClose(); },
         onError: (error: AppError) => {

@@ -246,7 +246,7 @@ export const ES = {
     historyMonth: 'Mes',
     historyAvailable: 'Disponible',
     historyAccumulated: 'Acumulado',
-    historyNote: 'Cada categoría empieza a contar desde el mes en que se creó su presupuesto ("—" en los meses anteriores). Se calcula con el monto actual; si lo cambias, el historial de meses pasados se recalcula con el nuevo monto.',
+    historyNote: 'Cada categoría empieza a contar desde el mes en que se creó su presupuesto ("—" en los meses anteriores). Si cambias el monto, el ajuste aplica desde el mes actual en adelante — los meses ya pasados conservan el monto que tenían entonces.',
     invalidCategory: 'La categoría seleccionada no existe. Por favor, elige una categoría válida.',
     budgetNotFound: 'Presupuesto no encontrado',
     cancel: 'Cancelar',

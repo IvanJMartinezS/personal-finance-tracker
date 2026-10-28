@@ -1,1 +1,1 @@
-export type { Category, Budget, CreateBudgetInput } from '@/types';
+export type { Category, Budget, BudgetMonthlyAmount, CreateBudgetInput } from '@/types';

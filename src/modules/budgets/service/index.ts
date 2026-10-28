@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Budget, CreateBudgetInput } from "@/modules/budgets/utils/types";
+import type { Budget, BudgetMonthlyAmount, CreateBudgetInput } from "@/modules/budgets/utils/types";
 
 export class BudgetsService {
 
@@ -62,6 +62,24 @@ export class BudgetsService {
   async deleteBudget(id: string): Promise<void> {
     const { error } = await supabase.from("budgets").delete().eq("id", id);
     if (error) throw new Error(`Error al eliminar presupuesto: ${error.message}`);
+  }
+
+  /**
+   * Guarda (inserta o actualiza) uno o más ajustes mensuales del monto de un
+   * presupuesto — ver 009_create_budget_monthly_amounts.sql y
+   * `buildBudgetAmountUpdates`. `onConflict` apunta al UNIQUE(budget_id,
+   * year, month): si ya existe una fila para ese mes, se actualiza en vez de
+   * duplicarla.
+   */
+  async upsertMonthlyAmounts(budgetId: string, userId: string, rows: BudgetMonthlyAmount[]): Promise<void> {
+    if (rows.length === 0) return;
+    const { error } = await supabase
+      .from("budget_monthly_amounts")
+      .upsert(
+        rows.map((r) => ({ budget_id: budgetId, user_id: userId, year: r.year, month: r.month, amount_usd: r.amount_usd })),
+        { onConflict: "budget_id,year,month" }
+      );
+    if (error) throw new Error(`Error al guardar el historial del presupuesto: ${error.message}`);
   }
 
   /**
