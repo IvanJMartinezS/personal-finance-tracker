@@ -22,5 +22,8 @@ export function useDialogRouteFallback() {
     isCreateDialog: !hasBackgroundLocation && location.pathname.includes("/create"),
     isEditDialog: !hasBackgroundLocation && location.pathname.includes("/edit/"),
     isDeleteDialog: !hasBackgroundLocation && location.pathname.includes("/delete/"),
+    // Solo lo usa Presupuesto (corregir el monto de un mes pasado), pero
+    // vive aquí para no duplicar el chequeo de `hasBackgroundLocation`.
+    isCorrectMonthDialog: !hasBackgroundLocation && location.pathname.includes("/correct-month"),
   };
 }

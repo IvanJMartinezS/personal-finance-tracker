@@ -8,6 +8,7 @@ export const BudgetsRoutes = () => {
       <Route path="create" element={<Budgets />} />
       <Route path="edit/:id" element={<Budgets />} />
       <Route path="delete/:id" element={<Budgets />} />
+      <Route path="correct-month" element={<Budgets />} />
     </Routes>
   );
 };

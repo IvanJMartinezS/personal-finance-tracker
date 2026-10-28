@@ -17,6 +17,7 @@ import { ViewAccountDialog } from "@/modules/accounts/pages/ViewAccountDialog";
 import { CreateBudgetDialog } from "@/modules/budgets/pages/CreateBudgetDialog";
 import { EditBudgetDialog } from "@/modules/budgets/pages/EditBudgetDialog";
 import { DeleteBudgetButton } from "@/modules/budgets/pages/DeleteBudgetButton";
+import { CorrectBudgetMonthDialog } from "@/modules/budgets/pages/CorrectBudgetMonthDialog";
 
 export const Modals = () => {
   const location = useLocation();
@@ -53,6 +54,7 @@ export const Modals = () => {
       <Route path="budgets/create" element={<CreateBudgetDialog />} />
       <Route path="budgets/edit/:id" element={<EditBudgetDialog />} />
       <Route path="budgets/delete/:id" element={<DeleteBudgetButton />} />
+      <Route path="budgets/correct-month" element={<CorrectBudgetMonthDialog />} />
     </Routes>
   );
 };

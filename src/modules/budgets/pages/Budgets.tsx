@@ -13,6 +13,7 @@ import { calculateNetBudgetUsage } from "../utils/calculateNetBudgetUsage";
 import { CreateBudgetDialog } from "./CreateBudgetDialog";
 import { EditBudgetDialog } from "./EditBudgetDialog";
 import { DeleteBudgetButton } from "./DeleteBudgetButton";
+import { CorrectBudgetMonthDialog } from "./CorrectBudgetMonthDialog";
 
 export const Budgets = () => {
   const i18nString = useModuleTranslation("budgets");
@@ -23,7 +24,7 @@ export const Budgets = () => {
   const { data: budgetsUsage } = useBudgetsUsage(now.getFullYear(), now.getMonth() + 1);
   const netUsage = useMemo(() => calculateNetBudgetUsage(budgetsUsage), [budgetsUsage]);
 
-  const { isCreateDialog, isEditDialog, isDeleteDialog } = useDialogRouteFallback();
+  const { isCreateDialog, isEditDialog, isDeleteDialog, isCorrectMonthDialog } = useDialogRouteFallback();
 
   if (isLoading) return <BudgetsListSkeleton />;
 
@@ -51,6 +52,7 @@ export const Budgets = () => {
       {isCreateDialog && <CreateBudgetDialog />}
       {isEditDialog && <EditBudgetDialog />}
       {isDeleteDialog && <DeleteBudgetButton />}
+      {isCorrectMonthDialog && <CorrectBudgetMonthDialog />}
     </>
   );
 };

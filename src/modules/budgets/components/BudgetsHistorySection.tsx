@@ -1,10 +1,13 @@
 import { useMemo } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useYearFilter } from "@/shared/hooks/useYearFilter";
 import { YearFilter } from "@/shared/components/YearFilter";
 import { useBudgetsHistory } from "../hooks/useBudgetsHistory";
 import { Skeleton } from "@/shared/components/ui/skeleton";
+import { Button } from "@/shared/components/ui/button";
+import { PencilLine } from "lucide-react";
 import { formatCurrency } from "@/lib/mock-data";
 import { getElapsedMonthsInYear } from "@/lib/dateUtils";
 import { cn } from "@/lib/utils";
@@ -18,6 +21,8 @@ function fmtUsdOrDash(val: number | undefined) {
 export const BudgetsHistorySection = () => {
   const { t } = useTranslation();
   const i18nString = useModuleTranslation("budgets");
+  const navigate = useNavigate();
+  const location = useLocation();
   const { year, years, setYear } = useYearFilter();
   const { data, isLoading } = useBudgetsHistory(year);
   const currentMonth = getElapsedMonthsInYear(year);
@@ -46,7 +51,16 @@ export const BudgetsHistorySection = () => {
           <h2 className="text-lg font-semibold">{i18nString("historyTitle")}</h2>
           <p className="text-sm text-muted-foreground">{i18nString("historySubtitle", { year })}</p>
         </div>
-        <YearFilter year={year} years={years} onChange={setYear} />
+        <div className="flex items-center gap-2">
+          <YearFilter year={year} years={years} onChange={setYear} />
+          <Button
+            variant="outline" size="sm" className="gap-1.5"
+            onClick={() => navigate("correct-month", { state: { backgroundLocation: location } })}
+          >
+            <PencilLine className="h-3.5 w-3.5" />
+            {i18nString("correctMonth")}
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-lg border border-border/50 overflow-auto">
