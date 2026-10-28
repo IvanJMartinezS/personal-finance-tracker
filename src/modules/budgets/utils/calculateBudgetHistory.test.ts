@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { calculateBudgetHistory } from './calculateBudgetHistory';
-import type { Budget } from '@/types';
+import type { Budget, BudgetMonthlyAmount } from '@/types';
 
-const mercadoBudget = (amount_usd: number, createdAt = '2026-01-01T00:00:00Z'): Budget => ({
+const mercadoBudget = (
+  amount_usd: number,
+  createdAt = '2026-01-01T00:00:00Z',
+  budget_monthly_amounts: BudgetMonthlyAmount[] = [],
+): Budget => ({
   id: 'b1',
   user_id: 'user-1',
   category_id: 'c1',
@@ -10,6 +14,7 @@ const mercadoBudget = (amount_usd: number, createdAt = '2026-01-01T00:00:00Z'): 
   created_at: createdAt,
   updated_at: createdAt,
   categories: { id: 'c1', name: 'Mercado', type: 'expense', color: '#000' },
+  budget_monthly_amounts,
 });
 
 describe('calculateBudgetHistory', () => {
@@ -82,5 +87,16 @@ describe('calculateBudgetHistory', () => {
     const budget = mercadoBudget(50, '2026-03-01T00:00:00Z');
     const [history] = calculateBudgetHistory([budget], {}, 2025, 12);
     expect(history.entries).toEqual([]);
+  });
+
+  it('usa el monto que regía en cada mes, no el monto actual del presupuesto', () => {
+    // El presupuesto arrancó en 220, pero se ajustó a 100 desde marzo.
+    const budget = mercadoBudget(220, '2026-01-01T00:00:00Z', [{ year: 2026, month: 3, amount_usd: 100 }]);
+    const monthlySpentByCategory = { 1: { c1: 50 }, 2: { c1: 50 }, 3: { c1: 50 } };
+    const [history] = calculateBudgetHistory([budget], monthlySpentByCategory, 2026, 3);
+
+    expect(history.entries[0]).toMatchObject({ month: 1, remainingUSD: 170 }); // 220 - 50, no 100 - 50
+    expect(history.entries[1]).toMatchObject({ month: 2, remainingUSD: 170 }); // sigue en 220 hasta el ajuste
+    expect(history.entries[2]).toMatchObject({ month: 3, remainingUSD: 50 }); // ya aplica el ajuste a 100
   });
 });

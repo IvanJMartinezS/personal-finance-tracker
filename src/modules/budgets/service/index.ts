@@ -10,7 +10,7 @@ export class BudgetsService {
   async getBudgets(userId?: string): Promise<Budget[]> {
     let query = supabase
       .from("budgets")
-      .select("*, categories(name, color, type)");
+      .select("*, categories(name, color, type), budget_monthly_amounts(year, month, amount_usd)");
 
     if (userId) {
       query = query.eq("user_id", userId);
@@ -72,7 +72,7 @@ export class BudgetsService {
   async getBudgetForCategory(userId: string, categoryId: string): Promise<Budget | null> {
     const { data, error } = await supabase
       .from("budgets")
-      .select("*, categories(name, color, type)")
+      .select("*, categories(name, color, type), budget_monthly_amounts(year, month, amount_usd)")
       .eq("user_id", userId)
       .eq("category_id", categoryId)
       .maybeSingle();

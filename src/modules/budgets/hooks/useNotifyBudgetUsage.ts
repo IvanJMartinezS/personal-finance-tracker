@@ -5,6 +5,7 @@ import { formatCurrency } from "@/lib/mock-data";
 import { BudgetsService } from "../service";
 import { ExpensesService } from "@/modules/expenses/service";
 import { calculateBudgetUsage } from "../utils/calculateBudgetUsage";
+import { resolveBudgetAmountForMonth } from "../utils/resolveBudgetAmountForMonth";
 
 const budgetsService = new BudgetsService();
 const expensesService = new ExpensesService();
@@ -33,7 +34,8 @@ export const useNotifyBudgetUsage = () => {
       const [year, month] = expenseDate.split("-").map(Number);
       const totals = await expensesService.getMonthCategoryTotalsUSD(user.id, year, month);
       const spentUSD = totals[categoryId] ?? 0;
-      const { remainingUSD } = calculateBudgetUsage(budget.amount_usd, spentUSD);
+      const amountForMonth = resolveBudgetAmountForMonth(budget.amount_usd, budget.budget_monthly_amounts, year, month);
+      const { remainingUSD } = calculateBudgetUsage(amountForMonth, spentUSD);
       const categoryName = budget.categories?.name ?? i18nString("uncategorized");
 
       if (remainingUSD >= 0) {

@@ -4,6 +4,7 @@ import { pdfStyles, pdfColors } from "./pdfStyles";
 import { PdfHeader } from "./PdfHeader";
 import { PdfFooter } from "./PdfFooter";
 import { calculateBudgetUsage } from "@/modules/budgets/utils/calculateBudgetUsage";
+import { resolveBudgetAmountForMonth } from "@/modules/budgets/utils/resolveBudgetAmountForMonth";
 import type { CategoryBudgetHistory } from "@/modules/budgets/utils/calculateBudgetHistory";
 
 interface BudgetPageProps {
@@ -42,6 +43,16 @@ export const BudgetPage = ({ year, generatedAtLabel, budgetsHistory }: BudgetPag
 
           {rows.map((h, idx) => {
             const lastEntry = h.entries[h.entries.length - 1];
+            // El monto que de verdad regía ese último mes — puede ser
+            // distinto del actual (h.budget.amount_usd) si el presupuesto se
+            // ajustó después, y debe coincidir con el que se usó para
+            // calcular "Disponible"/"Acumulado".
+            const amountForLastMonth = resolveBudgetAmountForMonth(
+              h.budget.amount_usd,
+              h.budget.budget_monthly_amounts,
+              year,
+              lastEntry.month
+            );
             const isLast = idx === rows.length - 1;
             return (
               <View key={h.budget.id} style={isLast ? pdfStyles.tableRowLast : pdfStyles.tableRow}>
@@ -49,9 +60,9 @@ export const BudgetPage = ({ year, generatedAtLabel, budgetsHistory }: BudgetPag
                   <View style={[pdfStyles.colorDot, { backgroundColor: h.budget.categories?.color ?? pdfColors.mutedText }]} />
                   <Text>{h.budget.categories?.name ?? "Sin categoría"}</Text>
                 </View>
-                <Text style={[pdfStyles.tdRight, { flex: 1 }]}>{formatCurrency(h.budget.amount_usd, "USD")}</Text>
+                <Text style={[pdfStyles.tdRight, { flex: 1 }]}>{formatCurrency(amountForLastMonth, "USD")}</Text>
                 <Text style={[pdfStyles.tdRight, { flex: 1 }]}>{formatCurrency(lastEntry.spentUSD, "USD")}</Text>
-                <Text style={[pdfStyles.tdRight, { flex: 1, color: statusColor(lastEntry.remainingUSD, h.budget.amount_usd) }]}>
+                <Text style={[pdfStyles.tdRight, { flex: 1, color: statusColor(lastEntry.remainingUSD, amountForLastMonth) }]}>
                   {formatCurrency(lastEntry.remainingUSD, "USD")}
                 </Text>
                 <Text

@@ -1,5 +1,6 @@
 import { toUsdEquivalent } from "@/lib/mock-data";
 import { firstApplicableMonth } from "./calculateBudgetHistory";
+import { resolveBudgetAmountForMonth } from "./resolveBudgetAmountForMonth";
 import type { Budget, Expense } from "@/types";
 
 export interface ExpenseBudgetOverage {
@@ -52,8 +53,9 @@ export function calculateExpenseBudgetOverages(
   }
 
   for (const [key, groupExpenses] of groups) {
-    const categoryId = key.split("|")[0];
+    const [categoryId, yearStr, monthStr] = key.split("|");
     const budget = budgetByCategory.get(categoryId)!;
+    const amountForMonth = resolveBudgetAmountForMonth(budget.amount_usd, budget.budget_monthly_amounts, Number(yearStr), Number(monthStr));
 
     // Orden cronológico: por fecha y, dentro del mismo día, por cuándo se creó el registro.
     const sorted = [...groupExpenses].sort((a, b) => {
@@ -67,9 +69,9 @@ export function calculateExpenseBudgetOverages(
       spent += toUsdEquivalent(exp);
       const spentAfter = spent;
 
-      const excessUSD = Math.max(0, spentAfter - Math.max(spentBefore, budget.amount_usd));
+      const excessUSD = Math.max(0, spentAfter - Math.max(spentBefore, amountForMonth));
       if (excessUSD > 0) {
-        const cumulativeExcessUSD = Math.max(0, spentAfter - budget.amount_usd);
+        const cumulativeExcessUSD = Math.max(0, spentAfter - amountForMonth);
         overages.set(exp.id, { excessUSD, cumulativeExcessUSD });
       }
     }

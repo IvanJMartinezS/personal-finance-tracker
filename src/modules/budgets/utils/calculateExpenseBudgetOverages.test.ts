@@ -1,8 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { calculateExpenseBudgetOverages } from './calculateExpenseBudgetOverages';
-import type { Budget, Expense } from '@/types';
+import type { Budget, BudgetMonthlyAmount, Expense } from '@/types';
 
-const budget = (amount_usd: number, createdAt = '2026-01-01T00:00:00Z'): Budget => ({
+const budget = (
+  amount_usd: number,
+  createdAt = '2026-01-01T00:00:00Z',
+  budget_monthly_amounts: BudgetMonthlyAmount[] = [],
+): Budget => ({
   id: 'b1',
   user_id: 'user-1',
   category_id: 'c1',
@@ -10,6 +14,7 @@ const budget = (amount_usd: number, createdAt = '2026-01-01T00:00:00Z'): Budget 
   created_at: createdAt,
   updated_at: createdAt,
   categories: { id: 'c1', name: 'Mercado', type: 'expense', color: '#000' },
+  budget_monthly_amounts,
 });
 
 const expense = (overrides: Partial<Expense> & { id: string; amount_in_base: number; date: string }): Expense => ({
@@ -119,5 +124,23 @@ describe('calculateExpenseBudgetOverages', () => {
     const overages = calculateExpenseBudgetOverages(expenses, budgets);
     expect(overages.get('e1')).toEqual({ excessUSD: 20, cumulativeExcessUSD: 20 });
     expect(overages.get('e2')).toEqual({ excessUSD: 40, cumulativeExcessUSD: 60 });
+  });
+
+  it('usa el monto que regía en el mes del gasto, no el monto actual del presupuesto', () => {
+    // El presupuesto se creó en enero con $100, y se redujo a $50 desde
+    // septiembre — un gasto de agosto no debería marcarse como excedido
+    // usando el monto nuevo, uno de septiembre sí.
+    const budgets = [budget(50, '2026-01-01T00:00:00Z', [
+      { year: 2026, month: 1, amount_usd: 100 },
+      { year: 2026, month: 9, amount_usd: 50 },
+    ])];
+    const expenses = [expense({ id: 'e1', amount_in_base: 80, date: '2026-08-05' })];
+
+    const overages = calculateExpenseBudgetOverages(expenses, budgets);
+    expect(overages.has('e1')).toBe(false);
+
+    const expensesSept = [expense({ id: 'e2', amount_in_base: 80, date: '2026-09-05' })];
+    const overagesSept = calculateExpenseBudgetOverages(expensesSept, budgets);
+    expect(overagesSept.get('e2')).toEqual({ excessUSD: 30, cumulativeExcessUSD: 30 });
   });
 });

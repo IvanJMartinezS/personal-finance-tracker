@@ -3,6 +3,7 @@ import { useAuth } from "@/shared/auth/useAuth";
 import { BudgetsService } from "../service";
 import { ExpensesService } from "@/modules/expenses/service";
 import { calculateBudgetUsage, type BudgetUsage } from "../utils/calculateBudgetUsage";
+import { resolveBudgetAmountForMonth } from "../utils/resolveBudgetAmountForMonth";
 import type { Budget } from "@/types";
 
 const budgetsService = new BudgetsService();
@@ -30,7 +31,8 @@ export const useBudgetsUsage = (year: number, month: number) => {
 
       return budgets.map((budget) => {
         const spentUSD = spentByCategory[budget.category_id] ?? 0;
-        return { budget, ...calculateBudgetUsage(budget.amount_usd, spentUSD) };
+        const amountForMonth = resolveBudgetAmountForMonth(budget.amount_usd, budget.budget_monthly_amounts, year, month);
+        return { budget, ...calculateBudgetUsage(amountForMonth, spentUSD) };
       });
     },
   });

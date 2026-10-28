@@ -1,4 +1,5 @@
 import { calculateBudgetUsage } from "./calculateBudgetUsage";
+import { resolveBudgetAmountForMonth } from "./resolveBudgetAmountForMonth";
 import type { Budget } from "@/types";
 
 export interface MonthlyBudgetLedgerEntry {
@@ -38,10 +39,11 @@ export function firstApplicableMonth(createdAt: string, year: number): number | 
  * desde enero) — un presupuesto agregado en septiembre no aplica
  * retroactivamente a los meses anteriores de ese año.
  *
- * Se calcula siempre con el monto de presupuesto ACTUAL de cada categoría
- * (los presupuestos no tienen historial propio — ver 005_create_budgets.sql),
- * así que si el monto de un presupuesto cambia, el sobrante de meses pasados
- * se recalcula con el monto nuevo, no con el que regía en ese momento.
+ * Cada mes se calcula con el monto que REALMENTE regía en ese mes (ver
+ * `resolveBudgetAmountForMonth` y 009_create_budget_monthly_amounts.sql) —
+ * si el presupuesto cambió de monto en octubre, los meses anteriores a
+ * octubre conservan el cálculo con el monto que tenían entonces, no se
+ * recalculan con el nuevo.
  *
  * @param budgets - presupuestos actuales del usuario
  * @param monthlySpentByCategory - `mes → categoryId → gastado en USD` (typicamente de `useYearlySummary`)
@@ -62,7 +64,8 @@ export function calculateBudgetHistory(
     if (startMonth !== null) {
       for (let month = startMonth; month <= elapsedMonths; month++) {
         const spentUSD = monthlySpentByCategory[month]?.[budget.category_id] ?? 0;
-        const { remainingUSD } = calculateBudgetUsage(budget.amount_usd, spentUSD);
+        const amountForMonth = resolveBudgetAmountForMonth(budget.amount_usd, budget.budget_monthly_amounts, year, month);
+        const { remainingUSD } = calculateBudgetUsage(amountForMonth, spentUSD);
         accumulatedUSD += remainingUSD;
         entries.push({ month, spentUSD, remainingUSD, accumulatedUSD });
       }
