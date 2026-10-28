@@ -148,6 +148,47 @@ export type Database = {
           },
         ]
       }
+      budget_monthly_amounts: {
+        Row: {
+          id: string
+          budget_id: string
+          user_id: string
+          year: number
+          month: number
+          amount_usd: number
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          budget_id: string
+          user_id: string
+          year: number
+          month: number
+          amount_usd: number
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          budget_id?: string
+          user_id?: string
+          year?: number
+          month?: number
+          amount_usd?: number
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "budget_monthly_amounts_budget_id_fkey"
+            columns: ["budget_id"]
+            isOneToOne: false
+            referencedRelation: "budgets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           color: string
