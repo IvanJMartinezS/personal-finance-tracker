@@ -4,6 +4,7 @@ import { useModuleTranslation } from "@/shared/hooks/useModuleTranslation";
 import { useYearFilter } from "@/shared/hooks/useYearFilter";
 import { YearFilter } from "@/shared/components/YearFilter";
 import { useBudgetsHistory } from "../hooks/useBudgetsHistory";
+import { calculateBudgetHistoryTotals } from "../utils/calculateBudgetHistoryTotals";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { formatCurrency } from "@/lib/mock-data";
 import { getElapsedMonthsInYear } from "@/lib/dateUtils";
@@ -24,6 +25,10 @@ export const BudgetsHistorySection = () => {
   const visibleMonths = useMemo(
     () => Array.from({ length: currentMonth }, (_, i) => i + 1),
     [currentMonth]
+  );
+  const monthlyTotals = useMemo(
+    () => calculateBudgetHistoryTotals(data, visibleMonths),
+    [data, visibleMonths]
   );
 
   if (isLoading) {
@@ -137,6 +142,39 @@ export const BudgetsHistorySection = () => {
                 </tr>
               );
             })}
+
+            <tr className="border-t-2 border-border bg-muted/50 font-semibold">
+              <td className="sticky left-0 z-10 bg-muted/80 backdrop-blur-sm px-4 py-3 border-r border-border text-foreground">
+                {i18nString("historyTotal")}
+              </td>
+              {monthlyTotals.map(({ month, remainingUSD, accumulatedUSD }) => {
+                const isCurrentMonth = month === currentMonth;
+                return (
+                  <>
+                    <td
+                      key={`total-${month}-avail`}
+                      className={cn(
+                        "px-3 py-3 text-right tabular-nums money-font",
+                        isCurrentMonth && "bg-primary/10",
+                        remainingUSD < 0 ? "text-destructive" : "text-foreground"
+                      )}
+                    >
+                      {formatCurrency(remainingUSD, "USD")}
+                    </td>
+                    <td
+                      key={`total-${month}-accum`}
+                      className={cn(
+                        "px-3 py-3 text-right tabular-nums money-font border-r border-border",
+                        isCurrentMonth && "bg-primary/10",
+                        accumulatedUSD < 0 ? "text-destructive" : "text-success"
+                      )}
+                    >
+                      {formatCurrency(accumulatedUSD, "USD")}
+                    </td>
+                  </>
+                );
+              })}
+            </tr>
           </tbody>
         </table>
       </div>

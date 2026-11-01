@@ -246,6 +246,7 @@ export const EN = {
     historyMonth: 'Month',
     historyAvailable: 'Available',
     historyAccumulated: 'Accumulated',
+    historyTotal: 'Total',
     historyNote: 'Each category starts counting from the month its budget was created ("—" for earlier months). Calculated using the current amount; if you change it, past months recalculate with the new amount.',
     invalidCategory: 'Selected category does not exist. Please choose a valid category.',
     budgetNotFound: 'Budget not found',
