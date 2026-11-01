@@ -9,6 +9,7 @@ import { useListFilters } from "@/shared/hooks/useListFilters";
 import { useListFilterConfigs } from "@/shared/hooks/useListFilterConfigs";
 import { toCopEquivalent } from "@/lib/mock-data";
 import { calculateExpenseBudgetOverages } from "@/modules/budgets/utils/calculateExpenseBudgetOverages";
+import { CategoryBudgetSummary } from "@/modules/budgets/components/CategoryBudgetSummary";
 import { Button } from "@/shared/components/ui/button";
 import { Badge } from "@/shared/components/ui/badge";
 import { AlertTriangle } from "lucide-react";
@@ -119,6 +120,11 @@ export const ExpensesList = () => {
             </Button>
           )}
         </div>
+
+        {filterCategory !== "all" && filterMonth !== "all" && filterYear !== "all" && (
+          <CategoryBudgetSummary categoryId={filterCategory} year={Number(filterYear)} month={Number(filterMonth)} />
+        )}
+
         <Card className="border-border/50 overflow-hidden">
           <CardContent className="p-0">
             {displayedExpenses.length === 0 ? (
